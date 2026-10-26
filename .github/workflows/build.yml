@@ -17,10 +17,10 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       # Installs Python, uv, Graphviz (conda) and WireViz exactly as pinned in mise.toml.
-      - uses: jdx/mise-action@v2
+      - uses: jdx/mise-action@v5
         with:
           install: true
           cache: true
@@ -30,13 +30,13 @@ jobs:
 
       - name: Upload the site
         if: github.event_name != 'pull_request'
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@v5
         with:
           path: build
 
       - name: Upload the build (pull requests)
         if: github.event_name == 'pull_request'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: wiring-plan
           path: build
@@ -53,4 +53,4 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5
