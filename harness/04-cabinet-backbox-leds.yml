@@ -1,0 +1,357 @@
+metadata:
+  title: 04 - Cabinet + backbox LEDs (MX Buttons, under-cab, speakers, backbox rear)
+  description: >-
+    Continues the 5 V fuse block from harness 03 (F9-F12). The five MX
+    Button boards (flippers, magna saves, lockbar Fire) form one chain on MX OUT 6.
+    The under-cabinet strip is one U-shaped run on MX OUT 7: down one side, across
+    the front, back along the other side. The backbox speaker rings and the
+    inverted-U strip behind the backbox (up one side, across the top, down the
+    other) share MX OUT 8.
+  notes: >-
+    REMOVABLE BACKBOX: the rings and the behind-backbox strip connect to the
+    cabinet through three plugs on the backbox floor, by the neck opening: X_BB_RINGS
+    and X_BB_REAR (XT60, socket on the cabinet side, so no live pins are exposed)
+    and X_BB_DATA (JST-SM 3-pin). Label the two XT60s; swapping them is harmless
+    but confusing. The splices stay in the backbox with the rest of its wiring.<br/>
+    BUILD PHASE 3 (later): nothing on this sheet is needed to play. The Dude's
+    Cab outputs used here can stay unconnected until then.<br/>
+    CABLE LANE 2a: everything on this sheet runs in the right-wall floor tray
+    (5 V + LED data). The left-hand under-cab feed crosses the cabinet along the
+    underside of the rear bumper-row brace.<br/>
+    LED GROUND: the 5 V fuse block's negative bus is the LED ground that harness 03
+    connects to the Dude's Cab "GND (LED PSU)" terminal. Add no other GND wires
+    to the Dude's Cab.<br/>
+    MX BUTTON CHAIN: 5 x 0.24 A = 1.2 A max. Power goes in at the right-hand end
+    (Magna R, nearest the 5 V block) and is passed along the 3-pin plugs; data
+    still enters at Magna L. Cap brightness if the last button looks dimmer or
+    changes colour.<br/>
+    LAMP vs SWITCH: the MX Button board only lights the button. The microswitch
+    is wired separately in harness 02.<br/>
+    UNDER-CAB U-RUN: ~3.0 m of IP65 60 LED/m strip (~180 LEDs) under the cabinet
+    floor, starting at the rear-right corner. Both ends sit at the rear, so the run
+    is fed at both ends from a splice near the rear and passes through the floor
+    at the two rear corners. Full white is ~10.8 A, so F10 is 10 A: cap brightness
+    at ~90 % or below.<br/>
+    BEHIND-BACKBOX RUN: ~2.0 m of 60 LED/m strip (~120 LEDs) on the back of the
+    backbox: up the right side, across the top, down the left side. It has its own
+    7.5 A fuse (F12), separate from the speaker rings on F11, and is fed at both
+    bottom ends through a small hole in the backbox rear panel.<br/>
+    CORNERS: the strip can't bend within its own plane, so cut it at each corner
+    and bridge the gap with a short 3-wire jumper (+5V, DATA, GND). Seal the joints
+    on the IP65 strip with heat-shrink.<br/>
+    CONFIGURATOR: MX OUT 7 = under-cab (~180 LEDs). MX OUT 8 = ring L + ring R
+    (~80) + behind-backbox run (~120). Enter the real counts after cutting.<br/>
+    FUSE BLOCK FULL: all 12 circuits are used. A future ALED topper or extra
+    flashers either share a backbox circuit (F11/F12, 7.5 A each) or get a
+    second 5 V supply.
+
+connectors:
+  FB_5V:
+    <<: *fuse_block_12
+    subtype: "5 V ALED. F9: 2 A MX Buttons, F10: 10 A under-cab, F11: 7.5 A speaker rings, F12: 7.5 A behind-backbox (F1-F8 in harness 03)"
+    additional_components:
+      - type: ATO blade fuse 2 A
+        qty: 1
+      - type: ATO blade fuse 10 A
+        qty: 1
+      - type: ATO blade fuse 7.5 A (+ 2 spare)
+        qty: 4
+
+  SDC:
+    <<: *super_dudes_cab
+    subtype: addressable LED outputs (cabinet + backbox)
+    pinlabels: [MX OUT 6, MX OUT 7, MX OUT 8]
+
+  # --- MX Button chain: left → right along the front ---------------------------------
+  MXB_MAGNA_L: &mx_button
+    <<: *mx_device
+    type: Arnoz MX BUTTON + PLUG
+    subtype: 4x WS2812B, 0.24 A
+    pinlabels: [IN +5V, IN DATA, IN GND, OUT +5V, OUT DATA, OUT GND]
+  MXB_FLIPPER_L: *mx_button
+  MXB_FIRE:
+    <<: *mx_button
+    subtype: 4x WS2812B, 0.24 A - inside lockbar Fire button
+  MXB_FLIPPER_R: *mx_button
+  MXB_MAGNA_R:
+    <<: *mx_button
+    subtype: 4x WS2812B, 0.24 A - end of chain
+
+  # --- Under-cabinet U-run: rear-right → front-right → front-left → rear-left ----------
+  UC_RIGHT: &uc_strip
+    <<: *mx_device
+    manufacturer: null
+    supplier: null
+    type: WS2812B strip 60 LED/m IP65 - right side (~1.2 m)
+    subtype: under the cabinet, rear → front
+    pinlabels: [+5V start (rear), GND start (rear), DIN start (rear), +5V front, GND front, DOUT front]
+  UC_FRONT:
+    <<: *uc_strip
+    type: WS2812B strip 60 LED/m IP65 - front (~0.55 m)
+    subtype: under the cabinet, right → left
+    pinlabels: [+5V in, GND in, DIN, +5V out, GND out, DOUT]
+  UC_LEFT:
+    <<: *uc_strip
+    type: WS2812B strip 60 LED/m IP65 - left side (~1.2 m)
+    subtype: under the cabinet, front → rear
+    pinlabels: [+5V front, GND front, DIN front, +5V end (rear), GND end (rear), DOUT end (rear)]
+  SPL_UC_5V:
+    <<: *splice_5v
+  SPL_UC_GND:
+    <<: *splice_gnd
+
+  # --- Backbox speaker rings -----------------------------------------------------------
+  RING_L: &speaker_ring
+    <<: *mx_device
+    manufacturer: null
+    supplier: null
+    type: WS2812B LED ring for 5.25 in speaker (~40 LEDs)
+    subtype: backbox speaker, 2.4 A max
+    pinlabels: [+5V, GND, DIN, DOUT]
+  RING_R: *speaker_ring
+  SPL_BB_5V:
+    <<: *splice_5v
+  SPL_BB_GND:
+    <<: *splice_gnd
+
+  # --- Behind-backbox inverted U: bottom-right → top-right → top-left → bottom-left -------
+  BBR_RIGHT: &bbr_strip
+    <<: *mx_device
+    manufacturer: null
+    supplier: null
+    type: WS2812B strip 60 LED/m - backbox rear, right side (~0.65 m)
+    subtype: behind the backbox, bottom → top
+    pinlabels: [+5V start (bottom), GND start (bottom), DIN start (bottom), +5V top, GND top, DOUT top]
+  BBR_TOP:
+    <<: *bbr_strip
+    type: WS2812B strip 60 LED/m - backbox rear, top (~0.7 m)
+    subtype: behind the backbox, right → left
+    pinlabels: [+5V in, GND in, DIN, +5V out, GND out, DOUT]
+  BBR_LEFT:
+    <<: *bbr_strip
+    type: WS2812B strip 60 LED/m - backbox rear, left side (~0.65 m)
+    subtype: behind the backbox, top → bottom
+    pinlabels: [+5V top, GND top, DIN top, +5V end (bottom), GND end (bottom), DOUT end (bottom)]
+  SPL_BBR_5V:
+    <<: *splice_5v
+  SPL_BBR_GND:
+    <<: *splice_gnd
+
+  # --- Backbox interconnect: unplug these to lift the backbox off --------------------------
+  X_BB_RINGS: &xt60
+    type: XT60 plug + socket (socket on the cabinet side)
+    subtype: "BACKBOX DISCONNECT - F11, speaker rings"
+    bgcolor: "#fff1c2"
+    pinlabels: [+5V, GND]
+  X_BB_REAR:
+    <<: *xt60
+    subtype: "BACKBOX DISCONNECT - F12, behind-backbox strip"
+  X_BB_DATA:
+    type: JST-SM 3-pin pigtail pair
+    subtype: "BACKBOX DISCONNECT - MX OUT 8 on the middle pin; the outer pins are spare (e.g. a future topper's data)"
+    bgcolor: "#dff5e6"
+    pinlabels: [SPARE 1, DATA, SPARE 2]
+
+cables:
+  PW_MXB:
+    <<: *pwr_pair_0_5
+    length: 1.9
+  D_MX6:
+    <<: *led_data
+    length: 0.6
+  J_MXB_1:
+    <<: *led_jumper_3
+    length: 0.2
+  J_MXB_2:
+    <<: *led_jumper_3
+    length: 0.6
+  J_MXB_3:
+    <<: *led_jumper_3
+    length: 0.6
+  J_MXB_4:
+    <<: *led_jumper_3
+    length: 0.2
+
+  PW_UC:
+    <<: *pwr_pair_1_5
+    length: 0.7
+  PW_UC_START:
+    <<: *pwr_pair_1_0
+    length: 0.4
+  PW_UC_END:
+    <<: *pwr_pair_1_0
+    length: 2.3
+  D_MX7:
+    <<: *led_data
+    length: 2.1
+  J_UC_FR:
+    <<: *led_jumper_3
+    type: Corner jumper (+5V, DATA, GND), heat-shrunk
+    length: 0.15
+  J_UC_FL:
+    <<: *led_jumper_3
+    type: Corner jumper (+5V, DATA, GND), heat-shrunk
+    length: 0.15
+
+  PW_BB:
+    <<: *pwr_pair_1_5
+    length: 1
+  PW_BB_BOX:
+    <<: *pwr_pair_1_5
+    length: 0.4
+  PW_RING_L:
+    <<: *pwr_pair_0_5
+    length: 0.5
+  PW_RING_R:
+    <<: *pwr_pair_0_5
+    length: 0.5
+  D_MX8:
+    <<: *led_data
+    type: LED data wire, cabinet side (bundle with the group's power pair)
+    additional_components: []
+    length: 2.7
+  D_MX8_BOX:
+    <<: *led_data
+    type: LED data wire, backbox side
+    length: 0.4
+  J_RING_L_R:
+    <<: *led_chain
+    length: 0.4
+  J_RING_R_REAR:
+    <<: *led_chain
+    length: 0.7
+
+  PW_BBR:
+    <<: *pwr_pair_1_5
+    length: 1
+  PW_BBR_BOX:
+    <<: *pwr_pair_1_5
+    length: 0.3
+  PW_BBR_START:
+    <<: *pwr_pair_1_0
+    length: 0.5
+  PW_BBR_END:
+    <<: *pwr_pair_1_0
+    length: 0.5
+  J_BBR_TR:
+    <<: *led_jumper_3
+    type: Corner jumper (+5V, DATA, GND), heat-shrunk
+    length: 0.15
+  J_BBR_TL:
+    <<: *led_jumper_3
+    type: Corner jumper (+5V, DATA, GND), heat-shrunk
+    length: 0.15
+
+connections:
+  # --- MX Buttons ---------------------------------------------------------------------------
+  - - FB_5V: [F9, NEG9]
+    - PW_MXB: [1-2]
+    - MXB_MAGNA_R: [OUT +5V, OUT GND]
+  - - SDC: [MX OUT 6]
+    - D_MX6: [1]
+    - MXB_MAGNA_L: [IN DATA]
+  - - MXB_MAGNA_L: [OUT +5V, OUT DATA, OUT GND]
+    - J_MXB_1: [1-3]
+    - MXB_FLIPPER_L: [IN +5V, IN DATA, IN GND]
+  - - MXB_FLIPPER_L: [OUT +5V, OUT DATA, OUT GND]
+    - J_MXB_2: [1-3]
+    - MXB_FIRE: [IN +5V, IN DATA, IN GND]
+  - - MXB_FIRE: [OUT +5V, OUT DATA, OUT GND]
+    - J_MXB_3: [1-3]
+    - MXB_FLIPPER_R: [IN +5V, IN DATA, IN GND]
+  - - MXB_FLIPPER_R: [OUT +5V, OUT DATA, OUT GND]
+    - J_MXB_4: [1-3]
+    - MXB_MAGNA_R: [IN +5V, IN DATA, IN GND]
+
+  # --- Under-cab U-run ------------------------------------------------------------------------
+  - - FB_5V: [F10]
+    - PW_UC: [1]
+    - SPL_UC_5V
+  - - FB_5V: [NEG10]
+    - PW_UC: [2]
+    - SPL_UC_GND
+  - - SPL_UC_5V
+    - PW_UC_START: [1]
+    - UC_RIGHT: [+5V start (rear)]
+  - - SPL_UC_GND
+    - PW_UC_START: [2]
+    - UC_RIGHT: [GND start (rear)]
+  - - SPL_UC_5V
+    - PW_UC_END: [1]
+    - UC_LEFT: [+5V end (rear)]
+  - - SPL_UC_GND
+    - PW_UC_END: [2]
+    - UC_LEFT: [GND end (rear)]
+  - - SDC: [MX OUT 7]
+    - D_MX7: [1]
+    - UC_RIGHT: [DIN start (rear)]
+  - - UC_RIGHT: [+5V front, DOUT front, GND front]
+    - J_UC_FR: [1-3]
+    - UC_FRONT: [+5V in, DIN, GND in]
+  - - UC_FRONT: [+5V out, DOUT, GND out]
+    - J_UC_FL: [1-3]
+    - UC_LEFT: [+5V front, DIN front, GND front]
+
+  # --- Backbox speaker rings --------------------------------------------------------------------
+  - - FB_5V: [F11, NEG11]
+    - PW_BB: [1-2]
+    - X_BB_RINGS: [+5V, GND]
+  - - X_BB_RINGS: [+5V]
+    - PW_BB_BOX: [1]
+    - SPL_BB_5V
+  - - X_BB_RINGS: [GND]
+    - PW_BB_BOX: [2]
+    - SPL_BB_GND
+  - - SPL_BB_5V
+    - PW_RING_L: [1]
+    - RING_L: [+5V]
+  - - SPL_BB_GND
+    - PW_RING_L: [2]
+    - RING_L: [GND]
+  - - SPL_BB_5V
+    - PW_RING_R: [1]
+    - RING_R: [+5V]
+  - - SPL_BB_GND
+    - PW_RING_R: [2]
+    - RING_R: [GND]
+  - - SDC: [MX OUT 8]
+    - D_MX8: [1]
+    - X_BB_DATA: [DATA]
+  - - X_BB_DATA: [DATA]
+    - D_MX8_BOX: [1]
+    - RING_L: [DIN]
+  - - RING_L: [DOUT]
+    - J_RING_L_R: [1]
+    - RING_R: [DIN]
+  - - RING_R: [DOUT]
+    - J_RING_R_REAR: [1]
+    - BBR_RIGHT: [DIN start (bottom)]
+
+  # --- Behind-backbox inverted U ------------------------------------------------------------------
+  - - FB_5V: [F12, NEG12]
+    - PW_BBR: [1-2]
+    - X_BB_REAR: [+5V, GND]
+  - - X_BB_REAR: [+5V]
+    - PW_BBR_BOX: [1]
+    - SPL_BBR_5V
+  - - X_BB_REAR: [GND]
+    - PW_BBR_BOX: [2]
+    - SPL_BBR_GND
+  - - SPL_BBR_5V
+    - PW_BBR_START: [1]
+    - BBR_RIGHT: [+5V start (bottom)]
+  - - SPL_BBR_GND
+    - PW_BBR_START: [2]
+    - BBR_RIGHT: [GND start (bottom)]
+  - - SPL_BBR_5V
+    - PW_BBR_END: [1]
+    - BBR_LEFT: [+5V end (bottom)]
+  - - SPL_BBR_GND
+    - PW_BBR_END: [2]
+    - BBR_LEFT: [GND end (bottom)]
+  - - BBR_RIGHT: [+5V top, DOUT top, GND top]
+    - J_BBR_TR: [1-3]
+    - BBR_TOP: [+5V in, DIN, GND in]
+  - - BBR_TOP: [+5V out, DOUT, GND out]
+    - J_BBR_TL: [1-3]
+    - BBR_LEFT: [+5V top, DIN top, GND top]

@@ -1,0 +1,308 @@
+metadata:
+  title: 01 - Mains power (230 V AC, Denmark)
+  description: >-
+    Wall socket → switched/fused C14 inlet → master/slave strip → displays,
+    PC, amp and the three Mean Well DC supplies (5 V, 12 V, 24 V). Each Mean
+    Well has its own switched outlet and a moulded Schuko cord, so the only
+    field-wired 230 V is the short inlet → coupler run and the three cord ends
+    in the PSU terminal blocks. There is no distribution box.
+  notes: >-
+    REMOVABLE BACKBOX: no field wiring goes up the neck. The backglass cord and
+    the DMD's USB-C power cable are moulded cables that unplug at the monitors; keep the
+    DMD's USB-C charger in the cabinet so only its thin cable crosses.<br/>
+    BUILD PHASES: the inlet, coupler, strip, earth bar and moulded cords are
+    phase 1. The three Mean Well PSUs and their cords are phase 3: until then
+    SWITCHED 1-3 stay free.<br/>
+    DENMARK: 230 V / 50 Hz. Wall socket must be on an HPFI/RCD-protected
+    circuit (standard in DK). Danish type K and Schuko type F plugs are
+    reversible, so L and N are NOT guaranteed: the inlet switch MUST be
+    double-pole, and treat both L and N as live.<br/>
+    MASTER/SLAVE: the PC is the master. When the PC is switched on, the strip
+    powers the switched outlets: the three DC supplies, the amp and the DMD.
+    The LG OLED and the backglass sit on the always-on outlets; both sleep
+    without a signal, and the OLED needs standby power for its pixel-refresh
+    cycle. Switch the OLED on/off from the PC with LGTV Companion over LAN.<br/>
+    INRUSH: switch-mode PSUs draw a large current spike at switch-on (about
+    40-60 A for a few ms each). The strip maker gives no relay inrush rating: if
+    the switched outlets ever stay on with the PC off, the relay has welded, so
+    replace the strip.<br/>
+    CABLE LANE 1 (mains): 230 V runs only in the rear floor tray, along the rear
+    wall under the strip. The PSU cords leave it straight into the two rear
+    corners. Never share a tray with LED data, speaker, toy or button wiring.<br/>
+    PE BONDING: all touchable metal is bonded in one closed loop that starts
+    and ends at this earth bar - see sheet 08.<br/>
+    EXPOSED 230 V: the three PSU terminal blocks are the last touchable mains
+    points in the cabinet. Fit a Mean Well TBC-09 clip-on cover on the two
+    RSP-320s and a printed cover on the RSP-500 (TBC-09 does not fit it), use
+    insulated ferrules so no bare copper sits proud of a screw, and anchor each
+    cord with a P-clip within 5 cm of the terminals so a tug cannot pull a live
+    wire out.<br/>
+    PSU CORDS: each is a moulded Schuko → open-end cord (H05VV-F 3G1.5). Shorten
+    it from the open end only: brown = L, blue = N, green/yellow = FG.<br/>
+    If you are not comfortable wiring 230 V, have an authorised electrician
+    (autoriseret elinstallatør) wire or inspect the red boxes.
+
+connectors:
+  WALL:
+    type: Wall socket, HPFI/RCD protected
+    subtype: 230 V 50 Hz, type K or F
+    bgcolor: "#ffd6d6"
+    pinlabels: [SOCKET]
+
+  X_INLET:
+    type: "IEC C14 inlet, double-pole switch + fuse holder (Schurter 6765, 4304.6087)"
+    subtype: 10 A / 250 V, screw-on from the front, 4.8 mm tabs
+    bgcolor: "#ffd6d6"
+    bgcolor_title: "#ff9e9e"
+    pinlabels: [C14 IN, L, N, PE]
+    notes: >-
+      Mounted in Tukkari's inlet cut-out: extend it to 27.2 x 58.2 mm (screw
+      holes stay 40 mm apart).<br/>
+      Fuses: T8A H (slow-blow, ceramic, 250 V) 5x20 mm in BOTH L and N, since
+      Danish plugs are reversible.
+    additional_components:
+      - type: Fuse 5x20 mm T8A H 250 V ceramic (2 fitted + 2 spare)
+        qty: 4
+      - type: Rubber boot / terminal cover for inlet tabs
+        qty: 1
+
+  X_COUPLER:
+    type: Inline socket (coupler), type F, rubber, 16 A
+    subtype: screw-clamp, cable strain relief
+    bgcolor: "#ffd6d6"
+    pinlabels: [L, N, PE, SOCKET]
+    notes: Screw to the cabinet floor with a P-clip; lets the strip be swapped without rewiring.
+
+  PE_BAR:
+    type: PE earth bar, brass, 4-way, insulated mounting
+    subtype: cabinet floor, centre-rear (near the inlet)
+    bgcolor: "#ffd6d6"
+    bgcolor_title: "#ff9e9e"
+    pinlabels: [FEED (inlet PE), LOOP OUT, LOOP RETURN, COUPLER PE, SPARE]
+    notes: >-
+      Start and finish of the protective-earth bonding loop (sheet 08), and the
+      PE star point: the inlet's PE tab carries ONE wire, to this bar, and the
+      coupler's PE starts here too.
+
+  STRIP:
+    type: Master/slave power strip
+    subtype: "Brennenstuhl Secure-Tec 19.500A: 8-way type F, 3500 W, 1 master + 5 switched + 2 always-on, surge protection"
+    manufacturer: Brennenstuhl
+    bgcolor: "#ffd6d6"
+    bgcolor_title: "#ff9e9e"
+    pinlabels: [PLUG, MASTER, SWITCHED 1, SWITCHED 2, SWITCHED 3, SWITCHED 4, SWITCHED 5, ALWAYS ON 1, ALWAYS ON 2]
+    subtype: "rear wall, under the fans and bells"
+    notes: >-
+      Set the threshold dial (8-80 W) so the switched outlets come on with the PC
+      idling and go off when it is shut down; around 20-30 W usually works.
+      Every outlet is used. If you ever need one more, power the DMD from a PC
+      USB-C port instead and SWITCHED 5 is free.
+
+  PC:
+    type: Gaming PC (modelled as a box)
+    subtype: ATX PSU, IEC C14 inlet
+    bgcolor: "#dde8ff"
+    pinlabels: [AC IN]
+    notes: 'BIOS: "Restore on AC power loss" = Power On, so the cabinet main switch starts the PC.'
+
+  OLED:
+    type: LG OLED evo C5 42 in (OLED42C54LA, playfield)
+    subtype: internal PSU, 2-pin cord
+    bgcolor: "#dde8ff"
+    pinlabels: [AC IN]
+
+  BACKGLASS:
+    type: 32 in IPS monitor (backglass)
+    subtype: "in the backbox: unplug its cord here to lift the backbox off"
+    bgcolor: "#dde8ff"
+    pinlabels: [AC IN]
+
+  DMD_PSU:
+    type: DMD USB-C charger, 20 W (supplied with the UPERFECT)
+    subtype: rear floor, by the strip (not in the backbox)
+    bgcolor: "#dde8ff"
+    pinlabels: [AC IN, USB-C OUT]
+
+  DMD:
+    type: Full DMD LCD (Tukkari 15.6 in DMD panel)
+    subtype: "in the backbox: unplug the USB-C power cable here to lift the backbox off"
+    bgcolor: "#dde8ff"
+    pinlabels: [USB-C POWER]
+
+  AMP_PSU:
+    type: CSD SSF amp PSU, 24 V 12 A (supplied with kit)
+    subtype: rear floor, beside the PC
+    bgcolor: "#dde8ff"
+    pinlabels: [AC IN, +24V, 0V]
+
+  AMP:
+    type: CSD High Power SSF amplifier
+    subtype: real-mech flipper shelf, centre
+    bgcolor: "#dde8ff"
+    pinlabels: [+24V, 0V]
+
+  PSU_5V:
+    <<: *mean_well_psu
+    type: Mean Well RSP-320-5 (5 V 60 A, PFC)
+    subtype: "5 V LEDs. Rear-right wall, low, terminals facing forward"
+    pinlabels: [L, N, FG (PE)]
+    notes: >-
+      Universal input 88-264 VAC, so there is no 115/230 V selector to set
+      wrong. Fit the TBC-09 terminal cover.
+
+  PSU_12V:
+    <<: *mean_well_psu
+    type: Mean Well RSP-320-12 (12 V 26.7 A, PFC)
+    subtype: "12 V toys and BUNNY logic. Rear-left wall, low"
+    pinlabels: [L, N, FG (PE)]
+    notes: Fit the TBC-09 terminal cover.
+
+  PSU_24V:
+    <<: *mean_well_psu
+    type: Mean Well RSP-500-24 (24 V 21 A, PFC)
+    subtype: "24 V coils. Left wall, low, in front of the 12 V supply"
+    pinlabels: [L, N, FG (PE)]
+    notes: 230 x 127 x 40.5 mm. TBC-09 does not fit its terminal block; print a cover.
+
+cables:
+  C_WALL:
+    <<: *molded_cord
+    type: Mains cord, type K/F plug → IEC C13, 3G1.0, 10 A
+    length: 2
+
+  W_INLET:
+    <<: *mains_3core
+    length: 0.6
+    notes: >-
+      L and N run inlet tabs → coupler. The same cable's PE core starts at the
+      earth bar instead of the inlet, so each inlet tab carries exactly one
+      wire. Fully insulated 4.8 mm receptacles on the inlet.
+
+  W_PE_FEED:
+    type: PE bond wire, H07V-K
+    gauge: 2.5 mm2
+    show_equiv: true
+    wirecount: 1
+    colors: [GNYE]
+    length: 0.5
+    notes: Inlet PE tab → earth bar. It is the only wire on that tab; the coupler's PE starts at the bar.
+    additional_components:
+      - type: Fully insulated 4.8 mm receptacle (inlet end)
+        qty: 1
+      - type: Insulated ring terminal 2.5 mm2 (bar end)
+        qty: 1
+  C_STRIP:
+    <<: *molded_cord
+    type: Power strip's own plug
+    length: 0
+
+  C_PC:
+    <<: *molded_cord
+    type: Type F → IEC C13 cord
+    length: 0.6
+  C_OLED:
+    <<: *molded_cord
+    type: TV cord (supplied)
+    length: 1.8
+  C_BG:
+    <<: *molded_cord
+    type: Monitor cord (supplied)
+    length: 1.8
+  C_DMD:
+    <<: *molded_cord
+    type: Adapter cord (supplied)
+    length: 1.7
+  C_DMD_DC:
+    <<: *molded_cord
+    type: USB-C cable (supplied), into a 180° USB-C adapter at the DMD
+    colors: [BK]
+  C_AMP:
+    <<: *molded_cord
+    type: Mains cord with an EU plug (the kit ships from the US - check the PSU is 100-240 V)
+    length: 0.6
+  C_AMP_DC:
+    type: 24 V amp supply, supplied DC lead extended with 2 x 1.5 mm2 (speaker cable reel)
+    gauge: 1.5 mm2
+    show_equiv: true
+    wirecount: 2
+    colors: [RD, BK]
+    wirelabels: [+24V, "0V"]
+    length: 1.7
+    notes: Runs forward in lane 3 with the speaker cables - it is audio-domain power, not toy power. Never join its 0 V to the toy or LED grounds.
+
+  C_PSU_5V: &psu_cord
+    <<: *mains_3core
+    type: Moulded Schuko → open-end cord, H05VV-F 3G1.5, 2 m (cut to length)
+    additional_components:
+      - type: Insulated ferrules 1.5 mm2
+        qty: 3
+      - type: P-clip strain relief at the PSU
+        qty: 1
+    length: 0.7
+  C_PSU_12V:
+    <<: *psu_cord
+    length: 0.7
+  C_PSU_24V:
+    <<: *psu_cord
+    length: 0.8
+
+connections:
+  # wall → inlet
+  - - WALL: [SOCKET]
+    - C_WALL: [1]
+    - X_INLET: [C14 IN]
+
+  # inlet → coupler (field-wired)
+  - - X_INLET: [L, N]
+    - W_INLET: [1-2]
+    - X_COUPLER: [L, N]
+  # the PE core of the same cable starts at the earth bar, not the inlet tab
+  - - PE_BAR: [COUPLER PE]
+    - W_INLET: [3]
+    - X_COUPLER: [PE]
+
+  # PE: inlet → earth bar. The bonding loop itself is sheet 08.
+  - - X_INLET: [PE]
+    - W_PE_FEED: [1]
+    - PE_BAR: [FEED (inlet PE)]
+
+  # strip
+  - - X_COUPLER: [SOCKET]
+    - C_STRIP: [1]
+    - STRIP: [PLUG]
+
+  - - STRIP: [MASTER]
+    - C_PC: [1]
+    - PC: [AC IN]
+
+  - - STRIP: [ALWAYS ON 1]
+    - C_OLED: [1]
+    - OLED: [AC IN]
+
+  - - STRIP: [SWITCHED 1, SWITCHED 1, SWITCHED 1]
+    - C_PSU_5V: [1-3]
+    - PSU_5V: [L, N, FG (PE)]
+  - - STRIP: [SWITCHED 2, SWITCHED 2, SWITCHED 2]
+    - C_PSU_12V: [1-3]
+    - PSU_12V: [L, N, FG (PE)]
+  - - STRIP: [SWITCHED 3, SWITCHED 3, SWITCHED 3]
+    - C_PSU_24V: [1-3]
+    - PSU_24V: [L, N, FG (PE)]
+
+  - - STRIP: [ALWAYS ON 2]
+    - C_BG: [1]
+    - BACKGLASS: [AC IN]
+
+  - - STRIP: [SWITCHED 5]
+    - C_DMD: [1]
+    - DMD_PSU: [AC IN]
+  - - DMD_PSU: [USB-C OUT]
+    - C_DMD_DC: [1]
+    - DMD: [USB-C POWER]
+
+  - - STRIP: [SWITCHED 4]
+    - C_AMP: [1]
+    - AMP_PSU: [AC IN]
+  - - AMP_PSU: [+24V, 0V]
+    - C_AMP_DC: [1-2]
+    - AMP: [+24V, 0V]

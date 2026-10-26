@@ -1,0 +1,320 @@
+metadata:
+  title: 08 - Protective earth bonding loop
+  description: >-
+    Every touchable metal part is bonded in ONE continuous loop of 2.5 mm2
+    green/yellow wire: out of the earth bar, around the cabinet, up through the
+    backbox and back to the bar. Because it is a closed loop rather than a
+    chain, a single broken joint still leaves every part earthed from the other
+    direction. The earth bar is fed from the C14 inlet's PE tab (sheet 01).
+  notes: >-
+    REMOVABLE BACKBOX: the backbox leg of the loop passes through two WAGO
+    221-413 splices on the backbox floor. Open both to lift the backbox off: the
+    loop then becomes two spurs from the earth bar, so every cabinet part stays
+    bonded. Re-test the whole loop after refitting the backbox.<br/>
+    BUILD PHASES: build the whole loop in phase 1. Until the shooter goes in
+    (phase 2), close its gap with a WAGO 221-413, as for an omitted part.<br/>
+    CABLE LANE: the earth loop carries no signal and may share any tray.<br/>
+    NOT IN THE LOOP: the Mean Well cases are earthed through their own cords
+    (FG terminal, sheet 01). The real-mech flippers, bumpers, chimes, bells and
+    knocker run on 24 V and never come near mains, so they are not bonded.<br/>
+    WHY: no 230 V wiring runs anywhere near these parts - mains lives in
+    enclosed, plug-connected assemblies at the rear (sheet 01) - so none of them
+    is an exposed conductive part that the rules require to be earthed. This
+    loop is defence in depth against a conductor working loose in a cabinet that
+    vibrates, plus a static path that avoids the electronics. Treat it as good
+    practice, not as a safety system you have to force into place.<br/>
+    VERIFY-OR-OMIT: every part joins the loop only if it actually measures well.
+    Bond it, then measure plug earth pin → part: 0.3 ohm or less and it stays in.
+    If a part cannot be made good, LEAVE IT OUT rather than fake it - a bond of
+    tens of ohms cannot clear a fault but looks like protection on this
+    drawing.<br/>
+    IF YOU OMIT A PART, KEEP THE LOOP CLOSED: join that part's loop-in and
+    loop-out wires to each other (WAGO 221 or a ferruled butt splice) so the
+    ring stays continuous.<br/>
+    PRIORITY (expect a good bond, bond these first): coin door frame, the four
+    leg brackets, backbox hinges, plunger housing, speaker/DMD panel - their
+    hardware is usually bare zinc.<br/>
+    STATIC ONLY (grey boxes, bond if they measure): side rails and the lockbar
+    clamps. Powder coat may defeat them and neither can become live.<br/>
+    GETTING A GOOD JOINT WITHOUT SCRAPING THE SHOW SURFACE: bond to bare
+    hardware (bracket nuts, frame studs, fixing screws) rather than the visible
+    face, and use paint-piercing serrated (star) washers, which bite through
+    coating. Where scraping is needed, do it on an inside face and touch up
+    the paint over the finished joint.<br/>
+    TWO RING TERMINALS PER PART (loop in + loop out) under one screw, never more
+    than two, always with a star washer.<br/>
+    TEST: because it is a loop, a single bad joint will not show up as a dead
+    part, so re-test the whole loop after any work that disturbs a bonding
+    screw.<br/>
+    Total wire: about 13.2 m of 2.5 mm2 green/yellow (routed), plus ~28 ring terminals.<br/>
+    Keep logic ground off this loop: mount The BRAIN and the POTAR on nylon
+    standoffs (sheets 02 and 05).
+
+tweak:
+  append: "rankdir=TB;"
+
+connectors:
+  X_INLET:
+    type: IEC C14 inlet (sheet 01)
+    subtype: PE tab
+    bgcolor: "#ffd6d6"
+    pinlabels: [PE]
+
+  PE_BAR:
+    type: PE earth bar, brass, 4-way, insulated mounting
+    subtype: cabinet floor, centre-rear (near the inlet)
+    bgcolor: "#ffd6d6"
+    bgcolor_title: "#ff9e9e"
+    pinlabels: [FEED (inlet PE), LOOP OUT, LOOP RETURN, COUPLER PE, SPARE]
+    notes: >-
+      Start and finish of the bonding loop. COUPLER PE feeds the mains coupler
+      (sheet 01), so the inlet's PE tab carries only one wire. One conductor per
+      clamp. Mark the bar with the earth symbol.
+
+  COIN_DOOR_FRAME:
+    type: Coin door metal frame
+    subtype: "PRIORITY bond: frame stud or hinge hardware inside the cabinet"
+    bgcolor: "#eeeeee"
+    pinlabels: [PE lug]
+    notes: >-
+      The outer skin may be powder coated, but coin door frames, hinges and
+      mounting studs are normally bare zinc, so expect a good joint here. This
+      is the part you open while the machine runs. Mount The BRAIN on nylon
+      standoffs so its logic GND never touches the frame.
+
+  LEG_FL: &leg
+    type: Metal leg + leg bracket, front left
+    subtype: "PRIORITY bond: the bracket inside the corner (not the leg itself)"
+    bgcolor: "#eeeeee"
+    pinlabels: [PE lug]
+    notes: >-
+      Leg brackets are usually bare zinc. The leg is powder coated, so measure
+      leg → bracket through the leg bolts: black oxide / black zinc bolts
+      conduct, powder-coated ones do not. If the leg reads badly, a star washer
+      under the bolt head usually fixes it; if not, accept it - a leg cannot
+      become live.
+  LEG_FR:
+    <<: *leg
+    type: Metal leg + leg bracket, front right
+  LEG_RL:
+    <<: *leg
+    type: Metal leg + leg bracket, rear left
+  LEG_RR:
+    <<: *leg
+    type: Metal leg + leg bracket, rear right
+
+  SIDE_RAIL_L: &side_rail
+    type: Metal side rail, left
+    subtype: "STATIC ONLY: bond if it measures, otherwise omit"
+    bgcolor: "#f4f4f4"
+    pinlabels: [PE lug]
+    notes: >-
+      Powder coated and cannot become live, so this bond is purely a static
+      path. Try a fixing screw with a star washer from inside. If it will not
+      come below 0.3 ohm, leave the rail out of the loop and join its two loop
+      wires together instead.
+  SIDE_RAIL_R:
+    <<: *side_rail
+    type: Metal side rail, right
+
+  CLAMP_L: &lockbar_clamp
+    type: Lockbar clamp, left (fixed to the cabinet)
+    subtype: "STATIC ONLY: in the loop, carries the lockbar's bond"
+    bgcolor: "#f4f4f4"
+    pinlabels: [PE lug]
+    notes: >-
+      Scrape a bare contact patch on the jaw where the lockbar seats, so the bar
+      earths through the clamp. If the clamp itself will not bond below 0.3 ohm,
+      omit both clamps and the lockbar and close the loop through.
+  CLAMP_R:
+    <<: *lockbar_clamp
+    type: Lockbar clamp, right (fixed to the cabinet)
+
+  LOCKBAR:
+    type: Tukkari widebody lockbar (removable)
+    subtype: "STATIC ONLY: metal-to-metal contact with both clamps, no wire"
+    bgcolor: "#f4f4f4"
+    pinlabels: [via clamps]
+    notes: >-
+      Powder coated, holds only the 5 V Fire button and its MX Button board, and
+      cannot become live: this bond is a static path only. VERIFY: measure plug
+      earth pin to lockbar, lifting and refitting the bar several times. Below
+      0.3 ohm every time and it stays. If it is erratic, enlarge the bare
+      contact patches - or simply accept the lockbar as unbonded, which is a
+      legitimate choice here.
+
+  PLUNGER:
+    type: Stern shooter assembly (metal housing)
+    subtype: "PRIORITY bond: under a housing mounting nut inside the front wall"
+    bgcolor: "#eeeeee"
+    pinlabels: [PE lug]
+    notes: Mount the POTAR on nylon standoffs/screws so its logic GND never touches the housing.
+
+  HINGE_L: &hinge
+    type: Backbox hinge, left
+    subtype: "PRIORITY bond: the cabinet-side leaf"
+    bgcolor: "#eeeeee"
+    pinlabels: [PE lug]
+    notes: A hinge pin is not a reliable earth path. If the backbox leaf reads above 0.3 ohm, add a short flexible GNYE jumper across the hinge.
+  HINGE_R:
+    <<: *hinge
+    type: Backbox hinge, right
+
+  SPEAKER_DMD_PANEL:
+    type: Tukkari metal speaker + DMD panel (backbox)
+    subtype: "PRIORITY bond: lead runs up the backbox neck"
+    bgcolor: "#eeeeee"
+    pinlabels: [PE lug]
+    notes: >-
+      Powder coated outside, but the inside face and fixings are usually bare -
+      bond there. Leave slack in the lead for the backbox to tilt on its hinges.
+
+
+  X_PE_BB_R: &pe_disconnect
+    style: simple
+    type: WAGO 221-413
+    subtype: "BACKBOX DISCONNECT - loop up, backbox floor"
+    bgcolor: "#eeeeee"
+  X_PE_BB_L:
+    <<: *pe_disconnect
+    subtype: "BACKBOX DISCONNECT - loop down, backbox floor"
+
+cables:
+  W_PE_FEED:
+    type: PE bond wire, H07V-K
+    gauge: 2.5 mm2
+    show_equiv: true
+    wirecount: 1
+    colors: [GNYE]
+    length: 0.6
+    notes: From the inlet PE tab (sheet 01). It is the only wire on that tab; the coupler's PE starts at the bar.
+
+  W_PE_01: &pe_bond
+    type: PE loop wire, H07V-K
+    gauge: 2.5 mm2
+    show_equiv: true
+    wirecount: 1
+    colors: [GNYE]
+    length: 0.6
+    additional_components:
+      - type: Insulated ring terminal 2.5 mm2, M4/M5
+        qty: 2
+      - type: Paint-piercing serrated (star) washer M4/M5
+        qty: 1
+  W_PE_02:
+    <<: *pe_bond
+    length: 1.5
+  W_PE_03:
+    <<: *pe_bond
+    length: 0.9
+  W_PE_04:
+    <<: *pe_bond
+    length: 0.5
+  W_PE_05:
+    <<: *pe_bond
+    length: 0.6
+  W_PE_06:
+    <<: *pe_bond
+    length: 0.6
+  W_PE_07:
+    <<: *pe_bond
+    length: 0.5
+  W_PE_08:
+    <<: *pe_bond
+    length: 0.3
+  W_PE_09:
+    <<: *pe_bond
+    length: 0.9
+  W_PE_10:
+    <<: *pe_bond
+    length: 1.6
+  W_PE_11:
+    <<: *pe_bond
+    length: 1.2
+  W_PE_12:
+    <<: *pe_bond
+    length: 0.4
+    notes: Up the backbox neck to the backbox-floor splice. Leave slack for the backbox to tilt on its hinges.
+  W_PE_12B:
+    <<: *pe_bond
+    length: 0.4
+  W_PE_13:
+    <<: *pe_bond
+    length: 0.4
+  W_PE_13B:
+    <<: *pe_bond
+    length: 0.4
+    notes: From the backbox-floor splice back down the neck. Leave slack for the backbox to tilt.
+  W_PE_14:
+    <<: *pe_bond
+    length: 1.6
+    notes: Loop return to the earth bar. This wire is what makes a single broken joint harmless.
+
+
+connections:
+  - - X_INLET: [PE]
+    - W_PE_FEED: [1]
+    - PE_BAR: [FEED (inlet PE)]
+
+  # PE bonding: one closed loop, bar → rear-left → left side → front → right
+  # side → rear-right → backbox → back to the bar.
+  - - X_INLET: [PE]
+    - W_PE_FEED: [1]
+    - PE_BAR: [FEED (inlet PE)]
+  - - PE_BAR: [LOOP OUT]
+    - W_PE_01: [1]
+    - LEG_RL: [PE lug]
+  - - LEG_RL: [PE lug]
+    - W_PE_02: [1]
+    - SIDE_RAIL_L: [PE lug]
+  - - SIDE_RAIL_L: [PE lug]
+    - W_PE_03: [1]
+    - CLAMP_L: [PE lug]
+  - - CLAMP_L: [PE lug]
+    - W_PE_04: [1]
+    - LEG_FL: [PE lug]
+  - - LEG_FL: [PE lug]
+    - W_PE_05: [1]
+    - COIN_DOOR_FRAME: [PE lug]
+  - - COIN_DOOR_FRAME: [PE lug]
+    - W_PE_06: [1]
+    - LEG_FR: [PE lug]
+  - - LEG_FR: [PE lug]
+    - W_PE_07: [1]
+    - PLUNGER: [PE lug]
+  - - PLUNGER: [PE lug]
+    - W_PE_08: [1]
+    - CLAMP_R: [PE lug]
+  - - CLAMP_R: [PE lug]
+    - W_PE_09: [1]
+    - SIDE_RAIL_R: [PE lug]
+  - - SIDE_RAIL_R: [PE lug]
+    - W_PE_10: [1]
+    - LEG_RR: [PE lug]
+  - - LEG_RR: [PE lug]
+    - W_PE_11: [1]
+    - HINGE_R: [PE lug]
+  - - HINGE_R: [PE lug]
+    - W_PE_12: [1]
+    - X_PE_BB_R
+  - - X_PE_BB_R
+    - W_PE_12B: [1]
+    - SPEAKER_DMD_PANEL: [PE lug]
+  - - SPEAKER_DMD_PANEL: [PE lug]
+    - W_PE_13: [1]
+    - X_PE_BB_L
+  - - X_PE_BB_L
+    - W_PE_13B: [1]
+    - HINGE_L: [PE lug]
+  - - HINGE_L: [PE lug]
+    - W_PE_14: [1]
+    - PE_BAR: [LOOP RETURN]
+
+  # the lockbar earths through its clamps: metal-to-metal, no wire
+  - - CLAMP_L: [PE lug]
+    - ==>
+    - LOCKBAR: [via clamps]
+  - - CLAMP_R: [PE lug]
+    - ==>
+    - LOCKBAR: [via clamps]
+

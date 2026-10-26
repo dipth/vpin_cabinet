@@ -1,0 +1,439 @@
+metadata:
+  title: 02 - Inputs (Super Dude's Cab, button boards, BRAIN, plunger)
+  description: >-
+    All player and operator inputs. Every button lands on an Arnoz Button Board
+    close to the button, and each board connects to the Super Dude's Cab with a
+    single JST-PH 6-pin ribbon. Each switch gets a 2-core lead (signal + GND
+    return); the GND returns of each physical cluster meet in a WAGO splice with
+    one wire back to the board's GND terminal.
+  notes: >-
+    BUILD PHASES: phase 1 is the flipper and magna buttons, Start, Launch Ball,
+    Exit, the under-cab cluster (incl. the PC power button) and all four button
+    boards. Phase 2 adds Return, the tilt bob, the lockbar Fire button, the coin
+    switches with The BRAIN, and the POTAR plunger.<br/>
+    CABLE LANES: button leads, ribbons and the POTAR stay local at the front
+    (lane 4, along the front wall, away from speaker and LED wiring). The PC power
+    lead and the USB lead run in lane 3 (the centre floor tray). Cross other
+    lanes only at right angles.<br/>
+    INPUT LOGIC: every input is a dry contact to GND. Never put voltage on an
+    input. Button lamps and MX Button LEDs are wired separately (harness 04/05)
+    and must NOT share a wire with the switch contacts.<br/>
+    LOW-LATENCY INPUTS: Flipper L/R, Magna L/R and Fire are the 5 ultra-low-latency
+    inputs; keep them on those pins.<br/>
+    CONFIGURATOR MAPPING: RETURN = ESC (exit to menu) and EXIT = X (quit) are the
+    Dude's Cab defaults for the new front-panel buttons. EXTRA BALL = under-cab
+    Menu/Operator (give it your frontend's operator-menu key so it doesn't
+    duplicate RETURN); SPARE 1 = Volume Down; SPARE 2 = Volume Up; SPARE 3 = under-cab
+    Night Mode. The Dude's Cab has ONE Night Mode input setting (default: the
+    BRAIN's NightM). Either select SPARE 3 as the Night Mode button, or move the
+    SPARE 3 wire to the NightM screw terminal so it is in parallel with the BRAIN
+    button. Both are electrically safe.<br/>
+    PC POWER: the under-cab PC button goes to the motherboard front-panel header,
+    NOT to the Dude's Cab.<br/>
+    UNDER-CAB BUTTONS ARE UNLIT: only their switches are wired. Remove the
+    supplied bulbs so they don't spill light into the under-cab strip.<br/>
+    VERIFY: pin order is taken from the Dude's Cab v1 manual/silkscreen. Before
+    power-up, confirm each ribbon with a multimeter (board GND terminal to Dude's
+    Cab GND) and check the pin names on your Super Dude's Cab.<br/>
+    MOUNTING: the Dude's Cab contains the nudge accelerometer and sits on the
+    real-mech board shelf. Mount it firmly: James found that on that shelf his
+    soft 8-rubber mount let it barely register nudges, so start with a stiff
+    mount and test nudging before closing up. Set the orientation in the
+    configurator. Keep the bass shaker off the floor directly beneath it, or
+    expect to raise the accelerometer filtering.<br/>
+    FLIPPER BUTTONS AND REAL FLIPPERS: the same leaf switches drive the real
+    flippers. In the configurator, link Flipper L/R to BUNNY 1 outputs 1/2
+    (sheet 09) so the coil fires straight from the button, with no PC
+    latency.
+
+connectors:
+  SDC:
+    <<: *super_dudes_cab
+    subtype: input side
+    pinlabels: [USB-C,
+                BTLA GND, BTLA MAGNA L, BTLA FLIPPER L, BTLA START, BTLA RETURN, BTLA EXIT,
+                BTLB GND, BTLB FIRE, BTLB EXTRA BALL, BTLB SPARE 1, BTLB SPARE 2, BTLB SPARE 3,
+                BTRA GND, BTRA GND 2, BTRA SPARE 6, BTRA SPARE 5, BTRA SPARE 4, BTRA TILT,
+                BTRB GND, BTRB COIN 2, BTRB COIN 1, BTRB LAUNCH BALL, BTRB FLIPPER R, BTRB MAGNA R,
+                BRAIN1 CAL BT, BRAIN1 CAL LED, BRAIN1 +3V3, BRAIN1 GND, BRAIN1 DOOR, BRAIN1 ROM EXIT,
+                BRAIN2 ROM-, BRAIN2 ROM+, BRAIN2 ROM ENTER, BRAIN2 NIGHTM, BRAIN2 VOL-, BRAIN2 VOL+,
+                PLUNG GND, PLUNG GND 2, PLUNG +3V3, PLUNG WIPER, PLUNG GND 3, PLUNG L.BALL]
+    notes: DPAD and SPARE 4-6 are left free for later.
+
+  PC:
+    type: Gaming PC (modelled as a box)
+    bgcolor: "#dde8ff"
+    pinlabels: [USB-A (rear), F_PANEL PWR_SW +, F_PANEL PWR_SW -]
+    notes: The PC case's own power button can stay connected in parallel on the same header pins.
+
+  # --- Button boards ----------------------------------------------------------------
+  BB_LEFT:
+    <<: *button_board
+    subtype: "BTLA: inside front-left (flipper buttons + Start / Return / Exit)"
+    pinlabels: [GND, MAGNA L, FLIPPER L, START, RETURN, EXIT]
+
+  BB_FRONT:
+    <<: *button_board
+    subtype: "BTLB: inside front panel, centre-bottom (lockbar + under-cab cluster)"
+    pinlabels: [GND, FIRE, EXTRA BALL, SPARE 1, SPARE 2, SPARE 3]
+
+  BB_TILT:
+    <<: *button_board
+    subtype: "BTRA: next to the tilt bob"
+    pinlabels: [GND, GND 2, SPARE 6 (free), SPARE 5 (free), SPARE 4 (free), TILT]
+
+  BB_RIGHT:
+    <<: *button_board
+    subtype: "BTRB: inside front-right, near right flipper buttons"
+    pinlabels: [GND, COIN 2, COIN 1, LAUNCH BALL, FLIPPER R, MAGNA R]
+
+  # --- GND splices ------------------------------------------------------------------
+  SPL_LEFT:
+    <<: *wago_splice
+  SPL_FRONT_L:
+    <<: *wago_splice_3
+  SPL_FRONT:
+    <<: *wago_splice_3
+  SPL_UNDERCAB:
+    <<: *wago_splice
+  SPL_RIGHT:
+    <<: *wago_splice
+  SPL_COIN:
+    <<: *wago_splice_3
+
+  # --- Switches ---------------------------------------------------------------------
+  SW_MAGNA_L:
+    <<: *microswitch
+    type: Magna Save L button (clear, MX Button board)
+  SW_FLIPPER_L:
+    <<: *microswitch
+    type: Flipper L button (clear, MX Button board)
+  SW_START:
+    <<: *microswitch
+    type: Start button, lit 28 mm arcade button, START legend (4.8 mm tabs)
+  SW_RETURN:
+    <<: *microswitch
+    type: Return button, lit 28 mm arcade button, PAUSE legend (4.8 mm tabs)
+  SW_EXIT:
+    <<: *microswitch
+    type: Exit button, lit 28 mm arcade button, EXIT legend (4.8 mm tabs)
+  SW_FIRE:
+    <<: *microswitch
+    type: Fire button in Tukkari lockbar (MX Button board)
+  SW_MENU:
+    <<: *microswitch
+    type: "Under-cab: Menu / Operator"
+  SW_VOL_DN:
+    <<: *microswitch
+    type: "Under-cab: Volume Down"
+  SW_VOL_UP:
+    <<: *microswitch
+    type: "Under-cab: Volume Up"
+  SW_NIGHT:
+    <<: *microswitch
+    type: "Under-cab: Night Mode"
+  SW_LAUNCH:
+    <<: *microswitch
+    type: Launch Ball button (single LED lamp)
+  SW_FLIPPER_R:
+    <<: *microswitch
+    type: Flipper R button (clear, MX Button board)
+  SW_MAGNA_R:
+    <<: *microswitch
+    type: Magna Save R button (clear, MX Button board)
+  SW_COIN_1:
+    <<: *microswitch
+    type: Coin door leaf switch, coin return button 1
+    subtype: leaf switch, normally open
+  SW_COIN_2:
+    <<: *microswitch
+    type: Coin door leaf switch, coin return button 2
+    subtype: leaf switch, normally open
+  TILT_BOB:
+    type: Tilt bob (plumb bob + ring)
+    bgcolor: "#eeeeee"
+    pinlabels: [RING, BOB / ROD]
+    notes: Mount inside the front of the cabinet. Keep the Dude's Cab virtual tilt too, and tune both.
+  SW_PC_POWER:
+    <<: *microswitch
+    type: "Under-cab: PC power"
+
+  # --- Operator + plunger -------------------------------------------------------------
+  BRAIN:
+    type: Arnoz The BRAIN V1.2
+    subtype: in the coin door (Entropy/Arnoz bracket)
+    manufacturer: L'Atelier d'Arnoz
+    supplier: shop.arnoz.com
+    bgcolor: "#fbe0f2"
+    pinlabels: [J1 CAL BT, J1 CAL LED, J1 +3V3, J1 GND, J1 DOOR, J1 ROM EXIT,
+                J2 ROM-, J2 ROM+, J2 ROM ENTER, J2 NIGHTM, J2 VOL-, J2 VOL+]
+    notes: 8 operator buttons + plunger calibration button with LED.
+
+  POTAR:
+    type: Arnoz POTAR (10 k linear slide pot, 100 mm)
+    subtype: on the Stern shooter assembly
+    manufacturer: L'Atelier d'Arnoz
+    supplier: shop.arnoz.com
+    bgcolor: "#fbe0f2"
+    pinlabels: [GND, GND 2, +3V3, WIPER, GND 3, L.BALL (unused)]
+    notes: Use 5 mm max screws. Calibrate from the BRAIN's CAL button.
+
+cables:
+  W_USB:
+    type: USB-A → USB-C, 1.5 m (Arnoz)
+    wirecount: 1
+    colors: [BK]
+    category: bundle
+    length: 2
+
+  W_BTLA:
+    <<: *jst_ph6_cable
+    length: 0.5
+  W_BTLB:
+    <<: *jst_ph6_cable
+    length: 0.5
+  W_BTRA:
+    <<: *jst_ph6_cable
+    length: 0.8
+  W_BTRB:
+    <<: *jst_ph6_cable
+    length: 0.7
+  W_BRAIN1:
+    <<: *jst_ph6_cable
+    length: 0.5
+    notes: Leave slack so the coin door opens fully.
+  W_BRAIN2:
+    <<: *jst_ph6_cable
+    length: 0.5
+  W_PLUNG:
+    <<: *jst_ph6_cable
+    length: 0.8
+
+  # GND links board → splice
+  G_LEFT:
+    <<: *gnd_link
+    length: 0.3
+  G_FRONT_L:
+    <<: *gnd_link
+    length: 0.3
+  G_FRONT:
+    <<: *gnd_link
+    length: 0.3
+  G_UNDERCAB:
+    <<: *gnd_link
+    length: 0.3
+  G_RIGHT:
+    <<: *gnd_link
+    length: 0.3
+  G_COIN:
+    <<: *gnd_link
+    length: 0.5
+
+  # button leads
+  L_MAGNA_L:
+    <<: *button_lead
+    length: 0.3
+  L_FLIPPER_L:
+    <<: *button_lead
+    length: 0.3
+  L_START:
+    <<: *button_lead
+    length: 0.4
+  L_RETURN:
+    <<: *button_lead
+    length: 0.4
+  L_EXIT:
+    <<: *button_lead
+    length: 0.4
+  L_FIRE:
+    <<: *button_lead
+    length: 0.5
+  L_MENU:
+    <<: *button_lead
+    length: 0.4
+  L_VOL_DN:
+    <<: *button_lead
+    length: 0.5
+  L_VOL_UP:
+    <<: *button_lead
+    length: 0.4
+  L_NIGHT:
+    <<: *button_lead
+    length: 0.5
+  L_LAUNCH:
+    <<: *button_lead
+    length: 0.4
+  L_FLIPPER_R:
+    <<: *button_lead
+    length: 0.3
+  L_MAGNA_R:
+    <<: *button_lead
+    length: 0.3
+  L_COIN_1:
+    <<: *button_lead
+    length: 0.6
+  L_COIN_2:
+    <<: *button_lead
+    length: 0.6
+  L_TILT:
+    <<: *button_lead
+    length: 0.4
+  L_PC_POWER:
+    <<: *button_lead
+    type: 2-core twisted pair (PC power switch)
+    length: 2
+    wirelabels: [PWR_SW +, PWR_SW -]
+
+connections:
+  # --- USB ----------------------------------------------------------------------------
+  - - PC: [USB-A (rear)]
+    - W_USB: [1]
+    - SDC: [USB-C]
+
+  # --- ribbons Dude's Cab → button boards / BRAIN / POTAR ------------------------------
+  - - SDC: [BTLA GND, BTLA MAGNA L, BTLA FLIPPER L, BTLA START, BTLA RETURN, BTLA EXIT]
+    - W_BTLA: [1-6]
+    - BB_LEFT: [1-6]
+  - - SDC: [BTLB GND, BTLB FIRE, BTLB EXTRA BALL, BTLB SPARE 1, BTLB SPARE 2, BTLB SPARE 3]
+    - W_BTLB: [1-6]
+    - BB_FRONT: [1-6]
+  - - SDC: [BTRA GND, BTRA GND 2, BTRA SPARE 6, BTRA SPARE 5, BTRA SPARE 4, BTRA TILT]
+    - W_BTRA: [1-6]
+    - BB_TILT: [1-6]
+  - - SDC: [BTRB GND, BTRB COIN 2, BTRB COIN 1, BTRB LAUNCH BALL, BTRB FLIPPER R, BTRB MAGNA R]
+    - W_BTRB: [1-6]
+    - BB_RIGHT: [1-6]
+  - - SDC: [BRAIN1 CAL BT, BRAIN1 CAL LED, BRAIN1 +3V3, BRAIN1 GND, BRAIN1 DOOR, BRAIN1 ROM EXIT]
+    - W_BRAIN1: [1-6]
+    - BRAIN: [1-6]
+  - - SDC: [BRAIN2 ROM-, BRAIN2 ROM+, BRAIN2 ROM ENTER, BRAIN2 NIGHTM, BRAIN2 VOL-, BRAIN2 VOL+]
+    - W_BRAIN2: [1-6]
+    - BRAIN: [7-12]
+  - - SDC: [PLUNG GND, PLUNG GND 2, PLUNG +3V3, PLUNG WIPER, PLUNG GND 3, PLUNG L.BALL]
+    - W_PLUNG: [1-6]
+    - POTAR: [1-6]
+
+  # --- LEFT cluster ---------------------------------------------------------------------
+  - - BB_LEFT: [GND]
+    - G_LEFT: [1]
+    - SPL_LEFT
+  - - BB_LEFT: [MAGNA L]
+    - L_MAGNA_L: [1]
+    - SW_MAGNA_L: ["NO"]
+  - - SPL_LEFT
+    - L_MAGNA_L: [2]
+    - SW_MAGNA_L: [COM]
+  - - BB_LEFT: [FLIPPER L]
+    - L_FLIPPER_L: [1]
+    - SW_FLIPPER_L: ["NO"]
+  - - SPL_LEFT
+    - L_FLIPPER_L: [2]
+    - SW_FLIPPER_L: [COM]
+  - - BB_LEFT: [START]
+    - L_START: [1]
+    - SW_START: ["NO"]
+  - - SPL_LEFT
+    - L_START: [2]
+    - SW_START: [COM]
+
+  - - SPL_LEFT
+    - G_FRONT_L: [1]
+    - SPL_FRONT_L
+  - - BB_LEFT: [RETURN]
+    - L_RETURN: [1]
+    - SW_RETURN: ["NO"]
+  - - SPL_FRONT_L
+    - L_RETURN: [2]
+    - SW_RETURN: [COM]
+  - - BB_LEFT: [EXIT]
+    - L_EXIT: [1]
+    - SW_EXIT: ["NO"]
+  - - SPL_FRONT_L
+    - L_EXIT: [2]
+    - SW_EXIT: [COM]
+
+  # --- FRONT: lockbar fire + under-cab cluster ------------------------------------------
+  - - BB_FRONT: [GND]
+    - G_FRONT: [1]
+    - SPL_FRONT
+  - - BB_FRONT: [FIRE]
+    - L_FIRE: [1]
+    - SW_FIRE: ["NO"]
+  - - SPL_FRONT
+    - L_FIRE: [2]
+    - SW_FIRE: [COM]
+  - - SPL_FRONT
+    - G_UNDERCAB: [1]
+    - SPL_UNDERCAB
+  - - BB_FRONT: [EXTRA BALL]
+    - L_MENU: [1]
+    - SW_MENU: ["NO"]
+  - - SPL_UNDERCAB
+    - L_MENU: [2]
+    - SW_MENU: [COM]
+  - - BB_FRONT: [SPARE 1]
+    - L_VOL_DN: [1]
+    - SW_VOL_DN: ["NO"]
+  - - SPL_UNDERCAB
+    - L_VOL_DN: [2]
+    - SW_VOL_DN: [COM]
+  - - BB_FRONT: [SPARE 2]
+    - L_VOL_UP: [1]
+    - SW_VOL_UP: ["NO"]
+  - - SPL_UNDERCAB
+    - L_VOL_UP: [2]
+    - SW_VOL_UP: [COM]
+  - - BB_FRONT: [SPARE 3]
+    - L_NIGHT: [1]
+    - SW_NIGHT: ["NO"]
+  - - SPL_UNDERCAB
+    - L_NIGHT: [2]
+    - SW_NIGHT: [COM]
+
+  # --- PC power (separate circuit, to motherboard) ----------------------------------------
+  - - SW_PC_POWER: ["NO", COM]
+    - L_PC_POWER: [1-2]
+    - PC: [F_PANEL PWR_SW +, F_PANEL PWR_SW -]
+
+  # --- TILT ----------------------------------------------------------------------------------
+  - - BB_TILT: [TILT, GND]
+    - L_TILT: [1-2]
+    - TILT_BOB: [BOB / ROD, RING]
+
+  # --- RIGHT cluster + coin door ---------------------------------------------------------------
+  - - BB_RIGHT: [GND]
+    - G_RIGHT: [1]
+    - SPL_RIGHT
+  - - BB_RIGHT: [FLIPPER R]
+    - L_FLIPPER_R: [1]
+    - SW_FLIPPER_R: ["NO"]
+  - - SPL_RIGHT
+    - L_FLIPPER_R: [2]
+    - SW_FLIPPER_R: [COM]
+  - - BB_RIGHT: [MAGNA R]
+    - L_MAGNA_R: [1]
+    - SW_MAGNA_R: ["NO"]
+  - - SPL_RIGHT
+    - L_MAGNA_R: [2]
+    - SW_MAGNA_R: [COM]
+  - - BB_RIGHT: [LAUNCH BALL]
+    - L_LAUNCH: [1]
+    - SW_LAUNCH: ["NO"]
+  - - SPL_RIGHT
+    - L_LAUNCH: [2]
+    - SW_LAUNCH: [COM]
+  - - SPL_RIGHT
+    - G_COIN: [1]
+    - SPL_COIN
+  - - BB_RIGHT: [COIN 1]
+    - L_COIN_1: [1]
+    - SW_COIN_1: ["NO"]
+  - - SPL_COIN
+    - L_COIN_1: [2]
+    - SW_COIN_1: [COM]
+  - - BB_RIGHT: [COIN 2]
+    - L_COIN_2: [1]
+    - SW_COIN_2: ["NO"]
+  - - SPL_COIN
+    - L_COIN_2: [2]
+    - SW_COIN_2: [COM]

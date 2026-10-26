@@ -1,0 +1,127 @@
+metadata:
+  title: 07 - Cooling (temperature-controlled PWM fans)
+  description: >-
+    Three 4-pin PWM 120 mm fans on a SATA-powered PWM fan hub. The motherboard
+    sets their speed from a 10 k NTC thermistor placed in the warmest part of
+    the cabinet (motherboard T_SENSOR header + BIOS fan curve, or the free
+    "Fan Control" app).
+  notes: >-
+    BUILD PHASES: fans, hub and extensions are phase 1. The thermistor is phase
+    2: until it's fitted, drive the fan curve from the CPU temperature.<br/>
+    CABLE LANE 3: the front fan's extension and the thermistor lead run in lane
+    3; the two rear fans are right behind the PC.<br/>
+    WHY THE PC DRIVES THE FANS: the PWM speed wire is referenced to PC ground.
+    Powering the fans from the 12 V toy rail would join PC ground to TOY ground
+    through that wire and defeat the BUNNY boards' opto-isolation. Fans, hub and
+    sensor therefore all stay in the PC / LED-logic ground domain, powered
+    by the PC PSU (3 fans ≈ 0.5 A at 12 V).<br/>
+    MOTHERBOARD REQUIREMENT: pick a board with a 2-pin thermistor header (ASUS
+    "T_SENSOR", Gigabyte "SYS_TEMP"/"TEMP", MSI "T_SEN" on some boards). If it
+    has none, use a USB fan controller with its own thermistor inputs and
+    on-board fan curves (e.g. Aquacomputer QUADRO; check the spec) in place of
+    the hub + header.<br/>
+    FAN CURVE (starting point, source = T_SENSOR): 30 °C or below → 30%;
+    35 °C → 50%; 40 °C → 75%; 45 °C or above → 100%. Add 5-10 s of step-up /
+    step-down smoothing so the fans don't pulse. Only hub port 1 reports RPM
+    to the motherboard, so put a fan there.<br/>
+    SENSOR PLACEMENT: warm air collects at the top rear of the cabinet (the
+    backbox end, under the playfield TV). Zip-tie the probe there in free air,
+    out of direct fan airflow and not touching a PSU or the TV.<br/>
+    AIRFLOW: FAN 1 filtered intake low in the front, under the board shelf;
+    FAN 2 and FAN 3 exhaust high on the rear wall, between the two bells,
+    pulling air over the PC and the PSUs in the rear corners. The fans only run
+    while the PC is on.<br/>
+    CABLE EXIT: mount the hub inside the PC case (SATA from the PSU) and pass
+    the fan extensions out through a grommet, so no PSU cable leaves the case.
+
+connectors:
+  PC:
+    type: Gaming PC (modelled as a box)
+    subtype: internal headers used for cooling
+    bgcolor: "#dde8ff"
+    pinlabels: [SATA power (PSU), CHA_FAN (4-pin PWM header), T_SENSOR (2-pin thermistor header)]
+    notes: "BIOS: set CHA_FAN to PWM mode and the fan-curve source to T_SENSOR."
+
+  FAN_HUB:
+    type: PWM fan hub, SATA powered (e.g. ARCTIC Case Fan Hub)
+    subtype: mounted inside the PC case
+    bgcolor: "#dde8ff"
+    pinlabels: [SATA IN, PWM IN (to motherboard), FAN 1 (reports RPM), FAN 2, FAN 3]
+
+  FAN_1: &pwm_fan
+    type: 120 mm 4-pin PWM fan (e.g. ARCTIC P12 PWM / Noctua NF-P12 redux PWM)
+    subtype: front intake, filtered, under the board shelf
+    bgcolor: "#dde8ff"
+    pinlabels: [GND, +12V, TACH, PWM]
+  FAN_2:
+    <<: *pwm_fan
+    subtype: rear exhaust, high on the rear wall, left
+  FAN_3:
+    <<: *pwm_fan
+    subtype: rear exhaust, high on the rear wall, right
+
+  THERMISTOR:
+    type: 10 k NTC thermistor probe (B 3435), 2-pin
+    subtype: top rear of cabinet interior
+    bgcolor: "#dde8ff"
+    pinlabels: [T1, T2]
+
+cables:
+  SATA_PWR:
+    category: bundle
+    type: SATA power lead (from PC PSU)
+    wirecount: 1
+    colors: [BK]
+    length: 0.3
+  PWM_HEADER:
+    category: bundle
+    type: 4-pin PWM lead (supplied with hub)
+    wirecount: 1
+    colors: [BK]
+    length: 0.3
+
+  X_FAN_1: &fan_ext
+    type: 4-pin PWM fan extension (sleeved)
+    gauge: 0.34 mm2
+    show_equiv: true
+    wirecount: 4
+    colors: [BK, YE, GN, BU]
+    wirelabels: [GND, +12V, TACH, PWM]
+    length: 1.9
+  X_FAN_2:
+    <<: *fan_ext
+    length: 0.7
+  X_FAN_3:
+    <<: *fan_ext
+    length: 0.7
+
+  X_THERM:
+    type: 2-core thermistor extension, twisted
+    gauge: 0.25 mm2
+    show_equiv: true
+    wirecount: 2
+    colors: [WH, WH]
+    length: 1.3
+    notes: A thermistor has no polarity. Keep it away from speaker and LED power wires.
+
+connections:
+  - - PC: [SATA power (PSU)]
+    - SATA_PWR: [1]
+    - FAN_HUB: [SATA IN]
+  - - PC: [CHA_FAN (4-pin PWM header)]
+    - PWM_HEADER: [1]
+    - FAN_HUB: [PWM IN (to motherboard)]
+
+  - - FAN_HUB: [FAN 1 (reports RPM), FAN 1 (reports RPM), FAN 1 (reports RPM), FAN 1 (reports RPM)]
+    - X_FAN_1: [1-4]
+    - FAN_1: [GND, +12V, TACH, PWM]
+  - - FAN_HUB: [FAN 2, FAN 2, FAN 2, FAN 2]
+    - X_FAN_2: [1-4]
+    - FAN_2: [GND, +12V, TACH, PWM]
+  - - FAN_HUB: [FAN 3, FAN 3, FAN 3, FAN 3]
+    - X_FAN_3: [1-4]
+    - FAN_3: [GND, +12V, TACH, PWM]
+
+  - - PC: [T_SENSOR (2-pin thermistor header), T_SENSOR (2-pin thermistor header)]
+    - X_THERM: [1-2]
+    - THERMISTOR: [T1, T2]

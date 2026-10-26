@@ -1,0 +1,435 @@
+metadata:
+  title: 05 - Toy power, BUNNY boards and 12 V toys
+  description: >-
+    The toy side of the cabinet. A 12 V and a 24 V Mean Well each feed their
+    own fuse block, and two Arnoz BUNNY boards (16 PWM outputs each) switch
+    every toy for DOF. BUNNY 1 drives the 24 V real-mech coils (sheet 09).
+    BUNNY 2 drives the 12 V toys on this sheet: the four button lamps, the gear
+    motor, the shaker motor, the alarm bell and the two beacons.
+  notes: >-
+    BUILD PHASE 3 (later): nothing on this sheet is needed to play. The Dude's
+    Cab outputs used here can stay unconnected until then.<br/>
+    CABLE LANE 2b (toy power): the left-wall floor tray, crossing to the right
+    side along the underside of the front bumper-row brace. Twist each toy's
+    pair. Keep toy leads out of the LED data bundle (lane 2a, right wall) and
+    away from speaker cable (lane 3).<br/>
+    TWO GROUND DOMAINS - KEEP THEM APART:<br/>
+    (1) LED/LOGIC GND = Dude's Cab, PC (via USB) and everything powered by the
+    PC (fans, sheet 07), the 5 V LED supply.<br/>
+    (2) TOY GND = the 12 V and 24 V negatives (bonded by BOND_TOY), both BUNNY
+    power grounds and every toy.<br/>
+    Each BUNNY opto-isolates its data side (the Dude's Cab ribbon) from its
+    power side. Never connect TOY GND to LED GND, a Dude's Cab GND terminal or
+    the PC, or that protection is lost.<br/>
+    BUNNY POWER: each board needs +12 V for its own electronics and a TOY GND
+    that carries the return current of all 16 outputs (up to 40 A). Its GND
+    terminal is doubled: land two 2.5 mm2 wires on it. BUNNY 1 returns 24 V coil
+    current, so its GND goes to the 24 V block; BUNNY 2's goes to the 12 V
+    block. BOND_TOY ties the two negative buses so both boards share one TOY
+    GND.<br/>
+    LOW-SIDE SWITCHING: every toy's + comes from a fuse block; its - goes to a
+    BUNNY output. The BUNNY fuse on that output (5x20 mm, slow-blow, ratings
+    on the board labels) protects the toy and the MOSFET; the blade fuse at the
+    block protects the wire.<br/>
+    MOTORS AND BELLS: fit an Arnoz La Nettoyeuse (1000 uF + flywheel diode)
+    right at the gear motor, the shaker motor and the alarm bell, toy on the
+    diode side. It is rated 25 V, so 12 V toys only.<br/>
+    SHAKER STRENGTH: run the shaker motor at full 12 V and lower its strength
+    with the output's Max Value in the Dude's Cab configurator, rather than a
+    buck converter.<br/>
+    CONFIGURATOR: add BUNNY 1 (DIP address 1) and BUNNY 2 (address 2) as
+    extensions. Lamp outputs use the "Leds" preset (PWM, so DOF can blink and
+    fade them).<br/>
+    PERSPEX LIGHTS: the add-on's 3D-printed mounts hold a 12 V COB strip inside
+    the Perspex cover over the boards. The coin door interlock switch powers it
+    only while the door is open (NC contacts close when the door opens). Its
+    second pole can feed The BRAIN's DOOR input (sheet 02).<br/>
+    REMOVABLE BACKBOX: the alarm bell, the knocker (sheet 09) and the two
+    beacons connect through one 6-pin pluggable block on the backbox floor,
+    X_BB_TOYS.
+
+connectors:
+  PSU_12V:
+    <<: [*mean_well_psu, *psu_dc_3x3]
+    type: Mean Well RSP-320-12 (12 V 26.7 A, PFC)
+    subtype: "12 V toys and BUNNY logic. Rear-left wall, low"
+    notes: Adjust V.ADJ to 12.0 V at the fuse block.
+  PSU_24V:
+    <<: [*mean_well_psu, *psu_dc_3x3]
+    type: Mean Well RSP-500-24 (24 V 21 A, PFC)
+    subtype: "24 V real-mech coils. Left wall, low, in front of the 12 V supply"
+    notes: Adjust V.ADJ to 24.0 V at the fuse block.
+
+  FB_12V:
+    <<: *fuse_block_12
+    subtype: "12 V TOY rail, above the 12 V PSU. F1/F2: 2 A BUNNY logic, F3: 2 A lamps, F4: 7.5 A gear motor, F5: 10 A shaker, F6: 7.5 A backbox toys, F7: 2 A Perspex lights, F8-F12 spare"
+    additional_components:
+      - type: ATO blade fuse 2 A (+ 2 spare)
+        qty: 6
+      - type: ATO blade fuse 7.5 A
+        qty: 2
+      - type: ATO blade fuse 10 A
+        qty: 1
+  FB_24V:
+    <<: *fuse_block_6
+    subtype: "24 V COIL rail, above the 24 V PSU. Circuits on sheet 09"
+
+  SDC:
+    <<: *super_dudes_cab
+    subtype: toy expansion port
+    pinlabels: [BUNNY (JST-PH 6)]
+
+  BUNNY_1: &bunny
+    type: Arnoz BUNNY
+    subtype: "16 PWM outputs, 8 A each, 40 A total, opto-isolated. DIP address 1: 24 V coils (sheet 09)"
+    manufacturer: L'Atelier d'Arnoz
+    supplier: shop.arnoz.com
+    bgcolor: "#fbe0f2"
+    pinlabels: [DATA IN (JST 6), DATA OUT (JST 6), +12V, GND, GND 2]
+    notes: On the real-mech board shelf, left of the Dude's Cab.
+  BUNNY_2:
+    <<: *bunny
+    subtype: "16 PWM outputs. DIP address 2: 12 V toys and lamps"
+    pinlabels: [DATA IN (JST 6), DATA OUT (JST 6), +12V, GND, GND 2,
+                OUT 1 - Start lamp (1 A), OUT 2 - Launch Ball lamp (1 A),
+                OUT 3 - Return lamp (1 A), OUT 4 - Exit lamp (1 A),
+                OUT 5 - Gear motor (5 A SB), OUT 6 - Shaker motor (5 A SB),
+                OUT 7 - Alarm bell (2 A SB), OUT 8 - Beacon L (2 A SB),
+                OUT 9 - Beacon R (2 A SB), OUT 10-16 spare]
+    notes: On the real-mech board shelf, right of the Dude's Cab.
+
+  LAMP_START: &lamp
+    type: Start button lamp, 12 V LED built into the arcade button
+    bgcolor: "#eeeeee"
+    pinlabels: [+, "-"]
+  LAMP_LAUNCH:
+    <<: *lamp
+    type: Launch Ball button lamp, 12 V W5W LED
+  LAMP_RETURN:
+    <<: *lamp
+    type: Return button lamp, 12 V LED built into the arcade button
+  LAMP_EXIT:
+    <<: *lamp
+    type: Exit button lamp, 12 V LED built into the arcade button
+
+  GEAR_MOTOR: &toy12
+    type: 12 V gear motor (car window-lifter motor) on a 3D-printed mount
+    subtype: cabinet floor, middle-left
+    bgcolor: "#eeeeee"
+    pinlabels: [+, "-"]
+  SHAKER_MOTOR:
+    <<: *toy12
+    type: Stern-style 12 V shaker motor
+    subtype: cabinet floor, middle-right
+  ALARM_BELL:
+    <<: *toy12
+    type: 12 V alarm bell, 4 in
+    subtype: backbox
+  BEACON_L:
+    <<: *toy12
+    type: 12 V LED beacon - left
+    subtype: on top of the backbox
+  BEACON_R:
+    <<: *toy12
+    type: 12 V LED beacon - right
+    subtype: on top of the backbox
+
+  NETT_GEAR: &nett
+    type: Arnoz La Nettoyeuse (1000 uF + flywheel diode, 25 V max)
+    subtype: at the gear motor
+    manufacturer: L'Atelier d'Arnoz
+    bgcolor: "#fbe0f2"
+    pinlabels: [IN +, IN -, TOY +, TOY -]
+  NETT_SHAKER:
+    <<: *nett
+    subtype: at the shaker motor
+  NETT_BELL:
+    <<: *nett
+    subtype: at the alarm bell
+
+  INTERLOCK:
+    type: Coin door interlock switch, DPDT (E79-30A)
+    subtype: "pressed = door shut. Pole 1 used here; pole 2 → The BRAIN DOOR (optional)"
+    bgcolor: "#eeeeee"
+    pinlabels: [COM 1, NC 1, NO 1, COM 2, NC 2, NO 2]
+  PERSPEX_LIGHTS:
+    type: 12 V COB LED strip, cool white, cut to fit the two Perspex mounts
+    subtype: under the real-mech Perspex cover (left + right)
+    bgcolor: "#eeeeee"
+    pinlabels: [+, "-"]
+
+  X_BB_TOYS:
+    type: Pluggable screw terminal block, 6-pin, 5.08 mm (plug + socket)
+    subtype: "BACKBOX DISCONNECT - toys. Socket half on the cabinet side"
+    bgcolor: "#fff1c2"
+    pinlabels: [+24V, KNOCKER -, +12V, ALARM BELL -, BEACON L -, BEACON R -]
+    notes: The knocker's two pins are wired on sheet 09.
+
+  SPL_LAMP_12V:
+    <<: *wago_splice
+    type: WAGO 221-415 (+12 V lamps)
+  SPL_BB_12V:
+    <<: *wago_splice_3
+    type: WAGO 221-413 (+12 V backbox toys, in the backbox)
+
+cables:
+  FEED_12V:
+    <<: *psu_feed_2_5mm2
+  FEED_24V:
+    <<: *psu_feed_2_5mm2
+  BOND_TOY:
+    <<: *gnd_bond_2_5mm2
+    type: TOY GND bond, 12 V negative bus ↔ 24 V negative bus
+    length: 0.5
+
+  R_BUNNY_1:
+    category: bundle
+    type: JST-PH 6-pin ribbon (Arnoz, 0.5 m)
+    wirecount: 1
+    colors: [GY]
+    length: 0.5
+  R_BUNNY_2:
+    category: bundle
+    type: JST-PH 6-pin ribbon (Arnoz, 0.5 m)
+    wirecount: 1
+    colors: [GY]
+    length: 0.5
+
+  PW_LOGIC_1: &logic
+    <<: *gnd_link
+    type: +12 V BUNNY logic supply
+    gauge: 0.5 mm2
+    colors: [YE]
+    length: 1.6
+  PW_LOGIC_2:
+    <<: *logic
+    length: 1.9
+  G_BUNNY_1:
+    <<: *pwr_pair_2_5
+    type: BUNNY 1 TOY GND, 2 x 2.5 mm2 in parallel (24 V coil return)
+    colors: [BK, BK]
+    wirelabels: [GND, GND 2]
+    length: 1.7
+  G_BUNNY_2:
+    <<: *pwr_pair_2_5
+    type: BUNNY 2 TOY GND, 2 x 2.5 mm2 in parallel (12 V toy return)
+    colors: [BK, BK]
+    wirelabels: [GND, GND 2]
+    length: 1.9
+
+  PW_LAMPS:
+    <<: *gnd_link
+    type: 12 V lamp supply
+    gauge: 0.5 mm2
+    colors: [YE]
+    length: 1.7
+  L_START_LAMP: &lamp_lead
+    type: 2-core lamp lead
+    gauge: 0.34 mm2
+    show_equiv: true
+    wirecount: 2
+    colors: [YE, WH]
+    wirelabels: [+12V, switched -]
+    length: 0.6
+  L_LAUNCH_LAMP:
+    <<: *lamp_lead
+    length: 0.6
+  L_RETURN_LAMP:
+    <<: *lamp_lead
+    length: 0.6
+  L_EXIT_LAMP:
+    <<: *lamp_lead
+    length: 0.6
+
+  T_GEAR: &toy_return
+    <<: *gnd_link
+    type: Toy return (switched -), BUNNY output → toy
+    gauge: 1 mm2
+    colors: [WH]
+    length: 1.4
+  PW_GEAR: &toy_feed
+    <<: *gnd_link
+    type: +12 V toy feed
+    gauge: 1 mm2
+    colors: [YE]
+    length: 1
+  T_SHAKER:
+    <<: *toy_return
+    gauge: 1.5 mm2
+    length: 1
+  PW_SHAKER:
+    <<: *toy_feed
+    gauge: 1.5 mm2
+    length: 1.3
+  PW_BB_TOYS:
+    <<: *toy_feed
+    type: +12 V backbox toy feed (alarm bell + beacons)
+    length: 1.3
+  T_BB_TOYS:
+    type: Backbox toy returns (alarm bell, beacon L, beacon R), from BUNNY 2
+    gauge: 1 mm2
+    show_equiv: true
+    wirecount: 3
+    colors: [WH, BU, GN]
+    wirelabels: [ALARM BELL -, BEACON L -, BEACON R -]
+    length: 2.9
+  T_BELL_BOX: &bb_lead
+    type: 2-core toy lead, twisted (backbox side)
+    gauge: 1 mm2
+    show_equiv: true
+    wirecount: 2
+    colors: [YE, WH]
+    wirelabels: [+12V, switched -]
+    length: 0.5
+  T_BEACON_L_BOX:
+    <<: *bb_lead
+    length: 0.6
+  T_BEACON_R_BOX:
+    <<: *bb_lead
+    length: 0.6
+  PW_BB_TOYS_BOX:
+    <<: *toy_feed
+    gauge: 1 mm2
+    type: +12 V backbox toy feed, backbox side
+    length: 0.2
+
+  PW_PERSPEX:
+    <<: *toy_feed
+    gauge: 0.5 mm2
+    type: +12 V Perspex lights (via the interlock)
+    length: 1.7
+  L_PERSPEX:
+    <<: *gnd_link
+    gauge: 0.5 mm2
+    type: +12 V interlock → Perspex strips (left, then across to the right)
+    colors: [YE]
+    length: 1.3
+  G_PERSPEX:
+    <<: *gnd_link
+    gauge: 0.5 mm2
+    type: Perspex lights GND return to the 12 V block
+    length: 1.6
+
+connections:
+  # --- PSUs → fuse blocks, and the TOY GND bond -------------------------------------------------
+  - - PSU_12V: [+V 1, +V 2, +V 3, -V 1, -V 2, -V 3]
+    - FEED_12V: [1-6]
+    - FB_12V: [BAT+, BAT+, BAT+, NEG IN, NEG IN, NEG IN]
+  - - PSU_24V: [+V 1, +V 2, +V 3, -V 1, -V 2, -V 3]
+    - FEED_24V: [1-6]
+    - FB_24V: [BAT+, BAT+, BAT+, NEG IN, NEG IN, NEG IN]
+  - - FB_12V: [NEG12]
+    - BOND_TOY: [1]
+    - FB_24V: [NEG6]
+
+  # --- BUNNY boards ----------------------------------------------------------------------------
+  - - SDC: [BUNNY (JST-PH 6)]
+    - R_BUNNY_1: [1]
+    - BUNNY_1: [DATA IN (JST 6)]
+  - - BUNNY_1: [DATA OUT (JST 6)]
+    - R_BUNNY_2: [1]
+    - BUNNY_2: [DATA IN (JST 6)]
+  - - FB_12V: [F1]
+    - PW_LOGIC_1: [1]
+    - BUNNY_1: [+12V]
+  - - FB_12V: [F2]
+    - PW_LOGIC_2: [1]
+    - BUNNY_2: [+12V]
+  - - FB_24V: [NEG1, NEG2]
+    - G_BUNNY_1: [1-2]
+    - BUNNY_1: [GND, GND 2]
+  - - FB_12V: [NEG1, NEG2]
+    - G_BUNNY_2: [1-2]
+    - BUNNY_2: [GND, GND 2]
+
+  # --- Button lamps: common +12 V, each lamp switched on its own output ----------------------
+  - - FB_12V: [F3]
+    - PW_LAMPS: [1]
+    - SPL_LAMP_12V
+  - - SPL_LAMP_12V
+    - L_START_LAMP: [1]
+    - LAMP_START: [+]
+  - - BUNNY_2: [OUT 1 - Start lamp (1 A)]
+    - L_START_LAMP: [2]
+    - LAMP_START: ["-"]
+  - - SPL_LAMP_12V
+    - L_LAUNCH_LAMP: [1]
+    - LAMP_LAUNCH: [+]
+  - - BUNNY_2: [OUT 2 - Launch Ball lamp (1 A)]
+    - L_LAUNCH_LAMP: [2]
+    - LAMP_LAUNCH: ["-"]
+  - - SPL_LAMP_12V
+    - L_RETURN_LAMP: [1]
+    - LAMP_RETURN: [+]
+  - - BUNNY_2: [OUT 3 - Return lamp (1 A)]
+    - L_RETURN_LAMP: [2]
+    - LAMP_RETURN: ["-"]
+  - - SPL_LAMP_12V
+    - L_EXIT_LAMP: [1]
+    - LAMP_EXIT: [+]
+  - - BUNNY_2: [OUT 4 - Exit lamp (1 A)]
+    - L_EXIT_LAMP: [2]
+    - LAMP_EXIT: ["-"]
+
+  # --- Gear motor and shaker motor, each through a La Nettoyeuse ------------------------------
+  - - FB_12V: [F4]
+    - PW_GEAR: [1]
+    - NETT_GEAR: [IN +]
+  - - BUNNY_2: [OUT 5 - Gear motor (5 A SB)]
+    - T_GEAR: [1]
+    - NETT_GEAR: [IN -]
+  - - NETT_GEAR: [TOY +, TOY -]
+    - ==>
+    - GEAR_MOTOR: [+, "-"]
+  - - FB_12V: [F5]
+    - PW_SHAKER: [1]
+    - NETT_SHAKER: [IN +]
+  - - BUNNY_2: [OUT 6 - Shaker motor (5 A SB)]
+    - T_SHAKER: [1]
+    - NETT_SHAKER: [IN -]
+  - - NETT_SHAKER: [TOY +, TOY -]
+    - ==>
+    - SHAKER_MOTOR: [+, "-"]
+
+  # --- Backbox toys, through the backbox disconnect --------------------------------------------
+  - - FB_12V: [F6]
+    - PW_BB_TOYS: [1]
+    - X_BB_TOYS: [+12V]
+  - - BUNNY_2: [OUT 7 - Alarm bell (2 A SB), OUT 8 - Beacon L (2 A SB), OUT 9 - Beacon R (2 A SB)]
+    - T_BB_TOYS: [1-3]
+    - X_BB_TOYS: [ALARM BELL -, BEACON L -, BEACON R -]
+  - - X_BB_TOYS: [+12V]
+    - PW_BB_TOYS_BOX: [1]
+    - SPL_BB_12V
+  - - SPL_BB_12V
+    - T_BELL_BOX: [1]
+    - NETT_BELL: [IN +]
+  - - X_BB_TOYS: [ALARM BELL -]
+    - T_BELL_BOX: [2]
+    - NETT_BELL: [IN -]
+  - - NETT_BELL: [TOY +, TOY -]
+    - ==>
+    - ALARM_BELL: [+, "-"]
+  - - SPL_BB_12V
+    - T_BEACON_L_BOX: [1]
+    - BEACON_L: [+]
+  - - X_BB_TOYS: [BEACON L -]
+    - T_BEACON_L_BOX: [2]
+    - BEACON_L: ["-"]
+  - - SPL_BB_12V
+    - T_BEACON_R_BOX: [1]
+    - BEACON_R: [+]
+  - - X_BB_TOYS: [BEACON R -]
+    - T_BEACON_R_BOX: [2]
+    - BEACON_R: ["-"]
+
+  # --- Perspex lights, only while the coin door is open --------------------------------------
+  - - FB_12V: [F7]
+    - PW_PERSPEX: [1]
+    - INTERLOCK: [COM 1]
+  - - INTERLOCK: [NC 1]
+    - L_PERSPEX: [1]
+    - PERSPEX_LIGHTS: [+]
+  - - FB_12V: [NEG7]
+    - G_PERSPEX: [1]
+    - PERSPEX_LIGHTS: ["-"]

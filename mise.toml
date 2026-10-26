@@ -1,0 +1,31 @@
+[settings]
+# The conda backend (used for Graphviz) is still flagged experimental in mise.
+experimental = true
+
+[tools]
+python = "3.12"
+uv = "0.11"
+# Conda packages normally run `dot -c` in a post-link script to register the
+# Graphviz layout plugins; mise does not, so do it ourselves.
+"conda:graphviz" = { version = "14.1.2", postinstall = "dot -c" }
+"pipx:wireviz" = "0.4.1"
+
+[tasks.build]
+description = "Render every harness in harness/ to build/ (HTML, PNG, SVG, BOM) plus the wiring BOM page"
+sources = ["harness/*.yml", "scripts/*.py", "bom/*.toml"]
+outputs = ["build/index.html"]
+run = [
+  "mkdir -p build",
+  "for f in harness/[0-9]*.yml; do wireviz --prepend harness/_common.yml --format hpst --output-dir build \"$f\" || exit 1; done",
+  "python scripts/build_index.py",
+  "python scripts/build_bom.py",
+]
+
+[tasks.clean]
+description = "Delete generated files"
+run = "rm -rf build"
+
+[tasks.open]
+description = "Open the rendered wiring plan in the browser"
+depends = ["build"]
+run = "open build/index.html"

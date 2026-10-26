@@ -1,0 +1,285 @@
+metadata:
+  title: 03 - Playfield LEDs (HD backboard matrix, MX Flash, side strips)
+  description: >-
+    One 5 V 60 A supply feeds every addressable LED through one 12-way fuse
+    block. This sheet uses F1-F6 (one 10 A fuse per Arnoz BackBoard HD 16x16
+    panel) and F7/F8 (a left and a right "zone": MX Flash + side strip, fed
+    from the back end); sheet 04 uses F9-F12. Data comes from Super Dude's Cab
+    MX OUT 1-5.
+  notes: >-
+    BUILD PHASE 3 (later): nothing on this sheet is needed to play. The Dude's
+    Cab outputs used here can stay unconnected until then.<br/>
+    CABLE LANE 2 (5 V + LED data): the right-wall floor tray, up the rear-right
+    corner to the backboard, and across to the left side along the underside of
+    the rear bumper-row brace.<br/>
+    LED GROUND: the fuse block's negative bus is the LED ground. Exactly ONE
+    wire goes from it to the Dude's Cab "GND (LED PSU)" terminal. Do NOT run
+    extra GND wires from LED strips back to the Dude's Cab, so LED current can
+    never flow through the board.<br/>
+    NEVER power LEDs from the Dude's Cab or USB. The 330 ohm series resistor in
+    each data line protects the MX output if the LEDs are unpowered while the PC
+    is on.<br/>
+    PSU SET-UP: before connecting LEDs, adjust V.ADJ so the fuse block reads
+    5.10-5.20 V.<br/>
+    PLACEMENT: the PSU and the fuse block sit LOW on the rear-right wall, below
+    the rear bumper-row brace (the brace and the swinging HD-matrix mount take
+    the space higher up). Panel feeds climb the rear-right corner to the
+    backboard.<br/>
+    LONG DATA RUNS: MX OUT 1-5 run from the Dude's Cab on the real-mech board
+    shelf to the backboard. Bundle them with GND_REF as far as the fuse block,
+    then with their panel or zone power pairs, so each data signal has its
+    return close by. If a strip flickers, shorten or shield that data run
+    first.<br/>
+    STUD STACKING: the PSU feed puts three ring lugs on BAT+ and three on NEG IN;
+    GND_REF is the fourth (smallest) lug on NEG IN. Blue Sea's limit is four
+    connections per stud, so nothing else goes on either stud.<br/>
+    BRIGHTNESS (one 60 A supply for ALL addressable LEDs): the matrix alone
+    could draw 55 A at full white. Cap brightness in the Dude's Cab configurator
+    (matrix ~40 %, strips ~70 % to start) so everything lit at once stays under
+    ~50 A. If the PSU hiccups (all LEDs blink off together) or a fuse blows, the
+    caps are too high.<br/>
+    SIDE STRIPS: cut on an LED boundary to fit the side rail, and fed from the BACK
+    END only. That's usually fine at the brightness DOF
+    effects run at; if the front end looks dimmer or warmer on bright white, add a
+    feed to the spare front pads. Full white on a 1.3 m strip is ~11.2 A, so the
+    zone fuses are 10 A: cap brightness at ~80 % or below.<br/>
+    CONFIGURATOR: one LED strip 96 x 16 with 3 splits of 512 LEDs on MX OUT 1-3.
+    MX OUT 4 = MX Flash L (16) + side strip L (~187); MX OUT 5 = MX Flash R + side
+    strip R. Enter the real LED count after cutting.<br/>
+    FIRST POWER-UP: fuses out → check polarity at every load with a multimeter →
+    fit fuses one at a time with the Dude's Cab LED test pattern running.
+
+connectors:
+  PSU_5V:
+    <<: [*mean_well_psu, *psu_dc_3x3]
+    type: Mean Well RSP-320-5 (5 V 60 A, PFC)
+    subtype: "all addressable LEDs. Rear-right wall, low"
+
+  FB_5V:
+    <<: *fuse_block_12
+    subtype: "5 V ALED, beside the PSU. F1-F6: 10 A panels, F7/F8: 10 A zones, F9-F12: sheet 04"
+    additional_components:
+      - type: ATO blade fuse 10 A (panels + zones)
+        qty: 8
+
+  SDC:
+    <<: *super_dudes_cab
+    subtype: addressable LED outputs (playfield)
+    pinlabels: [MX OUT 1, MX OUT 2, MX OUT 3, MX OUT 4, MX OUT 5, GND (LED PSU)]
+
+  # --- HD backboard: left → right as seen by the player ---------------------------
+  P1: &hd_panel
+    <<: *mx_device
+    type: Arnoz BackBoard HD 16x16 Hard Panel
+    subtype: 256x WS2812B, 9.25 A max
+    pinlabels: [+5V, GND, DIN, DOUT]
+  P2: *hd_panel
+  P3: *hd_panel
+  P4: *hd_panel
+  P5: *hd_panel
+  P6: *hd_panel
+
+  # --- Zones -------------------------------------------------------------------------
+  FLASH_L: &mx_flash
+    <<: *mx_device
+    type: Arnoz MX FLASH (+ plug)
+    subtype: 16x WS2812B, 0.2 A max
+    pinlabels: [+5V, GND, DIN, DOUT]
+  FLASH_R: *mx_flash
+
+  SIDE_L: &side_strip
+    <<: *mx_device
+    type: WS2812B strip 144 LED/m, ~1.3 m (~187 LEDs, cut to fit)
+    manufacturer: null
+    supplier: null
+    subtype: in aluminium profile with diffuser, 11.2 A max
+    pinlabels: [+5V back, GND back, DIN back, +5V front (spare), GND front (spare), DOUT front (end)]
+  SIDE_R: *side_strip
+
+  SPL_L_5V:
+    <<: *splice_5v
+  SPL_L_GND:
+    <<: *splice_gnd
+  SPL_R_5V:
+    <<: *splice_5v
+  SPL_R_GND:
+    <<: *splice_gnd
+
+cables:
+  FEED_5V:
+    <<: *psu_feed_2_5mm2
+  GND_REF:
+    <<: *gnd_link
+    gauge: 0.5 mm2
+    type: LED ground reference (the only GND wire to the Dude's Cab LED side)
+    length: 2.2
+
+  PW_P1:
+    <<: *pwr_pair_2_5
+    length: 1.3
+  PW_P2:
+    <<: *pwr_pair_2_5
+    length: 1.2
+  PW_P3:
+    <<: *pwr_pair_2_5
+    length: 1.2
+  PW_P4:
+    <<: *pwr_pair_2_5
+    length: 1.1
+  PW_P5:
+    <<: *pwr_pair_2_5
+    length: 1
+  PW_P6:
+    <<: *pwr_pair_2_5
+    length: 0.9
+
+  D_MX1:
+    <<: *led_data
+    length: 3.1
+  D_MX2:
+    <<: *led_data
+    length: 2.9
+  D_MX3:
+    <<: *led_data
+    length: 2.8
+  D_MX4:
+    <<: *led_data
+    length: 3.2
+  D_MX5:
+    <<: *led_data
+    length: 2.6
+  J_P1_P2:
+    <<: *led_chain
+    length: 0.2
+  J_P3_P4:
+    <<: *led_chain
+    length: 0.2
+  J_P5_P6:
+    <<: *led_chain
+    length: 0.2
+  J_FLASH_L:
+    <<: *led_chain
+    length: 0.3
+  J_FLASH_R:
+    <<: *led_chain
+    length: 0.3
+
+  PW_ZONE_L:
+    <<: *pwr_pair_1_5
+    length: 1.6
+  PW_ZONE_R:
+    <<: *pwr_pair_1_5
+    length: 0.7
+  PW_FLASH_L:
+    <<: *pwr_pair_0_5
+    length: 0.3
+  PW_FLASH_R:
+    <<: *pwr_pair_0_5
+    length: 0.3
+  PW_SIDE_L_BACK:
+    <<: *pwr_pair_1_0
+    length: 0.2
+  PW_SIDE_R_BACK:
+    <<: *pwr_pair_1_0
+    length: 0.2
+
+connections:
+  # --- PSU → fuse blocks ----------------------------------------------------------------
+  - - PSU_5V: [+V 1, +V 2, +V 3, -V 1, -V 2, -V 3]
+    - FEED_5V: [1-6]
+    - FB_5V: [BAT+, BAT+, BAT+, NEG IN, NEG IN, NEG IN]
+  - - FB_5V: [NEG IN]
+    - GND_REF: [1]
+    - SDC: [GND (LED PSU)]
+
+  # --- matrix power --------------------------------------------------------------------------
+  - - FB_5V: [F1, NEG1]
+    - PW_P1: [1-2]
+    - P1: [+5V, GND]
+  - - FB_5V: [F2, NEG2]
+    - PW_P2: [1-2]
+    - P2: [+5V, GND]
+  - - FB_5V: [F3, NEG3]
+    - PW_P3: [1-2]
+    - P3: [+5V, GND]
+  - - FB_5V: [F4, NEG4]
+    - PW_P4: [1-2]
+    - P4: [+5V, GND]
+  - - FB_5V: [F5, NEG5]
+    - PW_P5: [1-2]
+    - P5: [+5V, GND]
+  - - FB_5V: [F6, NEG6]
+    - PW_P6: [1-2]
+    - P6: [+5V, GND]
+
+  # --- matrix data (2 panels = 512 LEDs per MX output) --------------------------------------------
+  - - SDC: [MX OUT 1]
+    - D_MX1: [1]
+    - P1: [DIN]
+  - - P1: [DOUT]
+    - J_P1_P2: [1]
+    - P2: [DIN]
+  - - SDC: [MX OUT 2]
+    - D_MX2: [1]
+    - P3: [DIN]
+  - - P3: [DOUT]
+    - J_P3_P4: [1]
+    - P4: [DIN]
+  - - SDC: [MX OUT 3]
+    - D_MX3: [1]
+    - P5: [DIN]
+  - - P5: [DOUT]
+    - J_P5_P6: [1]
+    - P6: [DIN]
+
+  # --- LEFT zone -----------------------------------------------------------------------------------
+  - - FB_5V: [F7]
+    - PW_ZONE_L: [1]
+    - SPL_L_5V
+  - - FB_5V: [NEG7]
+    - PW_ZONE_L: [2]
+    - SPL_L_GND
+  - - SPL_L_5V
+    - PW_FLASH_L: [1]
+    - FLASH_L: [+5V]
+  - - SPL_L_GND
+    - PW_FLASH_L: [2]
+    - FLASH_L: [GND]
+  - - SPL_L_5V
+    - PW_SIDE_L_BACK: [1]
+    - SIDE_L: [+5V back]
+  - - SPL_L_GND
+    - PW_SIDE_L_BACK: [2]
+    - SIDE_L: [GND back]
+  - - SDC: [MX OUT 4]
+    - D_MX4: [1]
+    - FLASH_L: [DIN]
+  - - FLASH_L: [DOUT]
+    - J_FLASH_L: [1]
+    - SIDE_L: [DIN back]
+
+  # --- RIGHT zone ----------------------------------------------------------------------------------
+  - - FB_5V: [F8]
+    - PW_ZONE_R: [1]
+    - SPL_R_5V
+  - - FB_5V: [NEG8]
+    - PW_ZONE_R: [2]
+    - SPL_R_GND
+  - - SPL_R_5V
+    - PW_FLASH_R: [1]
+    - FLASH_R: [+5V]
+  - - SPL_R_GND
+    - PW_FLASH_R: [2]
+    - FLASH_R: [GND]
+  - - SPL_R_5V
+    - PW_SIDE_R_BACK: [1]
+    - SIDE_R: [+5V back]
+  - - SPL_R_GND
+    - PW_SIDE_R_BACK: [2]
+    - SIDE_R: [GND back]
+  - - SDC: [MX OUT 5]
+    - D_MX5: [1]
+    - FLASH_R: [DIN]
+  - - FLASH_R: [DOUT]
+    - J_FLASH_R: [1]
+    - SIDE_R: [DIN back]

@@ -1,0 +1,1888 @@
+# Build bill of materials — source data for build/bom.html (`mise run build`).
+#
+# Scope: the whole cabinet build except the PC, tools, and the parts you already
+# own (HDMI + DisplayPort cables, USB-A → USB-C cable).
+#
+# Price fields (pick one per item):
+#   price       shop price incl. the vendor's `vat`; converted to Danish 25 % moms
+#   price_asis  EUR used exactly as written (e.g. a quote)
+#   price_dkk   DKK used exactly as written
+#   (none)      not priced yet — a 3D print, or a part still to choose
+# Flags: estimate = true (rough figure), print3d = true (you print it yourself).
+# ordered = "YYYY-MM-DD": already ordered; give the price you paid as price_asis
+#   (EUR) or price_dkk. The BOM page shows the row ticked as bought.
+# Priority (every item): 1 = must have to play and power up safely,
+#   2 = should have for the full experience, 3 = later (lighting, lamps, toys).
+#   A part that serves several phases takes the earliest one; priority_note
+#   explains the split when it matters.
+#
+# Prices checked 2026-09-15..17. This file is the source of truth for the build.
+
+checked = "2026-09-17"
+dk_vat = 0.25
+eur_dkk = 7.48   # EUR → DKK rate for the kroner columns
+
+# ---------------------------------------------------------------------------
+# Vendors (page order)
+# ---------------------------------------------------------------------------
+
+[[vendors]]
+id = "tukkari"
+name = "Tukkari"
+country = "Czech Republic"
+site = "https://www.tukkari.eu/"
+shipping = "Crated; as quoted."
+why = "The cabinet, fully assembled, with siderails and the lockdown bar with action button. Price as quoted."
+
+[[vendors]]
+id = "arnoz"
+name = "L'Atelier d'Arnoz"
+country = "France"
+site = "https://shop.arnoz.com/en/"
+vat = 0.20
+shipping = "Tracked Colissimo/Delivengo; cost shown at checkout."
+why = "The Dude's Cab system: controller, button boards, BRAIN, two BUNNY toy boards, La Nettoyeuse filters, addressable-LED devices, flipper leaf switches and the JST cables, all in one order."
+
+[[vendors]]
+id = "pu"
+name = "PU-Parts (Pinball Universe)"
+country = "Germany"
+site = "https://pu-parts.com/"
+vat = 0.19
+shipping = "Ships across Europe; Denmark isn't listed explicitly, so confirm at checkout or with mail@pu-parts.com."
+why = "Genuine pinball hardware: legs, coin door, shooter, glass, buttons, tilt and switches."
+
+[[vendors]]
+id = "pinballshop"
+name = "PinballShop.nl"
+country = "Netherlands"
+site = "https://www.pinballshop.nl/"
+vat = 0.21
+shipping = "Ships worldwide (GLS, DPD, DHL, UPS). Long parts cost 12.50 extra by UPS."
+why = "The playfield glass side channels, out of stock at PU-Parts. Tukkari names this shop as an alternative."
+
+[[vendors]]
+id = "arcadexpress"
+name = "Arcade Express"
+country = "Spain"
+site = "https://www.arcadexpress.com/en/"
+vat = 0.21
+shipping = "Worldwide shipping from Spain; cost shown at checkout. Small, light order."
+why = "Lit 28 mm arcade buttons for Return and Exit: the only ones sold with legends other than Start. They need a 28-30 mm hole, a couple of millimetres larger than the cabinet's pre-drilled start-button holes."
+
+[[vendors]]
+id = "reichelt"
+name = "Reichelt Elektronik"
+country = "Germany"
+site = "https://www.reichelt.com/dk/en/"
+vat = 0.19
+shipping = "DPD to Denmark: €9.95 up to 10 kg, €14.95 up to 20 kg."
+why = "All the power, mains and wiring parts, plus the fans, fan hub and 12 V button lamps, at distributor prices in one parcel. Links go to the Danish store (prices incl. 25 % moms)."
+
+[[vendors]]
+id = "marina"
+name = "Marina-Shop"
+country = "Germany"
+site = "https://www.marina-shop.de/"
+vat = 0.19
+shipping = "Ships to Denmark; cost shown at checkout."
+why = "Genuine Blue Sea Systems fuse blocks, both sizes in stock at one shop."
+
+[[vendors]]
+id = "alphacool"
+name = "Alphacool"
+country = "Germany"
+site = "https://shop.alphacool.com/en/"
+vat = 0.19
+shipping = "Cost shown at checkout."
+why = "The 10 k thermistor for the fan curve. It's a €3 part, so skip this shop if your motherboard ships with a thermistor cable."
+
+[[vendors]]
+id = "arcadeshoppen"
+name = "Arcadeshoppen"
+country = "Denmark"
+site = "https://www.arcadeshoppen.dk/"
+shipping = "Danish shop; prices in DKK incl. moms."
+why = "T-molding for the cabinet edges."
+
+[[vendors]]
+id = "amazon"
+name = "Amazon.de"
+country = "Germany"
+site = "https://www.amazon.de/"
+shipping = "Varies by seller."
+why = "Your Amazon orders (DMD, backbox speakers, power strip, tools) at the prices you paid, plus the cable trays, DMD adapters and the addressable-LED strips, rings and profiles still to pick."
+
+[[vendors]]
+id = "flyland"
+name = "Flyland Designs"
+country = "USA"
+site = "https://www.flylanddesigns.com/"
+shipping = "$85 from the US. Like the SSF kit it pays duty, 25 % Danish VAT and a clearance fee on arrival; the price here is a landed estimate."
+why = "Your cabinet decals: the Williams Pinball Mashup wrap, printed in a custom size for the Tukkari cabinet."
+
+[[vendors]]
+id = "pinballcenter"
+name = "pinball.center"
+country = "Germany"
+site = "https://www.pinball.center/en/"
+vat = 0.19
+shipping = "Ships worldwide; cost shown at checkout."
+why = "Complete flipper and pop-bumper assemblies for the real mechs, plus the coin door interlock switch. Prices from Filippo's real-mech parts list; check the shop before ordering."
+
+[[vendors]]
+id = "smallcab"
+name = "Smallcab"
+country = "France"
+site = "https://www.smallcab.net/"
+vat = 0.20
+shipping = "Ships across the EU; cost shown at checkout."
+why = "The Data East knocker with strike plate and a Stern-style shaker motor, as in Filippo's list."
+
+[[vendors]]
+id = "chimes"
+name = "Chime and bell maker (Pinside shops, Netherlands)"
+country = "Netherlands"
+site = "https://pinside.com/pinball/shops"
+shipping = "Ask the seller."
+why = "Ready-built, tuned chime unit and shell bells - the seller James and Filippo bought from. Prices from Filippo's list."
+
+[[vendors]]
+id = "csd"
+name = "Cleveland Software Design"
+country = "USA"
+site = "https://www.clevelandsoftwaredesign.com/"
+shipping = "$85 from the US. Above €150 the parcel pays EU duty as well as 25 % Danish VAT, plus the carrier's clearance fee; the price here is a landed estimate."
+why = "The High Power SSF kit, 4.1 with the optional subwoofer (amp, PSU, 7.1 sound card, 4 exciters, bass shaker, 6.5 in sub). No EU reseller exists."
+
+[[vendors]]
+id = "pricerunner"
+name = "Displays (PriceRunner DK)"
+country = "Denmark"
+site = "https://www.pricerunner.dk/"
+shipping = "Depends on the shop you pick."
+why = "Playfield and backglass screens. The OLED is bought (4,725 kr); the backglass is still an estimate, so compare before buying."
+
+# ---------------------------------------------------------------------------
+# Tukkari
+# ---------------------------------------------------------------------------
+
+[[items]]
+vendor = "tukkari"
+group = "Cabinet"
+name = "Premium Widebody VPin cabinet, fully assembled, with siderails and lockdown bar (action button)"
+part = "Tukkari Widebody Premium"
+used_on = "Cabinet; lockbar Fire button"
+need = "1"
+buy = 1
+priority = 1
+price_asis = 1707.00
+url = "https://www.tukkari.eu/p/widebody-virtual-pinball-cabinet-vpin-fully-assembled"
+note = "Price as quoted."
+
+[[items]]
+vendor = "tukkari"
+group = "Cabinet"
+name = "Real-mech add-on: 4 milled braces, 4 clear acrylic shields, standoffs, brackets and hardware (+ free STLs)"
+part = "Real Mech Ready option"
+used_on = "Layout; 05, 09 (board shelf, flipper shelf, two bumper rows)"
+need = "1"
+buy = 1
+priority = 1
+priority_note = "Phase 1 because its board shelf replaces Tukkari's front shelf, which holds the Dude's Cab. The mechs on it can come later."
+url = "https://www.tukkari.eu/"
+note = "Not in Tukkari's shop yet: arrange it through Jan / the Virtual Pinball and VPin Cab Builders group. It replaces Tukkari's two standard shelves. Panels: board shelf 585 x 150 mm, flipper shelf 585 x 100, front bumper row 585 x 100, rear bumper row 550 x 82 (James' widebody measurements). Ask whether shelf graphics are included."
+[[items]]
+vendor = "tukkari"
+group = "Cabinet"
+name = "DMD monitor bracket, VESA 75×75 (STL)"
+part = "Tukkari DMD bracket"
+used_on = "06 (DMD)"
+need = "1"
+buy = 1
+priority = 2
+print3d = true
+url = "https://tukkaricz.s2.cdn-upgates.com/p/p68d2739422f46-ver-4-tukkari-dmd-bracket-vesa75x75mm-2.stl"
+
+# ---------------------------------------------------------------------------
+# Arnoz — as planned
+# ---------------------------------------------------------------------------
+
+[[items]]
+vendor = "arnoz"
+group = "Controller and boards"
+name = "Super Dude's Cab V1"
+part = "Super Dude's Cab V1"
+used_on = "02–05"
+need = "1"
+buy = 1
+priority = 1
+price = 80.00
+url = "https://shop.arnoz.com/en/dude-s-cab/156-super-dude-s-cab-v1.html"
+
+[[items]]
+vendor = "arnoz"
+group = "Controller and boards"
+name = "Button Board"
+part = "Button Board"
+used_on = "02 (BTLA, BTLB, BTRA, BTRB)"
+need = "4"
+buy = 4
+priority = 1
+priority_note = "One order of four. The tilt board (BTRA) only carries the tilt bob, so it isn't needed until phase 2."
+price = 2.20
+url = "https://shop.arnoz.com/en/dude-s-cab/133-button-board.html"
+
+[[items]]
+vendor = "arnoz"
+group = "Controller and boards"
+name = "The BRAIN V1.2 — operator buttons + plunger calibration"
+part = "THEBRAIN1.2"
+used_on = "02 (coin door)"
+need = "1"
+buy = 1
+priority = 2
+price = 23.00
+url = "https://shop.arnoz.com/en/dude-s-cab/50-the-brain-v12.html"
+
+[[items]]
+vendor = "arnoz"
+group = "Controller and boards"
+name = "BUNNY — 16 PWM outputs (Walter + 2 MOS8 on one board), 8 A per output"
+part = "BUNNY"
+used_on = "05, 09 (BUNNY 1: 24 V coils, BUNNY 2: 12 V toys and button lamps)"
+need = "2"
+buy = 2
+priority = 3
+price = 75.00
+url = "https://shop.arnoz.com/en/accueil/149-bunny.html"
+note = "Delivered without fuses (16 x 5x20 mm each, listed under Reichelt and Amazon). The add-on's board shelf is pre-drilled for one; drill standoff holes for the second."
+
+[[items]]
+vendor = "arnoz"
+group = "Controller and boards"
+name = "La Nettoyeuse — toy noise filter (1000 µF + flywheel diode, 25 V max)"
+part = "La Nettoyeuse"
+used_on = "05 (gear motor, shaker motor, alarm bell)"
+need = "3"
+buy = 3
+priority = 3
+price = 6.00
+url = "https://shop.arnoz.com/en/accessoires/81-la-nettoyeuse.html"
+note = "12 V toys only (25 V capacitor). The 24 V coils get 1N4007 diodes instead."
+[[items]]
+vendor = "arnoz"
+group = "Addressable LEDs"
+name = "BackBoard HD 16x16 Hard Panel"
+part = "BackBoard HD 16x16"
+used_on = "03 (P1–P6)"
+need = "6"
+buy = 6
+priority = 3
+price = 32.50
+url = "https://shop.arnoz.com/en/adressable-led/112-backboard-hd-16x16-hard-panel.html"
+
+[[items]]
+vendor = "arnoz"
+group = "Addressable LEDs"
+name = "MX FLASH + Plug"
+part = "MX FLASH + Plug"
+used_on = "03 (FLASH_L, FLASH_R)"
+need = "2"
+buy = 2
+priority = 3
+price = 11.50
+url = "https://shop.arnoz.com/en/adressable-led/92-mx-flash-plug.html"
+
+[[items]]
+vendor = "arnoz"
+group = "Addressable LEDs"
+name = "MX BUTTON + PLUG"
+part = "MX BUTTON + PLUG"
+used_on = "04 (4 flipper/magna buttons + lockbar Fire)"
+need = "5"
+buy = 5
+priority = 3
+price = 11.50
+url = "https://shop.arnoz.com/en/adressable-led/82-mx-button-plug.html"
+
+[[items]]
+vendor = "arnoz"
+group = "Buttons and plunger"
+name = "Williams End Of Stroke leaf switch"
+part = "Lamelle_Williams"
+used_on = "02 (flipper L/R, magna L/R, Fire)"
+need = "5"
+buy = 5
+priority = 1
+price = 6.50
+url = "https://shop.arnoz.com/en/accueil/120-williams-end-of-stroke-switch.html"
+
+[[items]]
+vendor = "arnoz"
+group = "Buttons and plunger"
+name = "3D Support Button — holds the MX Button behind a cabinet flipper button"
+part = "3D Support Button"
+used_on = "02, 04 (4 cabinet flipper/magna buttons)"
+need = "4"
+buy = 4
+priority = 1
+priority_note = "Fit them with the flipper buttons, so the MX Buttons can be added in phase 3 without taking the switches off again."
+price = 2.50
+url = "https://shop.arnoz.com/en/3d/80-74-3d-support-button.html"
+note = "Check it also holds the leaf switch, as the lockbar version does; or print your own."
+
+[[items]]
+vendor = "arnoz"
+group = "Buttons and plunger"
+name = "Lockbar Button Support (leaf switch + MX Button under the lockbar)"
+part = "Support_BT_Lockbar"
+used_on = "02, 04 (Fire)"
+need = "1"
+buy = 1
+priority = 2
+print3d = true
+url = "https://shop.arnoz.com/en/3d/137-lockbar-button-support.html"
+note = "Arnoz also sells it printed in PETG for €8."
+
+[[items]]
+vendor = "arnoz"
+group = "Buttons and plunger"
+name = "POTAR — 10 k slide potentiometer plunger sensor"
+part = "POTAR"
+used_on = "02 (plunger)"
+need = "1"
+buy = 1
+priority = 2
+price = 16.00
+url = "https://shop.arnoz.com/en/plunger/44-potar.html"
+
+[[items]]
+vendor = "arnoz"
+group = "Buttons and plunger"
+name = "Plunger 3D print (black)"
+part = "Plunger 3D print"
+used_on = "Shooter"
+need = "1"
+buy = 1
+priority = 2
+print3d = true
+url = "https://shop.arnoz.com/en/3d/65-128-plunger-3d-print.html#/26-color-black"
+
+[[items]]
+vendor = "arnoz"
+group = "Cables"
+name = "JST-PH 6-pin female-female cable, 0.5 m"
+part = "JST-PH F-F, 6 pin, 0.5 m"
+used_on = "02 (BTLA left board, BTLB front board), 05 (Dude's Cab → BUNNY 1 → BUNNY 2)"
+need = "4 (routed ~0.5 m)"
+buy = 4
+priority = 1
+price = 5.00
+url = "https://shop.arnoz.com/en/accessoires/129-94-jst-ph-female-female-cable.html"
+note = "Pick the length on the product page."
+
+[[items]]
+vendor = "arnoz"
+group = "Cables"
+name = "JST-PH 6-pin female-female cable, 0.75 m"
+part = "JST-PH F-F, 6 pin, 0.75 m"
+used_on = "02 (BTRB right board, The BRAIN ×2)"
+need = "3 (routed 0.5–0.7 m; BRAIN incl. door swing)"
+buy = 3
+priority = 1
+price = 5.00
+url = "https://shop.arnoz.com/en/accessoires/129-94-jst-ph-female-female-cable.html"
+note = "Pick the length on the product page; the price may differ slightly by length."
+
+[[items]]
+vendor = "arnoz"
+group = "Cables"
+name = "JST-PH 6-pin female-female cable, 1 m"
+part = "JST-PH F-F, 6 pin, 1 m"
+used_on = "02 (BTRA tilt board, POTAR)"
+need = "2 (routed ~0.8 m)"
+buy = 2
+priority = 2
+price = 5.00
+url = "https://shop.arnoz.com/en/accessoires/129-94-jst-ph-female-female-cable.html"
+note = "Pick the length on the product page; the price may differ slightly by length."
+
+[[items]]
+vendor = "arnoz"
+group = "Cables"
+name = "JST 3-pin plug, male + female pigtails, 22 AWG"
+part = "JST 3 PIN PLUG MALE + FEMALE 30cm"
+used_on = "04 (MX Button chain leads and power injection, backbox data disconnect)"
+need = "7"
+buy = 7
+priority = 3
+price = 1.80
+url = "https://shop.arnoz.com/en/accessoires/20-jst-3-pin-plug-male-female.html"
+
+# ---------------------------------------------------------------------------
+# PU-Parts
+# ---------------------------------------------------------------------------
+
+[[items]]
+vendor = "pu"
+group = "Legs"
+name = "Stern/Sega black legs, set of 4"
+part = "Stern/Sega legs"
+used_on = "Cabinet; 08 (bonding)"
+need = "1 set"
+buy = 1
+priority = 1
+price = 89.25
+url = "https://pu-parts.com/stern-sega-black-legs-set-of-4"
+
+[[items]]
+vendor = "pu"
+group = "Legs"
+name = "Williams/Bally new-style leg bracket"
+part = "Leg bracket"
+used_on = "Cabinet; 08 (priority bond point)"
+need = "4"
+buy = 4
+priority = 1
+price = 6.48
+url = "https://pu-parts.com/williams-bally-new-style-leg-bracket"
+
+[[items]]
+vendor = "pu"
+group = "Legs"
+name = "Heavy-duty leg leveler, black"
+part = "Leg leveler"
+used_on = "Cabinet"
+need = "4"
+buy = 4
+priority = 1
+price = 2.21
+url = "https://pu-parts.com/heavy-duty-leg-leveler-black"
+
+[[items]]
+vendor = "pu"
+group = "Legs"
+name = "Williams/Bally extended black leg bolt, 2-3/4\""
+part = "Leg bolt"
+used_on = "Cabinet; 08"
+need = "8"
+buy = 8
+priority = 1
+price = 1.12
+url = "https://pu-parts.com/williams-bally-extended-black-leg-bolt"
+note = "Measure leg → bracket continuity through these (sheet 08)."
+
+[[items]]
+vendor = "pu"
+group = "Legs"
+name = "Rubber base for leg levelers"
+part = "Leveler rubber base"
+used_on = "Cabinet"
+need = "4"
+buy = 4
+priority = 2
+price = 1.30
+url = "https://pu-parts.com/rubber-base-for-leg-levelers"
+
+[[items]]
+vendor = "pu"
+group = "Legs"
+name = "Hidden cabinet leg protectors, set of 4"
+part = "Leg protectors"
+used_on = "Cabinet"
+need = "1 set"
+buy = 1
+priority = 3
+price = 10.71
+url = "https://pu-parts.com/hidden-cabinet-leg-protectors-set-of-4"
+
+[[items]]
+vendor = "pu"
+group = "Coin door"
+name = "Data East coin door"
+part = "DE coin door"
+used_on = "02 (BRAIN, coin switches); 08 (bonding)"
+need = "1"
+buy = 1
+priority = 1
+priority_note = "Closes the front service opening. Its coin switches and The BRAIN can wait for phase 2."
+price = 139.94
+url = "https://pu-parts.com/data-east-coin-door"
+
+[[items]]
+vendor = "pu"
+group = "Coin door"
+name = "1/4-20 × 1-1/4\" bolt"
+part = "Coin door bolt"
+used_on = "Coin door"
+need = "4"
+buy = 4
+priority = 1
+price = 0.69
+url = "https://pu-parts.com/1-4-20-x-1-1-4-inch-bolt"
+
+[[items]]
+vendor = "pu"
+group = "Coin door"
+name = "1/4-20 whiz flange locknut"
+part = "Coin door locknut"
+used_on = "Coin door"
+need = "4"
+buy = 4
+priority = 1
+price = 0.35
+url = "https://pu-parts.com/coin-door-whiz-flange-locknut"
+
+[[items]]
+vendor = "pu"
+group = "Coin door"
+name = "Leaf switch, single contact (coin return buttons → Coin 1 / Coin 2)"
+part = "Flipper Blattkontakt Schalter - Einzelkontakt"
+used_on = "02 (SW_COIN_1, SW_COIN_2)"
+need = "2"
+buy = 2
+priority = 2
+price = 10.47
+url = "https://pu-parts.com/flipper-blattkontakt-schalter-einzelkontakt"
+note = "Confirm it is normally open and suits your coin-return button mount before ordering."
+
+[[items]]
+vendor = "pu"
+group = "Shooter"
+name = "Stern ball shooter assembly #500-6146-00-04"
+part = "Stern shooter"
+used_on = "02 (POTAR); 08 (bonding)"
+need = "1"
+buy = 1
+priority = 2
+price = 38.47
+url = "https://pu-parts.com/stern-ball-shooter-assembly"
+
+[[items]]
+vendor = "pu"
+group = "Shooter"
+name = "Ball shooter mounting plate #535-5027-00"
+part = "Shooter mounting plate"
+used_on = "Shooter"
+need = "1"
+buy = 1
+priority = 2
+price = 3.49
+url = "https://pu-parts.com/ball-shooter-mounting-plate"
+
+[[items]]
+vendor = "pu"
+group = "Shooter"
+name = "#10-32 × 1/2\" pan screw with locking washer"
+part = "Shooter screw"
+used_on = "Shooter"
+need = "3"
+buy = 3
+priority = 2
+price = 0.28
+url = "https://pu-parts.com/10-32-1-2-pan-screw-with-locking-washer"
+
+[[items]]
+vendor = "pu"
+group = "Playfield glass"
+name = "Anti-reflective pinball glass, widebody"
+part = "AR glass widebody"
+used_on = "Cabinet"
+need = "1"
+buy = 1
+priority = 2
+priority_note = "Not needed to play, but it protects the OLED. Fit it before the cabinet sees real use."
+price = 198.00
+url = "https://pu-parts.com/anti-reflective-pinball-glass-widebody"
+
+[[items]]
+vendor = "pinballshop"
+group = "Playfield glass"
+name = "Side playfield glass trim / channel, black, 42-5/16 in"
+part = "03-7135-1 (equivalent of Stern 545-5017-00)"
+used_on = "Cabinet"
+need = "2"
+buy = 2
+priority = 2
+price = 12.95
+url = "https://www.pinballshop.nl/cabinet-parts/siderails-and-trims/side-playfield-glass-trim-molding-rail-black/?sl=en"
+note = "The Williams number for the same channel Tukkari lists (Marco Specialties cross-references them). Fit both before measuring for the glass. Pick GLS or DPD: UPS charges 12.50 extra for the length."
+[[items]]
+vendor = "pu"
+group = "Playfield glass"
+name = "Williams/Bally rear black plastic glass trim, widebody #03-8091-2"
+part = "Rear glass trim"
+used_on = "Cabinet"
+need = "1"
+buy = 1
+priority = 2
+price = 9.34
+url = "https://pu-parts.com/williams-bally-rear-black-plastic-playfield-glass-widebody-trim-03-8091-2"
+
+[[items]]
+vendor = "pu"
+group = "Buttons and tilt"
+name = "Cabinet flipper button, transparent, 1-1/8\" shaft"
+part = "Flipper button clear"
+used_on = "02, 04 (flipper L/R, magna L/R)"
+need = "4"
+buy = 4
+priority = 1
+price = 2.40
+url = "https://pu-parts.com/cabinet-flipper-button-transparent-1-1-8-shaft-clear"
+
+[[items]]
+vendor = "pu"
+group = "Buttons and tilt"
+name = "Nut for flipper button #240-5003-01"
+part = "Flipper button nut"
+used_on = "Flipper buttons"
+need = "4"
+buy = 4
+priority = 1
+price = 0.89
+url = "https://pu-parts.com/nut-for-flipper-button"
+
+[[items]]
+vendor = "pu"
+group = "Buttons and tilt"
+name = "Williams/Bally/Stern red start button (under-cabinet buttons)"
+part = "#20-9663 / Stern 500-6388-44"
+used_on = "02 (under-cab: Volume −, Volume +, Menu, Night Mode, PC power)"
+need = "5"
+buy = 5
+priority = 1
+priority_note = "One of the five is the PC power button. Volume, Menu and Night Mode could wait, but they're one order."
+
+price = 9.90
+url = "https://pu-parts.com/williams-bally-stern-red-start-button"
+note = "Replaces the Stern/Sega red assembly (sold out). Fits the 1 in holes under the cabinet; comes with switch, lamp and nut. It reads START, but nobody sees under the cabinet. Unlit by choice: pull the supplied bulbs out (they would only spill light into the under-cab strip) and wire just the switch."
+[[items]]
+vendor = "pu"
+group = "Buttons and tilt"
+name = "Williams/Bally Launch Ball button, red — Launch Ball"
+part = "#20-9663-B-4"
+used_on = "02, 05 (Launch Ball)"
+need = "1"
+buy = 1
+priority = 1
+price = 10.61
+url = "https://pu-parts.com/williams-bally-launch-ball-button-red"
+note = "Reads \"Launch Ball\". Comes with push button, lamp assembly (bulb and switch) and nut. Swap the supplied lamp for a 12 V W5W LED."
+
+[[items]]
+vendor = "pu"
+group = "Buttons and tilt"
+name = "Tilt switch assembly (bob, hanger bracket, contact ring, wire)"
+part = "Tilt switch assembly"
+used_on = "02 (TILT_BOB)"
+need = "1"
+buy = 1
+priority = 2
+price = 17.66
+url = "https://pu-parts.com/tilt-switch-assembly"
+
+[[items]]
+vendor = "arcadexpress"
+group = "Buttons"
+name = "Illuminated 28 mm arcade button, EXIT legend — Exit"
+part = "LED arcade button, Exit design"
+used_on = "02, 05 (Exit)"
+need = "1"
+buy = 1
+priority = 1
+price = 2.48
+url = "https://www.arcadexpress.com/en/arcade-pushbuttons/294-1036-start-select-pause-exit-coin-illuminated-led-arcade-button.html"
+note = "Pick the Exit design, in translucent or chrome trim. Needs a 28-30 mm hole: Tukkari's pre-drilled 1 in start-button holes are a couple of millimetres smaller, so open them up with a step drill (Tukkari's parts list says the same). Comes with a Cherry-style microswitch; the built-in LED takes 5 or 12 V, so it goes straight on the MiniMOS 4 output - mind the polarity, it is an LED, not a bulb."
+
+[[items]]
+vendor = "arcadexpress"
+group = "Buttons"
+name = "Illuminated 28 mm arcade button, START legend — Start"
+part = "LED arcade button, Start design"
+used_on = "02, 05 (Start)"
+need = "1"
+buy = 1
+priority = 1
+price = 2.48
+url = "https://www.arcadexpress.com/en/arcade-pushbuttons/294-1036-start-select-pause-exit-coin-illuminated-led-arcade-button.html"
+note = "Matches the Pause and Exit buttons; order all three in the same trim. Its built-in 12 V LED replaces the W5W bulb a pinball start button would need."
+
+[[items]]
+vendor = "arcadexpress"
+group = "Buttons"
+name = "Illuminated 28 mm arcade button, PAUSE legend — Return"
+part = "LED arcade button, Pause design"
+used_on = "02, 05 (Return)"
+need = "1"
+buy = 1
+priority = 2
+price = 2.48
+url = "https://www.arcadexpress.com/en/arcade-pushbuttons/294-1036-start-select-pause-exit-coin-illuminated-led-arcade-button.html"
+note = "Same button and trim as the Exit one. No lit RETURN legend is made, so this reads PAUSE while sending the Return key - handy, since it is the button that pauses a table and drops you back to the menu."
+
+[[items]]
+vendor = "arcadexpress"
+group = "Buttons"
+name = "Insulated female quick connect, 4.8 mm"
+part = "A1180"
+used_on = "02, 05 (Start, Return and Exit switch and LED tabs)"
+need = "12"
+buy = 15
+priority = 1
+price = 0.12
+url = "https://www.arcadexpress.com/en/electronics-power-supplies/743-insulated-female-quick-connect-48mm-size-terminal-a1180.html"
+note = "Arcade buttons use 4.8 mm tabs, not the 6.3 mm of the pinball buttons. Order them with the buttons: Reichelt only stocks 4.8 mm sleeves for 1.5-2.5 mm2 wire."
+
+# ---------------------------------------------------------------------------
+# Reichelt
+# ---------------------------------------------------------------------------
+
+[[items]]
+vendor = "reichelt"
+group = "Power supplies"
+name = "Mean Well RSP-320-5 — 5 V 60 A, PFC"
+part = "MW RSP-320-5"
+used_on = "01, 03, 04 (one 5 V supply for all addressable LEDs)"
+need = "1"
+buy = 1
+priority = 3
+price = 49.60
+url = "https://www.reichelt.com/dk/en/shop/product/switching_power_supply_closed_300_w_5_v_60_a-386234"
+note = "Chosen over the LRS-350-5, which EU shops do not sell to private customers. One supply now feeds every addressable LED, with brightness caps (sheet 03)."
+
+[[items]]
+vendor = "reichelt"
+group = "Power supplies"
+name = "Mean Well RSP-320-12 — 12 V 26.7 A, PFC"
+part = "MW RSP-320-12"
+used_on = "01, 05 (12 V toys, button lamps, BUNNY logic)"
+need = "1"
+buy = 1
+priority = 3
+price = 50.95
+url = "https://www.reichelt.com/dk/en/shop/product/switching_power_supply_pfc_320_w_12_v_26_7_a-147898"
+note = "Chosen over the LRS-350-12, which EU shops do not sell to private customers."
+
+[[items]]
+vendor = "reichelt"
+group = "Power supplies"
+name = "Mean Well RSP-500-24 — 24 V 21 A, PFC"
+part = "SNT RSP-500-24"
+used_on = "01, 05, 09 (24 V real-mech coils)"
+need = "1"
+buy = 1
+priority = 3
+price = 82.2
+url = "https://www.reichelt.com/dk/en/shop/product/switching_power_supply_slim_504_w_pfc_24_v_21_a-144821"
+note = "230 x 127 x 40.5 mm. The TBC-09 cover does not fit it, so print a terminal cover. James uses 25 A; 21 A is plenty with the coils' short pulses."
+[[items]]
+vendor = "reichelt"
+group = "Power supplies"
+name = "Mean Well TBC-09 terminal block cover, 9-pin, transparent"
+part = "MW TBC-09"
+used_on = "01 (5 V and 12 V supplies)"
+need = "2"
+buy = 2
+priority = 3
+price = 0.63
+url = "https://www.reichelt.com/dk/en/shop/product/cover_for_screw_terminals_9-pin_spacing_9_5-188482"
+note = "Clips over the 9-pin terminal block and makes the exposed L/N screws finger-safe."
+
+[[items]]
+vendor = "reichelt"
+group = "Mains (230 V)"
+name = "Schurter 6765 C14 inlet, 2-pole switch, fuse holder for 1-2 fuses, 10 A, screw-on"
+part = "SCH GSW6765 (Schurter 4304.6087)"
+used_on = "01 (X_INLET)"
+need = "1"
+buy = 1
+priority = 1
+price = 9.15
+url = "https://www.reichelt.com/dk/en/shop/product/rack-mount_connector_with_switch_fuse_holder_snap-in-440457"
+note = "Replaces the Schurter KM (out of stock), and is the better fit anyway: it screws on from the front instead of snapping into a thin panel. Screw holes are 40 mm apart like Tukkari's cut-out, but it needs a 27.2 x 58.2 mm hole, so extend Tukkari's ~48 mm cut-out by ~10 mm; the 50 x 65 mm flange covers it. Fuse holder built in: fit a T8A in both L and N. 4.8 mm tabs. Reichelt's title says snap-in; Schurter's datasheet says screw-on."
+[[items]]
+vendor = "reichelt"
+group = "Mains (230 V)"
+name = "Fuse 5×20 mm T8A, time-lag, ceramic"
+part = "LITT 0215008.MXP"
+used_on = "01 (X_INLET)"
+need = "2 fitted + 2 spare"
+buy = 4
+priority = 1
+price = 0.85
+url = "https://www.reichelt.com/dk/en/shop/product/fuse_5x20mm_8a_slow-blow_215-241926"
+
+[[items]]
+vendor = "reichelt"
+group = "Mains (230 V)"
+name = "Hard-rubber type F coupler (inline socket), 16 A"
+part = "FREI SSK 3VG SW"
+used_on = "01 (X_COUPLER)"
+need = "1"
+buy = 1
+priority = 1
+price = 9.90
+url = "https://www.reichelt.com/dk/en/shop/product/hard-rubber_socket_250_v_10_16_a-52792"
+
+[[items]]
+vendor = "reichelt"
+group = "Mains (230 V)"
+name = "H05VV-F 3G1.5 flexible cable, black, 5 m"
+part = "H05VV F3G1,5 5M"
+used_on = "01 (inlet → coupler)"
+need = "≈0.6 m"
+buy = 1
+priority = 1
+price = 8.10
+url = "https://www.reichelt.com/dk/en/shop/product/flexible_cable_3_x_1_5_mm_black_5-m_coil-85868"
+
+[[items]]
+vendor = "reichelt"
+group = "Mains (230 V)"
+name = "Mains cord, Schuko plug → IEC C13, 3 × 1.0 mm², 5 m, black"
+part = "GC P0130-S050"
+used_on = "01 (wall → inlet)"
+need = "1"
+buy = 1
+priority = 1
+price = 9.95
+url = "https://www.reichelt.com/dk/en/shop/product/power_cord_type_e_f_cee_7_7_to_c13_black_1_00_mm_5_m-299888"
+[[items]]
+vendor = "reichelt"
+group = "Mains (230 V)"
+name = "Mains cord, Schuko plug → open end, H05VV-F 3G1.5, 2 m"
+part = "NKBK H05VV 2M1,5"
+used_on = "01 (C_PSU_5V, C_PSU_12V, C_PSU_24V)"
+need = "3"
+buy = 3
+priority = 3
+price = 7.4
+url = "https://www.reichelt.com/dk/en/shop/product/power_cable_2_metres_h05vv-f_3g_1_5_mm_-141822"
+note = "One per Mean Well, each on its own switched outlet: replaces the distribution box. Cut to length from the open end; ferrules on L, N and PE."
+[[items]]
+vendor = "reichelt"
+group = "Protective earth"
+name = "Equipotential bonding bar, 7 terminals"
+part = "EL PAS 01"
+used_on = "01, 08 (PE_BAR)"
+need = "5 ways used"
+buy = 1
+priority = 1
+price = 8.99
+url = "https://www.reichelt.com/dk/en/shop/product/equipotential_bus_bar-60483"
+
+[[items]]
+vendor = "reichelt"
+group = "Protective earth"
+name = "H07V-K 2.5 mm² green-yellow, 25 m"
+part = "H07VK 2,5-25GG"
+used_on = "08 (bonding loop + feed)"
+need = "≈13.2 m (routed)"
+buy = 1
+priority = 1
+price = 18.30
+url = "https://www.reichelt.com/dk/en/shop/product/25_m_jumper_control_litz_wire_st1_-_2_5_mm_green-yellow-69526"
+
+[[items]]
+vendor = "reichelt"
+group = "Protective earth"
+name = "Serrated lock washers M5, external teeth (100)"
+part = "CIMCO 192703"
+used_on = "08 (paint-piercing washers)"
+need = "≈15"
+buy = 1
+priority = 1
+price = 3.99
+url = "https://www.reichelt.com/dk/en/shop/product/serrated_lock_washer_external_serration_steel_galvanised_m5_-433615"
+
+[[items]]
+vendor = "reichelt"
+group = "DC fuses"
+name = "Blade fuse, standard, 2 A"
+part = "MTA 340020"
+used_on = "03-05 (MX Buttons, BUNNY logic, lamps, Perspex lights)"
+need = "5 + 2 spare"
+buy = 7
+priority = 3
+price = 0.38
+url = "https://www.reichelt.com/dk/en/shop/search/MTA%20340020"
+
+[[items]]
+vendor = "reichelt"
+group = "DC fuses"
+name = "Blade fuse, standard, 7.5 A"
+part = "MTA 340026"
+used_on = "04 (rings, behind-backbox), 05 (gear motor, backbox toys), 09 (knocker)"
+need = "5 + 2 spare"
+buy = 7
+priority = 3
+price = 0.38
+url = "https://www.reichelt.com/dk/en/shop/search/MTA%20340026"
+
+[[items]]
+vendor = "reichelt"
+group = "DC fuses"
+name = "Blade fuse, standard, 10 A"
+part = "MTA 340027"
+used_on = "03 (panels, zones), 04 (under-cab), 05 (shaker), 09 (slings, bumpers, chimes)"
+need = "14 + 2 spare"
+buy = 16
+priority = 3
+price = 0.38
+url = "https://www.reichelt.com/dk/en/shop/search/MTA%20340027"
+
+[[items]]
+vendor = "reichelt"
+group = "DC fuses"
+name = "Blade fuse, standard, 15 A"
+part = "MTA 340029"
+used_on = "09 (flippers)"
+need = "1 + 1 spare"
+buy = 2
+priority = 3
+price = 0.38
+url = "https://www.reichelt.com/dk/en/shop/search/MTA%20340029"
+
+[[items]]
+vendor = "reichelt"
+group = "DC fuses"
+name = "Fuse 5×20 mm, 2.5 A slow-blow"
+part = "LITT 021802.5MXP"
+used_on = "05, 09 (BUNNY 1 coil outputs 1-15)"
+need = "15 + 3 spare"
+buy = 18
+priority = 3
+price = 0.55
+url = "https://www.reichelt.com/dk/en/shop/product/fuse_5x20mm_2_5a_slow-blow_218-241978"
+
+[[items]]
+vendor = "reichelt"
+group = "DC fuses"
+name = "Resettable PTC fuse, Littelfuse RXEF250 (2.5 A hold, 5 A trip, 72 V)"
+part = "LITT RXEF250"
+used_on = "09 (one in each flipper's + leg)"
+need = "2 + 2 spare"
+buy = 4
+priority = 3
+price = 0.78
+url = "https://www.reichelt.com/dk/en/shop/product/fuse_radial_5_a-242430"
+note = "Second line of coil protection after the Dude's Cab settings, as in James' build."
+
+[[items]]
+vendor = "reichelt"
+group = "DC fuses"
+name = "Rectifier diode 1N4007 (coil flyback)"
+part = "1N 4007"
+used_on = "09 (any coil without a diode: chimes, bells, knocker)"
+need = "≈8 + spares"
+buy = 20
+priority = 3
+price = 0.03
+url = "https://www.reichelt.com/dk/en/shop/product/rectifier_diode_do41_1000v_1a-1729"
+note = "Band to the coil's + lug."
+[[items]]
+vendor = "reichelt"
+group = "DC wire"
+name = "Automotive cable 2.5 mm², red, 10 m"
+part = "FLK 2,5 RT-10"
+used_on = "03 (panel feeds), 03-05 (PSU → fuse block feeds)"
+need = "≈9.1 m (routed)"
+buy = 1
+priority = 3
+price = 13.5
+url = "https://www.reichelt.com/dk/en/shop/product/automotive_cable_1_x_2_5_mm_red_10_m_coil-31786"
+note = "Replaces the silicone 2 x 2 m packs (out of stock). Fine-stranded, thin-wall PVC, rated well past 5 V use; a little stiffer than silicone, so leave a gentle bend at the PSU terminals. PSU feeds use 3 x 2.5 mm² per pole."
+
+[[items]]
+vendor = "reichelt"
+group = "DC wire"
+name = "Automotive cable 2.5 mm², black, 25 m"
+part = "FLK 2,5 SW-25"
+used_on = "03 (panel feeds), 03-05 (PSU feeds), 05 (BUNNY TOY GND, 2 x 2.5 mm² each, and the 12 V ↔ 24 V bond)"
+need = "≈17.2 m (routed)"
+buy = 1
+priority = 3
+price = 32.7
+url = "https://www.reichelt.com/dk/en/shop/product/automotive_cable_1_x_2_5_mm_black_25_m_coil-31793"
+[[items]]
+vendor = "reichelt"
+group = "DC wire"
+name = "Automotive cable 1.5 mm², red, 25 m"
+part = "FLK 1,5 RT-25"
+used_on = "03, 04 (5 V zone + backbox feeds), 05, 09 (12 V and 24 V toy feeds)"
+need = "≈12.6 m"
+buy = 1
+priority = 3
+
+price = 20.1
+url = "https://www.reichelt.com/dk/en/shop/search/FLK%201%2C5%20RT-25"
+note = "Every + feed is red whatever its voltage, as in James' build: label both ends 5V / 12V / 24V (diagrams colour 24 V orange and 12 V yellow only to tell them apart)."
+[[items]]
+vendor = "reichelt"
+group = "DC wire"
+name = "H07V-K 1.5 mm², black, 10 m"
+part = "H07VK 1,5-10SW"
+used_on = "03, 04 (5 V returns), 05 (shaker return)"
+need = "≈6.5 m"
+buy = 1
+priority = 3
+price = 5.45
+url = "https://www.reichelt.com/dk/en/shop/product/10_m_jumper_control_litz_wire_st1_-_1_5_mm_black-69503"
+
+[[items]]
+vendor = "reichelt"
+group = "DC wire"
+name = "H05V-K 1.0 mm², red, 10 m"
+part = "H05VK 1,0-10RT"
+used_on = "03, 04 (strip end feeds), 05, 09 (toy and coil + leads)"
+need = "≈21 m"
+buy = 3
+priority = 3
+price = 4.30
+url = "https://www.reichelt.com/dk/en/shop/product/10-m_jumper_control_litz_wire_st1_-_1_0_mm_red-69483"
+
+[[items]]
+vendor = "reichelt"
+group = "DC wire"
+name = "H05V-K 1.0 mm², black, 100 m"
+part = "H05VK 1,0SW-100"
+used_on = "03, 04 (strip end returns), 05, 09 (every toy and coil return)"
+need = "≈51 m"
+buy = 1
+priority = 3
+price = 30.15
+url = "https://www.reichelt.com/dk/en/shop/product/h05v-k_1_x_1_0_mm_100_m_black-165125"
+
+note = "Coil and toy returns (the - side, switched by a BUNNY) are black too; label each end with its output number."
+[[items]]
+vendor = "reichelt"
+group = "DC wire"
+name = "Stranded wire 0.5 mm², red, 25 m"
+part = "QUAD 23CW024"
+used_on = "03-05 (small feeds, MX Button chain, BUNNY logic, lamps, Perspex lights)"
+need = "≈14.4 m"
+buy = 1
+priority = 3
+price = 8.80
+url = "https://www.reichelt.com/dk/en/shop/product/stranded_wire_0_5_mm_red_25_m_reel-360600"
+
+[[items]]
+vendor = "reichelt"
+group = "DC wire"
+name = "Stranded wire 0.5 mm², black, 25 m"
+part = "QUAD 23CW025"
+used_on = "02–05 (small feeds, MX Button chain, GND links, LED GND reference)"
+need = "≈9.6 m"
+buy = 1
+priority = 1
+priority_note = "Phase 1 only uses a few metres, for the button-board ground links."
+price = 8.80
+url = "https://www.reichelt.com/dk/en/shop/product/stranded_wire_0_5_mm_black_25_m_reel-360601"
+
+[[items]]
+vendor = "reichelt"
+group = "DC wire"
+name = "Stranded copper wire 0.25 mm², green, 50 m"
+part = "ECON KL025GN50"
+used_on = "03, 04 (LED data, incl. MX Button chain and corner jumpers)"
+need = "≈22.7 m"
+buy = 1
+priority = 3
+price = 15.60
+url = "https://www.reichelt.com/dk/en/shop/product/stranded_copper_wire_0_25qmm_green_coil_50m-404643"
+note = "50 m, because with segregated lanes the data runs total just over 25 m."
+
+[[items]]
+vendor = "reichelt"
+group = "Signal and speaker cable"
+name = "Twin cable 2 × 0.75 mm², copper, 20 m"
+part = "MAXTRACK KL1-20 BL"
+used_on = "02 (button leads), 05 (lamp leads), 07 (thermistor extension)"
+need = "≈13 m"
+buy = 1
+priority = 1
+price = 3.15
+url = "https://www.reichelt.com/dk/en/shop/product/speaker_cable_2x0_75_mm_brown_20_m_ring-375315"
+
+[[items]]
+vendor = "reichelt"
+group = "Signal and speaker cable"
+name = "Speaker cable 2 × 1.5 mm², black, 10 m"
+part = "Speaker cable 2 x 1.5, 10 m"
+used_on = "06 (backbox speakers incl. the backbox-side leads, subwoofer), 01 (amp 24 V DC extension)"
+need = "≈9.6 m"
+buy = 2
+priority = 2
+price = 24.79
+url = "https://www.reichelt.com/dk/en/shop/product/speaker_cable_2_x_1_5_10_m_black-322759"
+note = "The CSD kit brings its own exciter and shaker leads; routed from the amp on the flipper shelf the exciters need up to ~2.4 m; extend short pre-cut leads from the second reel. Avoid cheaper CCA (copper-clad aluminium) cable."
+
+[[items]]
+vendor = "reichelt"
+group = "Terminals and small parts"
+name = "WAGO 221-415 lever splice, 5-way"
+part = "WAGO 221-415"
+used_on = "02-05, 09"
+need = "≈17"
+buy = 20
+priority = 1
+price = 0.80
+url = "https://www.reichelt.com/dk/en/shop/search/221-415"
+
+[[items]]
+vendor = "reichelt"
+group = "Terminals and small parts"
+name = "WAGO 221-413 lever splice, 3-way"
+part = "WAGO 221-413"
+used_on = "02, 05, 09, 08 (2 backbox PE disconnects, loop bypass)"
+need = "≈10"
+buy = 12
+priority = 1
+price = 0.55
+url = "https://www.reichelt.com/dk/en/shop/product/connection_terminal_3-conductor_connection-149799"
+
+[[items]]
+vendor = "reichelt"
+group = "Terminals and small parts"
+name = "Insulated ring lug M4, 0.5–1.5 mm², red"
+part = "VT RK-R-4"
+used_on = "03-05, 09 (fuse block circuit screws)"
+need = "≈60"
+buy = 65
+priority = 3
+
+price = 0.2
+url = "https://www.reichelt.com/dk/en/shop/product/ring_connector_for_m4_red-231392"
+note = "Sold singly, in stock. The box of 100 (QUAD 22C441) is due back 24 Oct 2026 if you would rather wait."
+[[items]]
+vendor = "reichelt"
+group = "Terminals and small parts"
+name = "Insulated ring lugs M4, 1.5–2.5 mm² (100)"
+part = "QUAD 22C446"
+used_on = "03–05 (PSU terminals, panel feeds), 08 (bonding loop)"
+need = "≈60"
+buy = 1
+priority = 1
+price = 7.40
+url = "https://www.reichelt.com/dk/en/shop/product/ring_cable_lugs_m4_1_5-2_5_mm_100_pcs-332543"
+
+[[items]]
+vendor = "reichelt"
+group = "Terminals and small parts"
+name = "Insulated ring lug M5, 1.5–2.5 mm²"
+part = "KLAUKE 6305"
+used_on = "03–05 (fuse block BAT+ and NEG IN studs), 08 (M5 bonding points)"
+need = "≈20"
+buy = 25
+priority = 1
+price = 0.25
+url = "https://www.reichelt.com/dk/en/shop/search/KLAUKE%206305"
+
+[[items]]
+vendor = "reichelt"
+group = "Terminals and small parts"
+name = "Fully insulated receptacle 6.3 mm, 0.5–1.5 mm²"
+part = "VT IFSH-R-6,35"
+used_on = "02, 05 (switch and lamp-holder tabs)"
+need = "≈40"
+buy = 40
+priority = 1
+price = 0.20
+url = "https://www.reichelt.com/dk/en/shop/product/flat_plug_sleeve_fully_insulated_width_6_35_mm_red-231371"
+note = "For the pinball buttons and lamp holders. The two arcade buttons use 4.8 mm tabs instead, listed under Arcade Express. The leaf switches may need solder."
+
+[[items]]
+vendor = "reichelt"
+group = "Terminals and small parts"
+name = "Insulated ferrule assortment 0.25–1.0 mm² (150)"
+part = "KN 97 99 905"
+used_on = "03, 04 (0.25 mm² data wires into screw terminals)"
+need = "1"
+buy = 1
+priority = 3
+price = 12.90
+url = "https://www.reichelt.com/dk/en/shop/product/assortment_of_insulated_0_25_-1_0mm_ferrules-222110"
+
+[[items]]
+vendor = "reichelt"
+group = "Terminals and small parts"
+name = "Metal film resistor 330 Ω"
+part = "METALL 330"
+used_on = "03, 04 (series resistor in each MX data line)"
+need = "8"
+buy = 10
+priority = 3
+price = 0.07
+url = "https://www.reichelt.com/dk/en/shop/product/metal_film_resistor_330_ohm-11733"
+
+[[items]]
+vendor = "reichelt"
+group = "Terminals and small parts"
+name = "Heat-shrink tubing assortment, black (196)"
+part = "DELOCK 20735"
+used_on = "all"
+need = "1"
+buy = 1
+priority = 1
+price = 10.95
+note = "Your heat gun came with 164 tubes too; keep this box for the larger sizes (IP65 strip joints, speaker leads)."
+url = "https://www.reichelt.com/dk/en/shop/product/heat-shrink_tubing_assortment_box_black_set_of_196-316532"
+
+[[items]]
+vendor = "reichelt"
+group = "Cooling"
+name = "Noctua NF-P12 redux-1700 PWM, 120 mm, 4-pin"
+part = "NO NF-P12R 1700P"
+used_on = "07 (FAN_1–3)"
+need = "3"
+buy = 3
+priority = 1
+price = 13.90
+url = "https://www.reichelt.com/dk/en/shop/product/noctua_nf-p12_redux_1700_pwm_case_fan_120_mm-316240"
+note = "The NF-A12x25 PWM is the premium alternative if you want it quieter."
+
+[[items]]
+vendor = "reichelt"
+group = "Cooling"
+name = "ARCTIC Case Fan Hub — 10-port PWM hub, SATA powered"
+part = "ACFAN00175A"
+used_on = "07 (FAN_HUB)"
+need = "1"
+buy = 1
+priority = 1
+price = 5.40
+url = "https://www.reichelt.com/dk/en/shop/product/arctic_pwm_sharing_hub_-_10-port_hub_for_pwm_fans-412835"
+
+[[items]]
+vendor = "reichelt"
+group = "Cooling"
+name = "4-pin PWM fan extension, 1 m"
+part = "DELOCK 85364"
+used_on = "07 (2 for FAN_1, 1 each for FAN_2 and FAN_3)"
+need = "4"
+buy = 4
+priority = 1
+price = 10.15
+url = "https://www.reichelt.com/dk/en/shop/product/delock_extension_cable_pwm_fan_connection_4_pin_100_cm-220125"
+
+[[items]]
+vendor = "reichelt"
+group = "Cooling"
+name = "4-pin PWM fan extension, 60 cm"
+part = "KOLINK 01190"
+used_on = "07 (1 m + 60 cm for FAN_2 and FAN_3)"
+need = "2"
+buy = 2
+priority = 1
+price = 4.90
+url = "https://www.reichelt.com/dk/en/shop/product/kolink_4-pin_pwm_extension_60_cm_black-414196"
+
+[[items]]
+vendor = "reichelt"
+group = "Button lamps"
+name = "Osram W5W 12 V LED, 5700 K, pack of 2"
+part = "OSR 2825DWNB-2"
+used_on = "05 (Launch Ball lamp)"
+need = "1 lamp"
+buy = 1
+priority = 3
+price = 16.35
+url = "https://www.reichelt.com/dk/en/shop/product/automotive_led_w5w_w2_1x9_5d_nb_gen2_pack_of_2-370186"
+note = "Only the Launch Ball button needs a bulb now; the pack of 2 leaves a spare. W5W has the same wedge base as a pinball #555, and is a genuine 12 V lamp (pinball LEDs are 6.3 V). If one stays dark, turn it round in the socket."
+
+[[items]]
+vendor = "reichelt"
+group = "USB"
+name = "USB 2.0 extension, A male → A female, 2 m"
+part = "DELOCK 83883"
+used_on = "02 (Dude's Cab), 06 (sound card), both on the real-mech shelves"
+need = "2"
+buy = 2
+priority = 1
+price = 3.16
+url = "https://www.reichelt.com/dk/en/shop/product/extension_usb_2_0_type-a_male_usb_2_0_type-a_female_2_m_trans-164845"
+note = "Routed, the Dude's Cab is ~1.8 m and the sound card ~2.1 m from the PC. Extends your 1.5 m USB-A → C cable and the CSD sound card's USB lead. A plain extension is fine; still no hub."
+
+[[items]]
+vendor = "reichelt"
+group = "Backbox disconnects"
+name = "Neutrik speakON chassis socket NL4MPXX, 4-pin, 4.8 mm Faston"
+part = "NEUTRIK NL4MPXX"
+used_on = "06 (X_BB_SPK, in the backbox floor)"
+need = "1"
+buy = 1
+priority = 2
+price = 2.2
+url = "https://www.reichelt.com/dk/en/shop/search/NL4MPXX"
+note = "Both backbox speakers on one plug: left on 1+/1-, right on 2+/2-."
+
+[[items]]
+vendor = "reichelt"
+group = "Backbox disconnects"
+name = "Neutrik speakON cable plug NL4FXX-W-S, 4-pin, cable 6–12 mm"
+part = "NEU NL4FXX-W-S"
+used_on = "06 (X_BB_SPK, on the cable from the amp)"
+need = "1"
+buy = 1
+priority = 2
+price = 5.75
+url = "https://www.reichelt.com/dk/en/shop/search/NL4FXX-W-S"
+note = "Screw terminals, no tools. Sleeve the two speaker pairs together with heat-shrink so the strain relief grips them."
+
+[[items]]
+vendor = "reichelt"
+group = "Backbox disconnects"
+name = "Fully insulated receptacle 4.75 mm, 1.5–2.5 mm², blue"
+part = "VT IFSH-B-4,75"
+used_on = "01 (inlet tabs), 06 (speakON socket tabs)"
+need = "≈8"
+buy = 12
+priority = 1
+price = 0.18
+url = "https://www.reichelt.com/dk/en/shop/search/VT%20IFSH-B-4%2C75"
+
+[[items]]
+vendor = "reichelt"
+group = "Backbox disconnects"
+name = "XT60 plug + socket pair"
+part = "HSTXT60 STBU"
+used_on = "04 (X_BB_F5, X_BB_F6)"
+need = "2"
+buy = 3
+priority = 3
+price = 1.99
+url = "https://www.reichelt.com/dk/en/shop/search/HSTXT60"
+note = "Solder cups, rated 30 A. The socket goes on the cabinet side, so its contacts stay shrouded when unplugged. The third pair is for a future topper feed."
+
+# ---------------------------------------------------------------------------
+# Marina-Shop / Alphacool
+# ---------------------------------------------------------------------------
+
+[[items]]
+vendor = "marina"
+group = "DC distribution"
+name = "Blue Sea Systems 5025 ST blade fuse block, 6-way, negative bus, cover"
+part = "Blue Sea 5025"
+used_on = "05, 09 (FB_24V - coils)"
+need = "1"
+buy = 1
+priority = 3
+price = 53.95
+url = "https://www.marina-shop.de/de/Sicherungsblock--fuse-block--Stromverteiler--Blue-Sea--BS5025.html"
+
+[[items]]
+vendor = "marina"
+group = "DC distribution"
+name = "Blue Sea Systems 5026 ST blade fuse block, 12-way, negative bus, cover"
+part = "Blue Sea 5026"
+used_on = "03, 04 (FB_5V), 05 (FB_12V)"
+need = "2"
+buy = 2
+priority = 3
+price = 66.95
+url = "https://www.marina-shop.de/de/Sicherungsblock--fuse-block--Stromverteiler--Blue-Sea--BS5026.html"
+
+[[items]]
+vendor = "alphacool"
+group = "Cooling"
+name = "Alphacool thermosensor single, 10 k NTC, 2-pin, 50 cm"
+part = "Alphacool 10196"
+used_on = "07 (THERMISTOR)"
+need = "1"
+buy = 1
+priority = 2
+priority_note = "Until it's fitted, run the fan curve from the CPU temperature."
+price = 2.68
+url = "https://shop.alphacool.com/en/shop/controllers-and-sensors/temperature-sensor/sen-alphacool-thermosensor-single-50cm"
+note = "Skip if your motherboard ships with a thermistor cable."
+
+# ---------------------------------------------------------------------------
+# Arcadeshoppen
+# ---------------------------------------------------------------------------
+
+[[items]]
+vendor = "arcadeshoppen"
+group = "Cabinet trim"
+name = "T-Mold 18 mm, black"
+part = "T-Mold 18mm Sort"
+used_on = "Cabinet"
+need = "4"
+buy = 4
+priority = 3
+price_dkk = 13.50
+url = "https://www.arcadeshoppen.dk/t-mold-18mm-sort.html"
+
+# ---------------------------------------------------------------------------
+# Amazon.de
+# ---------------------------------------------------------------------------
+
+[[items]]
+vendor = "amazon"
+group = "Displays"
+name = "UPERFECT portable monitor 15.6\", Full HD IPS, matte"
+part = "UPERFECT 15.6 (B0BXSNK5KD)"
+used_on = "06 (DMD)"
+need = "1"
+buy = 1
+priority = 2
+price_asis = 75.99
+ordered = "2026-10-06"
+url = "https://www.amazon.de/dp/B0BXSNK5KD"
+note = "Mini-HDMI video and USB-C power on the side, with a 20 W USB-C charger, two USB-C cables and a mini-HDMI to HDMI cable in the box. The charger goes on SWITCHED 3 (sheet 01)."
+
+[[items]]
+vendor = "amazon"
+group = "Displays"
+name = "Mini-HDMI male → HDMI female adapter, 180° U-shape"
+part = "Duttek B0BXK8ZCVD (down angle)"
+used_on = "06 (DMD video)"
+need = "1"
+buy = 1
+priority = 2
+price_dkk = 57.26
+url = "https://www.amazon.de/dp/B0BXK8ZCVD"
+note = "Tukkari: the DMD's side ports need 180° adapters to fit. Up or down decides which way the cable turns back, so check against the bracket first; the up-angle version is B0BXKBM4N9. Then run a normal 3 m HDMI cable from the GPU into it."
+
+[[items]]
+vendor = "amazon"
+group = "Displays"
+name = "USB-C male → female adapter, 180° U-shape, 100 W, pack of 2"
+part = "B0FBWMPW1P"
+used_on = "01, 06 (DMD power)"
+need = "1"
+buy = 1
+priority = 2
+price_dkk = 31.32
+url = "https://www.amazon.de/dp/B0FBWMPW1P"
+note = "For the DMD's USB-C power port. The second one is a spare."
+
+[[items]]
+vendor = "amazon"
+group = "Audio"
+name = "JBL Stage1 GEN2 52F, 5.25 in coaxial, 4 Ω, pair"
+part = "B0F5WSD14K"
+used_on = "06 (BB_SPK_L, BB_SPK_R)"
+need = "2 (1 pair)"
+buy = 1
+priority = 2
+price_asis = 31.15
+ordered = "2026-10-06"
+url = "https://www.amazon.de/dp/B0F5WSD14K"
+note = "When they arrive: check the fit behind the speaker panel together with the LED rings, and which tab sizes they use (one wide, one narrow) for the backbox-side speaker leads."
+
+[[items]]
+vendor = "amazon"
+group = "Mains (230 V)"
+name = "Brennenstuhl Secure-Tec 19.500A master/slave strip, 8-way, 3 m"
+part = "1159490936"
+used_on = "01 (STRIP)"
+need = "1"
+buy = 1
+priority = 1
+price_asis = 21.99
+ordered = "2026-10-06"
+url = "https://www.amazon.de/dp/B00C24Y4LS"
+note = "1 master + 5 switched + 2 always-on, two-pole switch, surge protection. Set the 8-80 W threshold with the PC idling and shut down (around 20-30 W). About 57 cm long: check it fits the rear-right floor. Coil the spare cable loosely."
+
+[[items]]
+vendor = "amazon"
+group = "Tools"
+name = "SHALL 350 W mini heat gun, with 164 heat-shrink tubes"
+part = "B0DTK87HB5"
+used_on = "all heat-shrink"
+need = "1"
+buy = 1
+priority = 1
+price_asis = 18.89
+ordered = "2026-10-06"
+url = "https://www.amazon.de/dp/B0DTK87HB5"
+
+[[items]]
+vendor = "amazon"
+group = "Tools"
+name = "BAURIX HEKTOR crimping pliers, with 700 cable lugs, 0.5–6 mm²"
+part = "B08FZMBG8H"
+used_on = "insulated ring lugs, receptacles and butt splices"
+need = "1"
+buy = 1
+priority = 1
+price_asis = 33.99
+ordered = "2026-10-06"
+url = "https://www.amazon.de/dp/B08FZMBG8H"
+note = "Keep using the fully insulated receptacles from Reichelt on the 230 V inlet tabs: kit receptacles are usually only partly insulated."
+
+[[items]]
+vendor = "amazon"
+group = "Tools"
+name = "BAURIX Perseus ferrule crimper, with 1800 ferrules, 0.5–10 mm²"
+part = "B07R6T4H7W"
+used_on = "all screw terminals"
+need = "1"
+buy = 1
+priority = 1
+price_asis = 24.19
+ordered = "2026-10-06"
+url = "https://www.amazon.de/dp/B07R6T4H7W"
+note = "Its ferrules replace the Reichelt 0.5-2.5 mm² assortment. The 0.25 mm² data wires still need the small Reichelt assortment."
+
+[[items]]
+vendor = "amazon"
+group = "Addressable LEDs"
+name = "BTF-LIGHTING WS2812B strip, 144 LED/m, IP30, black PCB, 2 m (cut to ~1.3 m)"
+part = "B01CDTEJR0 (choose the 2 m variant)"
+used_on = "03 (SIDE_L, SIDE_R)"
+need = "2 × ~1.3 m (~187 LEDs each)"
+buy = 2
+priority = 3
+url = "https://www.amazon.de/-/en/BTF-LIGHTING-WS2812B-Length-Addressable-Waterproof/dp/B01CDTEJR0"
+
+[[items]]
+vendor = "amazon"
+group = "Addressable LEDs"
+name = "WS2812B strip, 60 LED/m, IP65, 5 m"
+part = "e.g. BTF-LIGHTING"
+used_on = "04 (under-cab U-run: down one side, across the front, back the other)"
+need = "≈3.0 m"
+buy = 1
+priority = 3
+url = "https://www.amazon.de/s?k=BTF-LIGHTING+WS2812B+60+LED+IP65+5m"
+
+[[items]]
+vendor = "amazon"
+group = "Addressable LEDs"
+name = "WS2812B strip, 60 LED/m, 3 m"
+part = "e.g. BTF-LIGHTING"
+used_on = "04 (behind-backbox inverted U: up one side, across the top, down the other)"
+need = "≈2.0 m"
+buy = 1
+priority = 3
+url = "https://www.amazon.de/s?k=BTF-LIGHTING+WS2812B+60+LED+3m"
+note = "A separate reel for the behind-backbox run; it doesn't fit on the under-cab reel."
+
+[[items]]
+vendor = "amazon"
+group = "Addressable LEDs"
+name = "WS2812B LED ring for a 5.25\" speaker (~40 LEDs)"
+part = "WS2812B ring"
+used_on = "04 (RING_L, RING_R)"
+need = "2"
+buy = 2
+priority = 3
+url = "https://www.amazon.de/s?k=WS2812B+LED+ring+5V"
+note = "Measure your speaker grilles first. A short piece of the 60/m strip bent round the cone works too."
+
+[[items]]
+vendor = "amazon"
+group = "Addressable LEDs"
+name = "Aluminium LED profile with diffuser, 2 m (cut to ~1.3 m), for 12 mm strip"
+part = "LED profile"
+used_on = "03 (side strips)"
+need = "2 × ~1.3 m"
+buy = 2
+priority = 3
+url = "https://www.amazon.de/s?k=aluminium+LED+profil+1m+12mm+diffusor"
+
+[[items]]
+vendor = "amazon"
+group = "Cable management"
+name = "Stageek open-slot cable raceway with cover, 9 × 39 cm (3.5 m), black"
+part = "B07FFN2HN6"
+used_on = "Floor trays for 4 segregated lanes: mains, DC + LED, speakers, signals"
+need = "≈6.8 m floor + short vertical runs"
+buy = 3
+priority = 1
+url = "https://www.amazon.de/-/en/Stageek-Management-Self-Adhesive-Ceiling-Mounting-black/dp/B07FFN2HN6?th=1"
+note = "All wire lengths are routed through these. 40 × 20 mm profile. Use the included screws as well as the adhesive, since the cabinet gets warm."
+
+# ---------------------------------------------------------------------------
+# CSD / displays / not decided
+# ---------------------------------------------------------------------------
+
+[[items]]
+vendor = "amazon"
+group = "Real mechs"
+name = "Pluggable screw terminal block, 5.08 mm, cable-to-cable (plug + socket, both with screws) — 6-pin ×3, 4-pin ×2"
+part = "e.g. 2EDGK + 2EDGRK 5.08 mm"
+used_on = "05, 09 (X_FLIP_L, X_FLIP_R, X_BB_TOYS 6-pin; X_BUMP_F, X_BUMP_R 4-pin)"
+need = "3 × 6-pin + 2 × 4-pin"
+buy = 1
+priority = 3
+price_dkk = 90.00
+estimate = true
+url = "https://www.amazon.de/s?k=5.08mm+pluggable+terminal+block+plug+socket+screw+6+pin"
+note = "The shelves' quick-connects: unplug to lift a shelf out. James uses 3.81 mm ones (7 A per pin); 5.08 mm carries ~10 A."
+
+[[items]]
+vendor = "amazon"
+group = "Real mechs"
+name = "5×20 mm slow-blow fuse assortment (1-10 A)"
+part = "e.g. AUKENIEN T-fuse kit"
+used_on = "05, 09 (BUNNY outputs: 1 A lamps, 2 A beacons/bell, 4 A knocker, 5 A motors)"
+need = "1"
+buy = 1
+priority = 3
+price_dkk = 75.00
+estimate = true
+url = "https://www.amazon.de/s?k=5x20+slow+blow+fuse+assortment"
+
+[[items]]
+vendor = "amazon"
+group = "Real mechs"
+name = "12 V gear motor (car window-lifter motor)"
+part = "e.g. Bosch/MEG window-lifter motor, 12 V"
+used_on = "05 (GEAR_MOTOR)"
+need = "1"
+buy = 1
+priority = 3
+price_dkk = 110.00
+estimate = true
+url = "https://www.amazon.de/s?k=12V+window+lifter+motor"
+note = "Print a mount (James' and Filippo's builds use one); fit a La Nettoyeuse at the motor."
+
+[[items]]
+vendor = "amazon"
+group = "Real mechs"
+name = "12 V alarm bell, 4 in, internal striker"
+part = "e.g. 4 in 12 V fire alarm bell"
+used_on = "05 (ALARM_BELL, backbox)"
+need = "1"
+buy = 1
+priority = 3
+price_dkk = 150.00
+estimate = true
+url = "https://www.amazon.de/s?k=12V+alarm+bell+4+inch"
+
+[[items]]
+vendor = "amazon"
+group = "Real mechs"
+name = "12 V LED beacon, magnetic (left + right on the backbox)"
+part = "e.g. COLORLAM 40 W 12/24 V beacon"
+used_on = "05 (BEACON_L, BEACON_R)"
+need = "2"
+buy = 2
+priority = 3
+price_dkk = 150.00
+estimate = true
+url = "https://www.amazon.de/s?k=12V+LED+beacon+magnetic"
+note = "James opens each beacon, threads its cable through a hole in the backbox top and re-crimps it, instead of cutting the plug off."
+
+[[items]]
+vendor = "amazon"
+group = "Real mechs"
+name = "12 V COB LED strip, cool white, 1 m"
+part = "e.g. 12 V COB 6000 K"
+used_on = "05 (PERSPEX_LIGHTS)"
+need = "≈1 m (two pieces)"
+buy = 1
+priority = 3
+price_dkk = 60.00
+estimate = true
+url = "https://www.amazon.de/s?k=12V+COB+LED+strip+cool+white"
+[[items]]
+vendor = "csd"
+group = "Audio"
+name = "High Power SSF kit, 4.1, with subwoofer (amp, 24 V PSU, 7.1 sound card, 4 exciters, bass shaker, Dayton DCS165-4)"
+part = "High Power SSF Kit, 4.1 + subwoofer"
+used_on = "06 (incl. SUB)"
+need = "1"
+buy = 1
+priority = 2
+price_dkk = 4500.00
+estimate = true
+url = "https://www.clevelandsoftwaredesign.com/pinball-parts/p/high-power-ssf-kit"
+note = "Landed estimate at ~6.7 kr/$: $416 kit + $85 shipping ≈ 3,360 kr, + ~2-3 % duty ≈ 85 kr, + 25 % VAT on all of it ≈ 860 kr, + carrier clearance fee ≈ 150-300 kr. The included sub is the same Dayton DCS165-4 Tukkari recommends. Check the PSU is 100-240 V and ask CSD for an EU mains cord (or buy one)."
+
+[[items]]
+vendor = "pricerunner"
+group = "Displays"
+name = "LG OLED evo C5 42\" (playfield)"
+part = "OLED42C54LA"
+used_on = "01, 06 (OLED)"
+need = "1"
+buy = 1
+priority = 1
+price_dkk = 4725.00
+ordered = "2026-09-27"
+url = "https://www.pricerunner.dk/search?q=OLED42C54LA"
+
+[[items]]
+vendor = "pricerunner"
+group = "Displays"
+name = "ViewSonic VA3209-MH 32\" (backglass)"
+part = "VA3209-MH"
+used_on = "01, 06 (BACKGLASS)"
+need = "1"
+buy = 1
+priority = 2
+price_dkk = 1500.00
+estimate = true
+url = "https://www.pricerunner.dk/pl/25-3202780891/Skaerme/Viewsonic-Va3209-mh-Va-Sammenlign-Priser"
+note = "Sheet 06 assumes DisplayPort for the backglass; check which inputs this model has before settling on cables."
+
+[[items]]
+vendor = "flyland"
+group = "Cabinet"
+name = "Williams Pinball Mashup cabinet vinyl decal wrap, custom-sized for the Tukkari"
+part = "Williams Pinball Mashup Cabinet Vinyl Decal Wrap"
+used_on = "Cabinet"
+need = "1"
+buy = 1
+priority = 1
+priority_note = "Must have because it goes on first: apply the decals to the bare cabinet, before the legs, side rails, coin door and buttons are mounted."
+price_dkk = 3100.00
+estimate = true
+ordered = "2026-10-17"
+url = "https://www.flylanddesigns.com/product-tag/virtual-pinball/"
+note = "Landed estimate at ~6.7 kr/$: $249.95 wrap + $85 shipping ≈ 2,245 kr, + 0-6.5 % duty (depends on whether customs treats it as printed decals or self-adhesive film) ≈ 0-145 kr, + 25 % VAT ≈ 560-600 kr, + clearance fee ≈ 150-300 kr. Replace with the real figure when the customs invoice arrives."
+
+# ---------------------------------------------------------------------------
+# Real mechs: pinball.center, Smallcab, chimes
+# ---------------------------------------------------------------------------
+
+[[items]]
+vendor = "pinballcenter"
+group = "Real mechs"
+name = "Flipper assembly complete - left (WPC, WPC-95, 2000; FL-11629 coil)"
+part = "WPC flipper assembly left"
+used_on = "09 (FLIPPER_L)"
+need = "1"
+buy = 1
+priority = 3
+price_asis = 74.74
+estimate = true
+url = "https://www.pinball.center/en/miscellaneous/7311-flipper-assembly-complete---left-wpc-wpc-95-2000.html"
+
+[[items]]
+vendor = "pinballcenter"
+group = "Real mechs"
+name = "Flipper assembly complete - right (WPC, WPC-95, 2000; FL-11629 coil)"
+part = "WPC flipper assembly right"
+used_on = "09 (FLIPPER_R)"
+need = "1"
+buy = 1
+priority = 3
+price_asis = 74.74
+estimate = true
+url = "https://www.pinball.center/en/miscellaneous/7312-flipper-assembly-complete---right-wpc-wpc-95-2000.html"
+
+[[items]]
+vendor = "pinballcenter"
+group = "Real mechs"
+name = "Bumper assembly with coil for Williams (AE-23-800)"
+part = "AE-23-800 assembly"
+used_on = "09 (6 pop bumpers + 2 used as slingshot kickers)"
+need = "8"
+buy = 8
+priority = 3
+price_asis = 35.90
+url = "https://www.pinball.center/en/shop/pinball-parts/playfield-parts/bumper-parts/11908/bumper-assembly-with-coil-for-williams-ae-23-800?c=2172"
+
+[[items]]
+vendor = "pinballcenter"
+group = "Real mechs"
+name = "Pop bumper top parts per bumper: ring & rod, base, skirt, body, spring, cap"
+part = "Bumper top parts (6 items)"
+used_on = "09 (the 6 pop bumpers)"
+need = "6 sets"
+buy = 6
+priority = 3
+price_asis = 9.84
+estimate = true
+url = "https://www.pinball.center/en/3413-bumper-parts"
+note = "Order the six parts separately (Filippo's list: ring & rod 4.19, base 0.69, skirt 1.09, body 1.39, spring 0.49, cap 1.99 EUR); pick cap colours to suit the theme."
+
+[[items]]
+vendor = "pinballcenter"
+group = "Real mechs"
+name = "Coin door interlock switch, DPDT, E79-30A"
+part = "E79-30A"
+used_on = "05 (INTERLOCK: Perspex lights, optional BRAIN door input)"
+need = "1"
+buy = 1
+priority = 3
+price_asis = 5.12
+estimate = true
+url = "https://www.pinball.center/en/"
+note = "Mount with a printed bracket on the coin door frame."
+
+[[items]]
+vendor = "smallcab"
+group = "Real mechs"
+name = "Knocker assembly, Data East/Sega (with return spring)"
+part = "DE/Sega knocker"
+used_on = "09 (KNOCKER, backbox)"
+need = "1"
+buy = 1
+priority = 3
+price_asis = 42.21
+estimate = true
+url = "https://www.smallcab.net/"
+note = "The spring lets it fire sideways - the Tukkari backbox is too shallow to mount it upright."
+
+[[items]]
+vendor = "smallcab"
+group = "Real mechs"
+name = "Knocker strike plate"
+part = "Knocker strike plate"
+used_on = "09 (KNOCKER)"
+need = "1"
+buy = 1
+priority = 3
+price_asis = 5.50
+estimate = true
+url = "https://www.smallcab.net/"
+
+[[items]]
+vendor = "smallcab"
+group = "Real mechs"
+name = "Stern-style shaker motor, 12 V"
+part = "Stern pincab shaker motor"
+used_on = "05 (SHAKER_MOTOR)"
+need = "1"
+buy = 1
+priority = 3
+price_asis = 129.00
+estimate = true
+url = "https://www.smallcab.net/"
+note = "Set its strength with the output's Max Value in the Dude's Cab configurator; no buck converter needed."
+
+[[items]]
+vendor = "chimes"
+group = "Real mechs"
+name = "Chime unit, 3 tones, with sound box"
+part = "Universal chime unit"
+used_on = "09 (CHIME_S/M/L)"
+need = "1"
+buy = 1
+priority = 3
+price_asis = 170.00
+estimate = true
+url = "https://pinside.com/pinball/shops"
+
+[[items]]
+vendor = "chimes"
+group = "Real mechs"
+name = "Pinball shell bell, 4 in"
+part = "Universal bell unit 4 in"
+used_on = "09 (BELL_L)"
+need = "1"
+buy = 1
+priority = 3
+price_asis = 48.50
+estimate = true
+url = "https://pinside.com/pinball/shops"
+
+[[items]]
+vendor = "chimes"
+group = "Real mechs"
+name = "Pinball shell bell, 3 in"
+part = "Universal bell unit 3 in"
+used_on = "09 (BELL_S)"
+need = "1"
+buy = 1
+priority = 3
+price_asis = 42.50
+estimate = true
+url = "https://pinside.com/pinball/shops"

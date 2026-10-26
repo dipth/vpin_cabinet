@@ -1,0 +1,238 @@
+# -----------------------------------------------------------------------------
+# Shared options + YAML anchors.
+# Prepended to every harness file by `mise run build` (wireviz --prepend).
+# WireViz ignores unknown top-level keys, so `templates:` is only a place to
+# park anchors that the harness files merge in with `<<: *anchor`.
+# -----------------------------------------------------------------------------
+
+options:
+  fontname: arial
+  bgcolor: WH
+  bgcolor_node: WH
+  color_mode: SHORT
+  mini_bom_mode: true
+
+templates:
+  # --- Background colours per component family -------------------------------
+  # mains 230 V .......... #ffd6d6   (red-ish: dangerous voltage)
+  # DC power / fuses ..... #fff1c2
+  # Arnoz boards ......... #fbe0f2   (Dude's Cab pink)
+  # switches / buttons ... #eeeeee
+  # addressable LEDs ..... #dff5e6
+  # PC / audio / video ... #dde8ff
+  # future expansion ..... #f4f4f4
+
+  # --- Arnoz ------------------------------------------------------------------
+  super_dudes_cab: &super_dudes_cab
+    type: Super Dude's Cab V1
+    manufacturer: L'Atelier d'Arnoz
+    supplier: shop.arnoz.com
+    bgcolor: "#fbe0f2"
+    bgcolor_title: "#f5b7de"
+
+  button_board: &button_board
+    type: Arnoz Button Board
+    subtype: JST-PH 6-pin in + 6-way screw terminal
+    manufacturer: L'Atelier d'Arnoz
+    supplier: shop.arnoz.com
+    bgcolor: "#fbe0f2"
+    pinlabels: [GND, P1, P2, P3, P4, P5]
+
+  mx_device: &mx_device
+    manufacturer: L'Atelier d'Arnoz
+    supplier: shop.arnoz.com
+    bgcolor: "#dff5e6"
+
+  # --- Generic parts ------------------------------------------------------------
+  microswitch: &microswitch
+    type: Button microswitch
+    subtype: COM / NO
+    bgcolor: "#eeeeee"
+    pinlabels: [COM, "NO"]
+
+  wago_splice: &wago_splice
+    style: simple
+    type: WAGO 221-415
+    subtype: lever splice, 5-way
+    manufacturer: WAGO
+    bgcolor: "#fff1c2"
+
+  wago_splice_3: &wago_splice_3
+    style: simple
+    type: WAGO 221-413
+    subtype: lever splice, 3-way
+    manufacturer: WAGO
+    bgcolor: "#fff1c2"
+
+  mean_well_psu: &mean_well_psu
+    manufacturer: Mean Well
+    bgcolor: "#fff1c2"
+    bgcolor_title: "#ffe08a"
+
+  fuse_block_12: &fuse_block_12
+    type: Blade fuse block, 12-way ATO/ATC
+    subtype: with negative bus (e.g. Blue Sea Systems 5026)
+    hide_disconnected_pins: true
+    bgcolor: "#fff1c2"
+    bgcolor_title: "#ffe08a"
+    pinlabels: [BAT+, NEG IN,
+                F1, F2, F3, F4, F5, F6, F7, F8, F9, F10, F11, F12,
+                NEG1, NEG2, NEG3, NEG4, NEG5, NEG6, NEG7, NEG8, NEG9, NEG10, NEG11, NEG12]
+
+  fuse_block_6: &fuse_block_6
+    type: Blade fuse block, 6-way ATO/ATC
+    subtype: with negative bus (e.g. Blue Sea Systems 5025)
+    hide_disconnected_pins: true
+    bgcolor: "#fff1c2"
+    bgcolor_title: "#ffe08a"
+    pinlabels: [BAT+, NEG IN, F1, F2, F3, F4, F5, F6, NEG1, NEG2, NEG3, NEG4, NEG5, NEG6]
+
+  # --- Cables -------------------------------------------------------------------
+  jst_ph6_cable: &jst_ph6_cable
+    type: JST-PH 6-pin ribbon, female-female
+    supplier: shop.arnoz.com
+    gauge: 28 AWG
+    wirecount: 6
+    colors: [BK, BN, RD, OG, YE, GN]
+
+  button_lead: &button_lead
+    type: 2-core button lead
+    gauge: 0.34 mm2
+    show_equiv: true
+    wirecount: 2
+    colors: [WH, BK]
+    wirelabels: [signal, GND return]
+
+  gnd_link: &gnd_link
+    type: single wire
+    gauge: 0.34 mm2
+    show_equiv: true
+    wirecount: 1
+    colors: [BK]
+
+  # MX data: signal only. The single LED-ground reference is the Dude's Cab
+  # "GND (LED PSU)" terminal (as per the Arnoz manual). Route each data wire
+  # bundled with that LED group's power GND wire.
+  led_data: &led_data
+    type: LED data wire (bundle with the group's power pair)
+    gauge: 0.25 mm2
+    show_equiv: true
+    wirecount: 1
+    colors: [GN]
+    wirelabels: [DATA]
+    additional_components:
+      - type: 330 ohm 1/4 W resistor in series with DATA, at the first LED, heat-shrunk
+        qty: 1
+
+  led_chain: &led_chain
+    type: LED DOUT → DIN jumper
+    gauge: 0.25 mm2
+    show_equiv: true
+    wirecount: 1
+    colors: [GN]
+    wirelabels: [DATA]
+
+  led_jumper_3: &led_jumper_3
+    type: 3-core LED chain lead (JST-SM 3-pin pigtails)
+    gauge: 0.5 mm2
+    show_equiv: true
+    wirecount: 3
+    colors: [RD, GN, BK]
+    wirelabels: [+5V, DATA, GND]
+
+  pwr_pair_2_5: &pwr_pair_2_5
+    type: 2-core DC power, silicone
+    gauge: 2.5 mm2
+    show_equiv: true
+    wirecount: 2
+    colors: [RD, BK]
+    wirelabels: [+V, GND]
+
+  pwr_pair_1_5: &pwr_pair_1_5
+    type: 2-core DC power, silicone
+    gauge: 1.5 mm2
+    show_equiv: true
+    wirecount: 2
+    colors: [RD, BK]
+    wirelabels: [+V, GND]
+
+  pwr_pair_1_0: &pwr_pair_1_0
+    type: 2-core DC power, silicone
+    gauge: 1 mm2
+    show_equiv: true
+    wirecount: 2
+    colors: [RD, BK]
+    wirelabels: [+V, GND]
+
+  pwr_pair_0_5: &pwr_pair_0_5
+    type: 2-core DC power, silicone
+    gauge: 0.5 mm2
+    show_equiv: true
+    wirecount: 2
+    colors: [RD, BK]
+    wirelabels: [+V, GND]
+
+  psu_feed_2_5mm2: &psu_feed_2_5mm2
+    type: PSU → fuse block feed, 3 parallel wires per pole, ring terminals
+    gauge: 2.5 mm2
+    show_equiv: true
+    wirecount: 6
+    colors: [RD, RD, RD, BK, BK, BK]
+    wirelabels: [+V, +V, +V, -V, -V, -V]
+    length: 0.3
+    notes: >-
+      Keep under 30 cm. The RSP-320 has three +V and three -V screws, so one
+      wire per screw. Sized for the PSU's overload limit, so no fuse is needed
+      on this run.
+
+  gnd_bond_2_5mm2: &gnd_bond_2_5mm2
+    type: Ground bond, ring terminals
+    gauge: 2.5 mm2
+    show_equiv: true
+    wirecount: 1
+    colors: [BK]
+
+  splice_5v: &splice_5v
+    style: simple
+    type: WAGO 221-415 (+5 V)
+    manufacturer: WAGO
+    bgcolor: "#ffd0c8"
+
+  splice_gnd: &splice_gnd
+    style: simple
+    type: WAGO 221-415 (GND)
+    manufacturer: WAGO
+    bgcolor: "#d9d9d9"
+
+  psu_dc_3x3: &psu_dc_3x3
+    pinlabels: [+V 1, +V 2, +V 3, -V 1, -V 2, -V 3]
+
+  mains_3core: &mains_3core
+    type: H05VV-F 3G1.5 (or H07V-K singles)
+    gauge: 1.5 mm2
+    show_equiv: true
+    wirecount: 3
+    colors: [BN, BU, GNYE]
+    wirelabels: [L, N, PE]
+    additional_components:
+      - type: Insulated ferrules / fully insulated spade terminals
+        qty: 6
+
+  mains_3core_psu: &mains_3core_psu
+    type: H05VV-F 3G1.0
+    gauge: 1 mm2
+    show_equiv: true
+    wirecount: 3
+    colors: [BN, BU, GNYE]
+    wirelabels: [L, N, PE]
+    additional_components:
+      - type: Insulated ferrules 1.0 mm2
+        qty: 6
+      - type: Cable tie-down / strain relief at PSU
+        qty: 1
+
+  molded_cord: &molded_cord
+    category: bundle
+    type: Moulded mains cord (plug-in, not field-wired)
+    wirecount: 1
+    colors: [GY]

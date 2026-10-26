@@ -1,0 +1,267 @@
+metadata:
+  title: 06 - Audio, video and USB
+  description: >-
+    PC video outputs to the three screens, the USB 7.1 sound card into the
+    CSD High Power SSF amplifier, and the amplifier's eight speaker outputs:
+    4 exciters, bass shaker, 2 backbox speakers and the cabinet subwoofer.
+  notes: >-
+    REMOVABLE BACKBOX: both backbox speakers connect through one speakON NL4
+    on the backbox floor (left = 1+/1-, right = 2+/2-). The backglass and DMD
+    video cables unplug at the monitors and are pulled down through the neck.<br/>
+    BUILD PHASES: the OLED is phase 1, and plays table sound through its own
+    speakers over HDMI until the SSF kit goes in. The backglass, DMD, SSF kit and
+    backbox speakers are phase 2; the subwoofer is phase 3.<br/>
+    CABLE LANE 3 (speakers, USB, video, amp 24 V): the centre floor tray from the
+    PC to the flipper shelf. Twist each speaker pair. Exciter leads leave the
+    tray straight across to the side walls and climb at right angles to the toy
+    and LED trays. Video and backbox speakers climb the rear-left corner to the
+    neck. The 3.5 mm line-level leads stay on the flipper shelf, with the sound
+    card right next to the amp.<br/>
+    SSF CHANNEL MAPPING (VPX 7.1 SSF convention - confirm against the CSD
+    install guide and the jack labels on your amp): FRONT = backbox music
+    speakers; REAR = exciters at the top (backbox end) of the playfield;
+    SIDE = exciters at the bottom (player end); C/SUB = bass shaker + subwoofer
+    through the amp's adjustable crossover (50-160 Hz). Set Windows to 7.1
+    with all speakers full-range and no subwoofer redirection. In VPX set the
+    sound output to SSF 7.1.<br/>
+    SPEAKERS: every output is 4 ohm stable, so connect one 4 ohm driver per
+    output and never parallel drivers on one output. Keep polarity (+/-)
+    identical on all four exciters. Twist each speaker pair and route it
+    away from LED data wires.<br/>
+    AMP POWER: the amp runs from its own 24 V brick (harness 01, switched
+    outlet). Do not power it from the Mean Well rails. The brick sits on the
+    rear floor by the strip; its DC lead is extended forward in lane 3 to the
+    amp on the real-mech flipper shelf.<br/>
+    REMOVABLE FLIPPER SHELF: the amp's own pluggable green output connectors
+    are the shelf disconnect for every speaker lead, so the shelf lifts out
+    without touching a screw terminal.<br/>
+    VIDEO: the GPU needs three outputs. Use a certified Ultra High Speed HDMI
+    cable for the OLED (4K 120 Hz, VRR). Turn the OLED on/off from the PC with
+    LGTV Companion over LAN. Do not cut its mains power.<br/>
+    USB: the Dude's Cab USB lead is in harness 02. The Dude's Cab and the sound
+    card sit on the real-mech shelves, ~2 m from the PC: give each a 2 m USB 2.0
+    extension and plug them straight into rear motherboard ports, not a passive
+    hub.
+
+connectors:
+  PC:
+    type: Gaming PC (modelled as a box)
+    subtype: rear I/O
+    bgcolor: "#dde8ff"
+    pinlabels: [GPU HDMI 2.1, GPU DisplayPort 1, GPU HDMI/DP 3, USB-A (sound card), USB-A (Dude's Cab - see 02), LAN]
+
+  OLED:
+    type: LG OLED evo C5 42 in (OLED42C54LA) - playfield
+    bgcolor: "#dde8ff"
+    pinlabels: [HDMI IN (4K 120 Hz port), LAN]
+  BACKGLASS:
+    type: 32 in IPS monitor - backglass
+    bgcolor: "#dde8ff"
+    pinlabels: [DP IN]
+  DMD:
+    type: UPERFECT 15.6 in (DMD) - mini-HDMI in, through a 180° adapter
+    bgcolor: "#dde8ff"
+    pinlabels: [HDMI IN]
+  ROUTER:
+    type: Home network (router / switch)
+    bgcolor: "#f4f4f4"
+    pinlabels: [PORT A, PORT B]
+
+  SOUNDCARD:
+    type: USB 7.1 sound card (CSD kit)
+    bgcolor: "#dde8ff"
+    pinlabels: [USB, FRONT (green), REAR (black), C/SUB (orange), SIDE (grey)]
+
+  AMP:
+    type: CSD High Power SSF amplifier
+    subtype: 7.1 mode, crossover 50-160 Hz
+    bgcolor: "#dde8ff"
+    bgcolor_title: "#a9c4f5"
+    pinlabels: [IN FRONT, IN REAR, IN C/SUB, IN SIDE,
+                SSF 1 +, SSF 1 -, SSF 2 +, SSF 2 -, SSF 3 +, SSF 3 -, SSF 4 +, SSF 4 -,
+                SHAKER +, SHAKER -,
+                BACKBOX L +, BACKBOX L -, BACKBOX R +, BACKBOX R -,
+                SUB +, SUB -]
+    notes: Output names are indicative, so match them to the silkscreen on your amp.
+
+  EXC_TOP_L: &exciter
+    type: Dayton Audio exciter, 4 ohm (CSD kit)
+    subtype: top-left, under playfield TV glass/cab side
+    bgcolor: "#dde8ff"
+    pinlabels: [+, "-"]
+  EXC_TOP_R:
+    <<: *exciter
+    subtype: top-right
+  EXC_BOT_L:
+    <<: *exciter
+    subtype: bottom-left (player end)
+  EXC_BOT_R:
+    <<: *exciter
+    subtype: bottom-right (player end)
+  SHAKER:
+    type: Dayton Audio BST-1 bass shaker, 4 ohm (CSD kit)
+    subtype: cabinet floor, middle (not under the Dude's Cab)
+    bgcolor: "#dde8ff"
+    pinlabels: [+, "-"]
+  BB_SPK_L: &bb_speaker
+    type: 5.25 in speaker, 4 ohm - backbox left
+    bgcolor: "#dde8ff"
+    pinlabels: [+, "-"]
+  BB_SPK_R:
+    <<: *bb_speaker
+    type: 5.25 in speaker, 4 ohm - backbox right
+  SUB:
+    type: Dayton Audio DCS165-4, 6.5 in, 4 ohm (CSD kit option)
+    subtype: in Tukkari's 6.5 in subwoofer position
+    bgcolor: "#dde8ff"
+    pinlabels: [+, "-"]
+
+  X_BB_SPK:
+    type: "Neutrik speakON NL4: cable plug NL4FXX-W-S + chassis socket NL4MPXX"
+    subtype: "BACKBOX DISCONNECT - socket in the backbox floor, 4.8 mm tabs"
+    bgcolor: "#dde8ff"
+    pinlabels: ["1+", "1-", "2+", "2-"]
+
+cables:
+  V_OLED:
+    category: bundle
+    type: Ultra High Speed HDMI 48 Gbps, certified
+    wirecount: 1
+    colors: [BK]
+    length: 1.8
+  V_BG:
+    category: bundle
+    type: DisplayPort 1.4
+    wirecount: 1
+    colors: [BK]
+    length: 1.8
+  V_DMD:
+    category: bundle
+    type: HDMI High Speed, 3 m, into the 180° mini-HDMI adapter (the supplied mini-HDMI cable is for bench tests)
+    wirecount: 1
+    colors: [BK]
+    length: 1.7
+  N_PC:
+    category: bundle
+    type: Cat6 Ethernet (or Wi-Fi)
+    wirecount: 1
+    colors: [BU]
+  N_OLED:
+    category: bundle
+    type: Cat6 Ethernet (or Wi-Fi) - for LGTV Companion
+    wirecount: 1
+    colors: [BU]
+  U_SC:
+    category: bundle
+    type: USB lead (CSD kit)
+    wirecount: 1
+    colors: [BK]
+    length: 1.8
+  A_IN:
+    category: bundle
+    type: 3.5 mm stereo jack leads (CSD kit)
+    wirecount: 4
+    colors: [GN, BK, OG, GY]
+    wirelabels: [front, rear, c/sub, side]
+    length: 0.2
+
+  S_EXC_TOP_L: &spk_1mm
+    type: Speaker cable, twisted, pre-crimped (CSD kit)
+    gauge: 1 mm2
+    show_equiv: true
+    wirecount: 2
+    colors: [RD, BK]
+    wirelabels: [+, "-"]
+    length: 2.2
+  S_EXC_TOP_R:
+    length: 2.4
+    <<: *spk_1mm
+  S_EXC_BOT_L:
+    <<: *spk_1mm
+    length: 1.4
+  S_EXC_BOT_R:
+    <<: *spk_1mm
+    length: 1.6
+  S_BB_L: &spk_bb
+    <<: *spk_1mm
+    type: Speaker cable 2 × 1.5 mm2, to the speakON plug
+    gauge: 1.5 mm2
+    length: 2.5
+    notes: Sleeve the left and right pairs together with heat-shrink where they enter the speakON plug.
+  S_BB_R:
+    <<: *spk_bb
+    length: 2.5
+  S_BB_L_BOX: &spk_bb_box
+    <<: *spk_1mm
+    type: Speaker cable 2 × 1.5 mm2, backbox side
+    gauge: 1.5 mm2
+    length: 0.6
+    additional_components:
+      - type: Fully insulated 4.8 mm receptacle, 1.5-2.5 mm2 (speakON socket tabs)
+        qty: 2
+  S_BB_R_BOX:
+    <<: *spk_bb_box
+  S_SHAKER: &spk_1_5mm
+    <<: *spk_1mm
+    gauge: 1.5 mm2
+    length: 1
+  S_SUB:
+    <<: *spk_1_5mm
+    length: 0.7
+
+connections:
+  # --- video --------------------------------------------------------------------------------------
+  - - PC: [GPU HDMI 2.1]
+    - V_OLED: [1]
+    - OLED: [HDMI IN (4K 120 Hz port)]
+  - - PC: [GPU DisplayPort 1]
+    - V_BG: [1]
+    - BACKGLASS: [DP IN]
+  - - PC: [GPU HDMI/DP 3]
+    - V_DMD: [1]
+    - DMD: [HDMI IN]
+  - - PC: [LAN]
+    - N_PC: [1]
+    - ROUTER: [PORT A]
+  - - OLED: [LAN]
+    - N_OLED: [1]
+    - ROUTER: [PORT B]
+
+  # --- audio --------------------------------------------------------------------------------------
+  - - PC: [USB-A (sound card)]
+    - U_SC: [1]
+    - SOUNDCARD: [USB]
+  - - SOUNDCARD: [FRONT (green), REAR (black), C/SUB (orange), SIDE (grey)]
+    - A_IN: [1-4]
+    - AMP: [IN FRONT, IN REAR, IN C/SUB, IN SIDE]
+
+  - - AMP: [SSF 1 +, SSF 1 -]
+    - S_EXC_TOP_L: [1-2]
+    - EXC_TOP_L: [+, "-"]
+  - - AMP: [SSF 2 +, SSF 2 -]
+    - S_EXC_TOP_R: [1-2]
+    - EXC_TOP_R: [+, "-"]
+  - - AMP: [SSF 3 +, SSF 3 -]
+    - S_EXC_BOT_L: [1-2]
+    - EXC_BOT_L: [+, "-"]
+  - - AMP: [SSF 4 +, SSF 4 -]
+    - S_EXC_BOT_R: [1-2]
+    - EXC_BOT_R: [+, "-"]
+  - - AMP: [SHAKER +, SHAKER -]
+    - S_SHAKER: [1-2]
+    - SHAKER: [+, "-"]
+  - - AMP: [BACKBOX L +, BACKBOX L -]
+    - S_BB_L: [1-2]
+    - X_BB_SPK: ["1+", "1-"]
+  - - X_BB_SPK: ["1+", "1-"]
+    - S_BB_L_BOX: [1-2]
+    - BB_SPK_L: [+, "-"]
+  - - AMP: [BACKBOX R +, BACKBOX R -]
+    - S_BB_R: [1-2]
+    - X_BB_SPK: ["2+", "2-"]
+  - - X_BB_SPK: ["2+", "2-"]
+    - S_BB_R_BOX: [1-2]
+    - BB_SPK_R: [+, "-"]
+  - - AMP: [SUB +, SUB -]
+    - S_SUB: [1-2]
+    - SUB: [+, "-"]

@@ -1,0 +1,535 @@
+metadata:
+  title: 09 - Real-mech coils (24 V)
+  description: >-
+    The real pinball mechs on the Tukkari real-mech add-on: two flippers, two
+    slingshots and two rows of three pop bumpers, plus a three-tone chime
+    unit, two shell bells and the knocker. Every coil runs on the 24 V block
+    (sheet 05) and is switched by BUNNY 1. Each removable shelf plugs in
+    through a pluggable terminal block, so it lifts out without unscrewing a
+    wire.
+  notes: >-
+    BUILD PHASE 3 (later). Nothing here is needed to play.<br/>
+    CABLE LANE 2b (toy power): 24 V feeds and coil returns run in the
+    left-wall floor tray and cross to the right side along the underside of the
+    bumper-row braces. Twist each feed with its returns where they run
+    together.<br/>
+    COIL PROTECTION, THREE LAYERS: (1) the Dude's Cab configurator - every coil
+    output gets a Max ON time / security delay; flippers use FallOff Delay
+    ~35 ms and FallOff Value ~10 % so the hold is PWM'd, and Security Delay
+    ~60 s. (2) A resettable PTC (Littelfuse RXEF250: 2.5 A hold, 5 A trip) in
+    each flipper's + leg, on the shelf. (3) The 2.5 A slow-blow fuse on each
+    BUNNY output (4 A for the knocker). A stuck 24 V coil can pull 6-7 A and
+    melt within a minute, so set (1) before the first power-up.<br/>
+    DIODES: every coil needs a flyback diode across it (1N4007, band to the +
+    lug). Flipper and pop-bumper assemblies usually come with one fitted;
+    check, and fit one where missing (chimes, bells, knocker).<br/>
+    FLIPPERS: WPC flipper assemblies with FL-11629 (50 V) coils. At 24 V they
+    are softer than in a real machine, which suits a cabinet with no ball.
+    Only the power winding is wired (two lugs); the EOS switch is not used.<br/>
+    SLINGSHOTS: pop-bumper coil assemblies (AE-23-800) mounted as kickers, as
+    in Filippo's build.<br/>
+    QUICK-CONNECT RATING: 5.08 mm pluggable blocks carry about 10 A per pin -
+    plenty for coil pulses. A coil stuck on would overload them, which is one
+    more reason to set the coil protection first.<br/>
+    CHIMES AND BELLS: chime unit on the right wall in front of the 5 V
+    supply, bells on the rear wall either side of the fans. Both are
+    fixed to the cabinet, so they are wired direct with no quick-connect.<br/>
+    KNOCKER: Data East/Sega knocker with a return spring, mounted on its side
+    in the shallow backbox, with a strike plate. It plugs in through the
+    backbox toy disconnect (sheet 05).
+
+connectors:
+  FB_24V:
+    <<: *fuse_block_6
+    subtype: "24 V COIL rail. F1: 15 A flippers, F2: 10 A slings, F3: 10 A front bumpers, F4: 10 A rear bumpers, F5: 10 A chimes + bells, F6: 7.5 A knocker"
+    additional_components:
+      - type: ATO blade fuse 15 A
+        qty: 1
+      - type: ATO blade fuse 10 A
+        qty: 4
+      - type: ATO blade fuse 7.5 A
+        qty: 1
+
+  BUNNY_1:
+    type: Arnoz BUNNY
+    subtype: "DIP address 1: 24 V coils. Fuses 5x20 mm slow-blow"
+    manufacturer: L'Atelier d'Arnoz
+    supplier: shop.arnoz.com
+    bgcolor: "#fbe0f2"
+    pinlabels: [OUT 1 - Flipper L, OUT 2 - Flipper R, OUT 3 - Sling L, OUT 4 - Sling R,
+                OUT 5 - Bumper front L, OUT 6 - Bumper front M, OUT 7 - Bumper front R,
+                OUT 8 - Bumper rear L, OUT 9 - Bumper rear M, OUT 10 - Bumper rear R,
+                OUT 11 - Chime small, OUT 12 - Chime medium, OUT 13 - Chime large,
+                OUT 14 - Bell small, OUT 15 - Bell large, OUT 16 - Knocker (4 A SB)]
+    notes: OUT 1-15 2.5 A slow-blow, OUT 16 4 A slow-blow.
+
+  # --- Flipper shelf (front, behind the board shelf) -----------------------------------------
+  X_FLIP_L: &x_flip
+    type: Pluggable screw terminal block, 6-pin, 5.08 mm
+    subtype: "SHELF DISCONNECT - flipper shelf, left. Plug on the shelf, socket on the cabinet side"
+    bgcolor: "#fff1c2"
+    pinlabels: [+24V FLIPPER, FLIPPER -, +24V SLING, SLING -, SPARE 1, SPARE 2]
+  X_FLIP_R:
+    <<: *x_flip
+    subtype: "SHELF DISCONNECT - flipper shelf, right"
+
+  FLIPPER_L: &flipper
+    type: WPC flipper assembly, left (FL-11629 coil)
+    subtype: real-mech flipper shelf
+    bgcolor: "#eeeeee"
+    pinlabels: [COIL +, COIL -]
+  FLIPPER_R:
+    <<: *flipper
+    type: WPC flipper assembly, right (FL-11629 coil)
+  PTC_L: &ptc
+    type: Resettable PTC fuse, Littelfuse RXEF250 (2.5 A hold, 5 A trip)
+    subtype: in the flipper's + leg, on the shelf
+    bgcolor: "#fff1c2"
+    pinlabels: [IN, OUT]
+  PTC_R:
+    <<: *ptc
+  SLING_L: &coil
+    type: Pop-bumper coil assembly AE-23-800, mounted as a slingshot kicker - left
+    subtype: real-mech flipper shelf
+    bgcolor: "#eeeeee"
+    pinlabels: [COIL +, COIL -]
+  SLING_R:
+    <<: *coil
+    type: Pop-bumper coil assembly AE-23-800, mounted as a slingshot kicker - right
+
+  # --- Bumper rows --------------------------------------------------------------------------
+  X_BUMP_F: &x_bump
+    type: Pluggable screw terminal block, 4-pin, 5.08 mm
+    subtype: "SHELF DISCONNECT - front bumper row"
+    bgcolor: "#fff1c2"
+    pinlabels: [+24V, LEFT -, MIDDLE -, RIGHT -]
+  X_BUMP_R:
+    <<: *x_bump
+    subtype: "SHELF DISCONNECT - rear bumper row"
+  BUMP_F_L: &bumper
+    type: Pop bumper assembly AE-23-800 - front row, left
+    bgcolor: "#eeeeee"
+    pinlabels: [COIL +, COIL -]
+  BUMP_F_M:
+    <<: *bumper
+    type: Pop bumper assembly AE-23-800 - front row, middle
+  BUMP_F_R:
+    <<: *bumper
+    type: Pop bumper assembly AE-23-800 - front row, right
+  BUMP_R_L:
+    <<: *bumper
+    type: Pop bumper assembly AE-23-800 - rear row, left
+  BUMP_R_M:
+    <<: *bumper
+    type: Pop bumper assembly AE-23-800 - rear row, middle
+  BUMP_R_R:
+    <<: *bumper
+    type: Pop bumper assembly AE-23-800 - rear row, right
+  SPL_FLIP_24V:
+    <<: *wago_splice_3
+    type: WAGO 221-413 (+24 V flippers, under the flipper shelf)
+  SPL_SLING_24V:
+    <<: *wago_splice_3
+    type: WAGO 221-413 (+24 V slings, under the flipper shelf)
+  SPL_BUMP_F:
+    <<: *wago_splice
+    type: WAGO 221-415 (+24 V front bumpers, on the brace)
+  SPL_BUMP_R:
+    <<: *wago_splice
+    type: WAGO 221-415 (+24 V rear bumpers, on the brace)
+
+  # --- Chimes, bells, knocker ----------------------------------------------------------------
+  CHIME_S: &chime
+    type: Chime unit (3 tones, with sound box) - small
+    subtype: right wall, middle
+    bgcolor: "#eeeeee"
+    pinlabels: [COIL +, COIL -]
+  CHIME_M:
+    <<: *chime
+    type: Chime unit - medium
+  CHIME_L:
+    <<: *chime
+    type: Chime unit - large
+  BELL_S:
+    <<: *chime
+    type: Shell bell, 3 in
+    subtype: rear wall, right
+  BELL_L:
+    <<: *chime
+    type: Shell bell, 4 in
+    subtype: rear wall, left
+  SPL_F5_24V:
+    <<: *wago_splice_3
+    type: WAGO 221-413 (+24 V F5 split, at the 24 V block)
+  SPL_CHIME_24V:
+    <<: *wago_splice
+    type: WAGO 221-415 (+24 V chimes, at the chime unit)
+  SPL_BELL_24V:
+    <<: *wago_splice_3
+    type: WAGO 221-413 (+24 V bells, rear wall)
+  X_BB_TOYS:
+    type: Pluggable screw terminal block, 6-pin, 5.08 mm (plug + socket)
+    subtype: "BACKBOX DISCONNECT - toys (12 V side on sheet 05)"
+    bgcolor: "#fff1c2"
+    pinlabels: [+24V, KNOCKER -, +12V, ALARM BELL -, BEACON L -, BEACON R -]
+  KNOCKER:
+    <<: *chime
+    type: Data East/Sega knocker with spring + strike plate
+    subtype: backbox, mounted on its side
+
+cables:
+  PW_FLIP:
+    <<: *gnd_link
+    type: +24 V flipper feed
+    gauge: 1.5 mm2
+    colors: [OG]
+    length: 1.7
+  PW_FLIP_L: &shelf_feed
+    <<: *gnd_link
+    type: +24 V, splice → quick-connect
+    gauge: 1 mm2
+    colors: [OG]
+    length: 0.6
+  PW_FLIP_R:
+    <<: *shelf_feed
+    length: 0.6
+  PW_SLING:
+    <<: *gnd_link
+    type: +24 V sling feed
+    gauge: 1.5 mm2
+    colors: [OG]
+    length: 1.7
+  PW_SLING_L:
+    <<: *shelf_feed
+    length: 0.6
+  PW_SLING_R:
+    <<: *shelf_feed
+    length: 0.6
+  R_FLIP_L: &shelf_returns
+    type: Coil returns, BUNNY 1 → quick-connect (flipper + sling)
+    gauge: 1 mm2
+    show_equiv: true
+    wirecount: 2
+    colors: [WH, BU]
+    wirelabels: [FLIPPER -, SLING -]
+    length: 0.6
+  R_FLIP_R:
+    <<: *shelf_returns
+    length: 1
+  C_FLIP_L: &shelf_coils
+    type: Shelf-side coil leads (flipper via PTC, sling)
+    gauge: 1 mm2
+    show_equiv: true
+    wirecount: 4
+    colors: [OG, WH, OG, BU]
+    wirelabels: [+24V FLIPPER, FLIPPER -, +24V SLING, SLING -]
+    length: 0.4
+  C_FLIP_R:
+    <<: *shelf_coils
+    length: 0.4
+  C_PTC_L:
+    <<: *gnd_link
+    type: PTC → flipper coil +
+    gauge: 1 mm2
+    colors: [OG]
+    length: 0.1
+  C_PTC_R:
+    <<: *gnd_link
+    type: PTC → flipper coil +
+    gauge: 1 mm2
+    colors: [OG]
+    length: 0.1
+
+  PW_BUMP_F:
+    <<: *gnd_link
+    type: +24 V front bumper feed
+    gauge: 1.5 mm2
+    colors: [OG]
+    length: 1.2
+  PW_BUMP_R:
+    <<: *gnd_link
+    type: +24 V rear bumper feed
+    gauge: 1.5 mm2
+    colors: [OG]
+    length: 0.7
+  R_BUMP_F: &bump_returns
+    type: Bumper returns, BUNNY 1 → quick-connect
+    gauge: 1 mm2
+    show_equiv: true
+    wirecount: 3
+    colors: [WH, BU, GN]
+    wirelabels: [LEFT -, MIDDLE -, RIGHT -]
+    length: 1.6
+  R_BUMP_R:
+    <<: *bump_returns
+    length: 2
+  C_BUMP_F: &bump_side
+    type: Brace-side lead, quick-connect → bumper row (+24 V on a splice, 3 returns)
+    gauge: 1 mm2
+    show_equiv: true
+    wirecount: 4
+    colors: [OG, WH, BU, GN]
+    wirelabels: [+24V, LEFT -, MIDDLE -, RIGHT -]
+    length: 0.3
+  C_BUMP_R:
+    <<: *bump_side
+    length: 0.3
+  C_BF_L: &bump_lead
+    type: 2-core coil lead, splice/quick-connect → bumper
+    gauge: 1 mm2
+    show_equiv: true
+    wirecount: 2
+    colors: [OG, WH]
+    wirelabels: [+24V, "-"]
+    length: 0.3
+  C_BF_M:
+    <<: *bump_lead
+    length: 0.2
+  C_BF_R:
+    <<: *bump_lead
+    length: 0.4
+  C_BR_L:
+    <<: *bump_lead
+    length: 0.3
+  C_BR_M:
+    <<: *bump_lead
+    length: 0.2
+  C_BR_R:
+    <<: *bump_lead
+    length: 0.4
+
+  PW_F5:
+    <<: *gnd_link
+    type: +24 V F5 → splice
+    gauge: 1.5 mm2
+    colors: [OG]
+    length: 0.2
+  PW_CHIMES:
+    <<: *gnd_link
+    type: +24 V chime feed
+    gauge: 1 mm2
+    colors: [OG]
+    length: 2
+  PW_BELLS:
+    <<: *gnd_link
+    type: +24 V bell feed, up the rear-left corner and along the rear wall
+    gauge: 1 mm2
+    colors: [OG]
+    length: 0.9
+  R_CHIMES:
+    type: Chime returns, BUNNY 1 → chime unit
+    gauge: 1 mm2
+    show_equiv: true
+    wirecount: 3
+    colors: [WH, BU, GN]
+    wirelabels: [SMALL -, MEDIUM -, LARGE -]
+    length: 2.4
+  C_CHIME_S: &chime_lead
+    <<: *gnd_link
+    type: +24 V splice → chime coil
+    gauge: 1 mm2
+    colors: [OG]
+    length: 0.2
+  C_CHIME_M:
+    <<: *chime_lead
+  C_CHIME_L:
+    <<: *chime_lead
+  C_BELL_S: &bell_lead
+    <<: *gnd_link
+    type: +24 V bell splice → bell
+    gauge: 1 mm2
+    colors: [OG]
+    length: 0.8
+  C_BELL_L:
+    <<: *bell_lead
+    length: 0.2
+  R_BELLS:
+    type: Bell returns, BUNNY 1 → rear wall (split to each bell at the end)
+    gauge: 1 mm2
+    show_equiv: true
+    wirecount: 2
+    colors: [WH, BU]
+    wirelabels: [SMALL -, LARGE -]
+    length: 2.7
+
+  PW_KNOCKER:
+    <<: *gnd_link
+    type: +24 V knocker feed
+    gauge: 1 mm2
+    colors: [OG]
+    length: 1.1
+  R_KNOCKER:
+    <<: *gnd_link
+    type: Knocker return, BUNNY 1 → backbox disconnect
+    gauge: 1 mm2
+    colors: [WH]
+    length: 2.5
+  C_KNOCKER_BOX:
+    type: 2-core knocker lead, backbox side
+    gauge: 1 mm2
+    show_equiv: true
+    wirecount: 2
+    colors: [OG, WH]
+    wirelabels: [+24V, "-"]
+    length: 0.6
+
+connections:
+  # --- Flippers and slings: feeds via splices, returns from BUNNY 1, all through the shelf plugs -
+  - - FB_24V: [F1]
+    - PW_FLIP: [1]
+    - SPL_FLIP_24V
+  - - SPL_FLIP_24V
+    - PW_FLIP_L: [1]
+    - X_FLIP_L: [+24V FLIPPER]
+  - - SPL_FLIP_24V
+    - PW_FLIP_R: [1]
+    - X_FLIP_R: [+24V FLIPPER]
+  - - FB_24V: [F2]
+    - PW_SLING: [1]
+    - SPL_SLING_24V
+  - - SPL_SLING_24V
+    - PW_SLING_L: [1]
+    - X_FLIP_L: [+24V SLING]
+  - - SPL_SLING_24V
+    - PW_SLING_R: [1]
+    - X_FLIP_R: [+24V SLING]
+  - - BUNNY_1: [OUT 1 - Flipper L, OUT 3 - Sling L]
+    - R_FLIP_L: [1-2]
+    - X_FLIP_L: [FLIPPER -, SLING -]
+  - - BUNNY_1: [OUT 2 - Flipper R, OUT 4 - Sling R]
+    - R_FLIP_R: [1-2]
+    - X_FLIP_R: [FLIPPER -, SLING -]
+
+  - - X_FLIP_L: [+24V FLIPPER]
+    - C_FLIP_L: [1]
+    - PTC_L: [IN]
+  - - X_FLIP_L: [FLIPPER -]
+    - C_FLIP_L: [2]
+    - FLIPPER_L: [COIL -]
+  - - PTC_L: [OUT]
+    - C_PTC_L: [1]
+    - FLIPPER_L: [COIL +]
+  - - X_FLIP_L: [+24V SLING, SLING -]
+    - C_FLIP_L: [3-4]
+    - SLING_L: [COIL +, COIL -]
+  - - X_FLIP_R: [+24V FLIPPER]
+    - C_FLIP_R: [1]
+    - PTC_R: [IN]
+  - - X_FLIP_R: [FLIPPER -]
+    - C_FLIP_R: [2]
+    - FLIPPER_R: [COIL -]
+  - - PTC_R: [OUT]
+    - C_PTC_R: [1]
+    - FLIPPER_R: [COIL +]
+  - - X_FLIP_R: [+24V SLING, SLING -]
+    - C_FLIP_R: [3-4]
+    - SLING_R: [COIL +, COIL -]
+
+  # --- Bumper rows -----------------------------------------------------------------------------
+  - - FB_24V: [F3]
+    - PW_BUMP_F: [1]
+    - X_BUMP_F: [+24V]
+  - - BUNNY_1: [OUT 5 - Bumper front L, OUT 6 - Bumper front M, OUT 7 - Bumper front R]
+    - R_BUMP_F: [1-3]
+    - X_BUMP_F: [LEFT -, MIDDLE -, RIGHT -]
+  - - X_BUMP_F: [+24V]
+    - C_BUMP_F: [1]
+    - SPL_BUMP_F
+  - - SPL_BUMP_F
+    - C_BF_L: [1]
+    - BUMP_F_L: [COIL +]
+  - - X_BUMP_F: [LEFT -]
+    - C_BF_L: [2]
+    - BUMP_F_L: [COIL -]
+  - - SPL_BUMP_F
+    - C_BF_M: [1]
+    - BUMP_F_M: [COIL +]
+  - - X_BUMP_F: [MIDDLE -]
+    - C_BF_M: [2]
+    - BUMP_F_M: [COIL -]
+  - - SPL_BUMP_F
+    - C_BF_R: [1]
+    - BUMP_F_R: [COIL +]
+  - - X_BUMP_F: [RIGHT -]
+    - C_BF_R: [2]
+    - BUMP_F_R: [COIL -]
+
+  - - FB_24V: [F4]
+    - PW_BUMP_R: [1]
+    - X_BUMP_R: [+24V]
+  - - BUNNY_1: [OUT 8 - Bumper rear L, OUT 9 - Bumper rear M, OUT 10 - Bumper rear R]
+    - R_BUMP_R: [1-3]
+    - X_BUMP_R: [LEFT -, MIDDLE -, RIGHT -]
+  - - X_BUMP_R: [+24V]
+    - C_BUMP_R: [1]
+    - SPL_BUMP_R
+  - - SPL_BUMP_R
+    - C_BR_L: [1]
+    - BUMP_R_L: [COIL +]
+  - - X_BUMP_R: [LEFT -]
+    - C_BR_L: [2]
+    - BUMP_R_L: [COIL -]
+  - - SPL_BUMP_R
+    - C_BR_M: [1]
+    - BUMP_R_M: [COIL +]
+  - - X_BUMP_R: [MIDDLE -]
+    - C_BR_M: [2]
+    - BUMP_R_M: [COIL -]
+  - - SPL_BUMP_R
+    - C_BR_R: [1]
+    - BUMP_R_R: [COIL +]
+  - - X_BUMP_R: [RIGHT -]
+    - C_BR_R: [2]
+    - BUMP_R_R: [COIL -]
+
+  # --- Chimes and bells ------------------------------------------------------------------------
+  - - FB_24V: [F5]
+    - PW_F5: [1]
+    - SPL_F5_24V
+  - - SPL_F5_24V
+    - PW_CHIMES: [1]
+    - SPL_CHIME_24V
+  - - SPL_F5_24V
+    - PW_BELLS: [1]
+    - SPL_BELL_24V
+  - - SPL_CHIME_24V
+    - C_CHIME_S: [1]
+    - CHIME_S: [COIL +]
+  - - SPL_CHIME_24V
+    - C_CHIME_M: [1]
+    - CHIME_M: [COIL +]
+  - - SPL_CHIME_24V
+    - C_CHIME_L: [1]
+    - CHIME_L: [COIL +]
+  - - BUNNY_1: [OUT 11 - Chime small]
+    - R_CHIMES: [1]
+    - CHIME_S: [COIL -]
+  - - BUNNY_1: [OUT 12 - Chime medium]
+    - R_CHIMES: [2]
+    - CHIME_M: [COIL -]
+  - - BUNNY_1: [OUT 13 - Chime large]
+    - R_CHIMES: [3]
+    - CHIME_L: [COIL -]
+  - - SPL_BELL_24V
+    - C_BELL_S: [1]
+    - BELL_S: [COIL +]
+  - - SPL_BELL_24V
+    - C_BELL_L: [1]
+    - BELL_L: [COIL +]
+  - - BUNNY_1: [OUT 14 - Bell small]
+    - R_BELLS: [1]
+    - BELL_S: [COIL -]
+  - - BUNNY_1: [OUT 15 - Bell large]
+    - R_BELLS: [2]
+    - BELL_L: [COIL -]
+
+  # --- Knocker, through the backbox disconnect -------------------------------------------------
+  - - FB_24V: [F6]
+    - PW_KNOCKER: [1]
+    - X_BB_TOYS: [+24V]
+  - - BUNNY_1: [OUT 16 - Knocker (4 A SB)]
+    - R_KNOCKER: [1]
+    - X_BB_TOYS: [KNOCKER -]
+  - - X_BB_TOYS: [+24V, KNOCKER -]
+    - C_KNOCKER_BOX: [1-2]
+    - KNOCKER: [COIL +, COIL -]
