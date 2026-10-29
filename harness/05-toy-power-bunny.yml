@@ -5,7 +5,7 @@ metadata:
     own fuse block, and two Arnoz BUNNY boards (16 PWM outputs each) switch
     every toy for DOF. BUNNY 1 drives the 24 V real-mech coils (sheet 09).
     BUNNY 2 drives the 12 V toys on this sheet: the four button lamps, the gear
-    motor, the shaker motor, the alarm bell and the two beacons.
+    motor, the shaker motor and the alarm bell.
   notes: >-
     BUILD PHASE 3 (later): nothing on this sheet is needed to play. The Dude's
     Cab outputs used here can stay unconnected until then.<br/>
@@ -52,9 +52,9 @@ metadata:
     the Perspex cover over the boards. The coin door interlock switch powers it
     only while the door is open (NC contacts close when the door opens). Its
     second pole can feed The BRAIN's DOOR input (sheet 02).<br/>
-    REMOVABLE BACKBOX: the alarm bell, the knocker (sheet 09) and the two
-    beacons connect through one 6-pin pluggable block on the backbox floor,
-    X_BB_TOYS.
+    REMOVABLE BACKBOX: the alarm bell and the knocker (sheet 09) connect
+    through one 4-pin pluggable block on the backbox floor, X_BB_TOYS. No
+    beacons: the backbox top stays clean.
 
 connectors:
   PSU_12V:
@@ -102,8 +102,7 @@ connectors:
                 OUT 1 - Start lamp (1 A), OUT 2 - Launch Ball lamp (1 A),
                 OUT 3 - Return lamp (1 A), OUT 4 - Exit lamp (1 A),
                 OUT 5 - Gear motor (5 A SB), OUT 6 - Shaker motor (5 A SB),
-                OUT 7 - Alarm bell (2 A SB), OUT 8 - Beacon L (2 A SB),
-                OUT 9 - Beacon R (2 A SB), OUT 10-16 spare]
+                OUT 7 - Alarm bell (2 A SB), OUT 8-16 spare]
     notes: On the real-mech board shelf, right of the Dude's Cab.
 
   LAMP_START: &lamp
@@ -133,14 +132,6 @@ connectors:
     <<: *toy12
     type: 12 V alarm bell, 4 in
     subtype: backbox
-  BEACON_L:
-    <<: *toy12
-    type: 12 V LED beacon - left
-    subtype: on top of the backbox
-  BEACON_R:
-    <<: *toy12
-    type: 12 V LED beacon - right
-    subtype: on top of the backbox
 
   BUCK_SHAKER:
     type: DC-DC step-down converter, 8 A (XL4016 / XH-M404 class), set to ~7 V
@@ -173,18 +164,15 @@ connectors:
     pinlabels: [+, "-"]
 
   X_BB_TOYS:
-    type: Pluggable screw terminal block, 6-pin, 5.08 mm (plug + socket)
+    type: Pluggable screw terminal block, 4-pin, 5.08 mm (plug + socket)
     subtype: "BACKBOX DISCONNECT - toys. Socket half on the cabinet side"
     bgcolor: "#fff1c2"
-    pinlabels: [+24V, KNOCKER -, +12V, ALARM BELL -, BEACON L -, BEACON R -]
+    pinlabels: [+24V, KNOCKER -, +12V, ALARM BELL -]
     notes: The knocker's two pins are wired on sheet 09.
 
   SPL_LAMP_12V:
     <<: *wago_splice
     type: WAGO 221-415 (+12 V lamps)
-  SPL_BB_12V:
-    <<: *wago_splice_3
-    type: WAGO 221-413 (+12 V backbox toys, in the backbox)
 
 cables:
   FEED_12V:
@@ -287,15 +275,15 @@ cables:
     length: 0.2
   PW_BB_TOYS:
     <<: *toy_feed
-    type: +12 V backbox toy feed (alarm bell + beacons)
+    type: +12 V backbox toy feed (alarm bell)
     length: 1.3
   T_BB_TOYS:
-    type: Backbox toy returns (alarm bell, beacon L, beacon R), from BUNNY 2
+    type: Alarm bell return, from BUNNY 2
     gauge: 1 mm2
     show_equiv: true
-    wirecount: 3
-    colors: [WH, BU, GN]
-    wirelabels: [ALARM BELL -, BEACON L -, BEACON R -]
+    wirecount: 1
+    colors: [WH]
+    wirelabels: [ALARM BELL -]
     length: 2.9
   T_BELL_BOX: &bb_lead
     type: 2-core toy lead, twisted (backbox side)
@@ -305,17 +293,6 @@ cables:
     colors: [YE, WH]
     wirelabels: [+12V, switched -]
     length: 0.5
-  T_BEACON_L_BOX:
-    <<: *bb_lead
-    length: 0.6
-  T_BEACON_R_BOX:
-    <<: *bb_lead
-    length: 0.6
-  PW_BB_TOYS_BOX:
-    <<: *toy_feed
-    gauge: 1 mm2
-    type: +12 V backbox toy feed, backbox side
-    length: 0.2
 
   PW_PERSPEX:
     <<: *toy_feed
@@ -425,13 +402,10 @@ connections:
   - - FB_12V: [F6]
     - PW_BB_TOYS: [1]
     - X_BB_TOYS: [+12V]
-  - - BUNNY_2: [OUT 7 - Alarm bell (2 A SB), OUT 8 - Beacon L (2 A SB), OUT 9 - Beacon R (2 A SB)]
-    - T_BB_TOYS: [1-3]
-    - X_BB_TOYS: [ALARM BELL -, BEACON L -, BEACON R -]
+  - - BUNNY_2: [OUT 7 - Alarm bell (2 A SB)]
+    - T_BB_TOYS: [1]
+    - X_BB_TOYS: [ALARM BELL -]
   - - X_BB_TOYS: [+12V]
-    - PW_BB_TOYS_BOX: [1]
-    - SPL_BB_12V
-  - - SPL_BB_12V
     - T_BELL_BOX: [1]
     - NETT_BELL: [IN +]
   - - X_BB_TOYS: [ALARM BELL -]
@@ -440,18 +414,6 @@ connections:
   - - NETT_BELL: [TOY +, TOY -]
     - ==>
     - ALARM_BELL: [+, "-"]
-  - - SPL_BB_12V
-    - T_BEACON_L_BOX: [1]
-    - BEACON_L: [+]
-  - - X_BB_TOYS: [BEACON L -]
-    - T_BEACON_L_BOX: [2]
-    - BEACON_L: ["-"]
-  - - SPL_BB_12V
-    - T_BEACON_R_BOX: [1]
-    - BEACON_R: [+]
-  - - X_BB_TOYS: [BEACON R -]
-    - T_BEACON_R_BOX: [2]
-    - BEACON_R: ["-"]
 
   # --- Perspex lights, only while the coin door is open --------------------------------------
   - - FB_12V: [F7]

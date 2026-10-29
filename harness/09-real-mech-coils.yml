@@ -199,10 +199,10 @@ connectors:
     <<: *wago_splice_3
     type: WAGO 221-413 (+24 V bells, rear wall)
   X_BB_TOYS:
-    type: Pluggable screw terminal block, 6-pin, 5.08 mm (plug + socket)
+    type: Pluggable screw terminal block, 4-pin, 5.08 mm (plug + socket)
     subtype: "BACKBOX DISCONNECT - toys (12 V side on sheet 05)"
     bgcolor: "#fff1c2"
-    pinlabels: [+24V, KNOCKER -, +12V, ALARM BELL -, BEACON L -, BEACON R -]
+    pinlabels: [+24V, KNOCKER -, +12V, ALARM BELL -]
   KNOCKER:
     <<: *chime
     type: Data East/Sega knocker with spring + strike plate

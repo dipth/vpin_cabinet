@@ -285,14 +285,15 @@ url = "https://shop.arnoz.com/en/adressable-led/112-backboard-hd-16x16-hard-pane
 [[items]]
 vendor = "arnoz"
 group = "Addressable LEDs"
-name = "MX FLASH + Plug"
-part = "MX FLASH + Plug"
+name = "MX FLASH (no plug)"
+part = "MX FLASH"
 used_on = "03 (FLASH_L, FLASH_R)"
 need = "2"
 buy = 2
 priority = 3
-price = 11.50
-url = "https://shop.arnoz.com/en/adressable-led/92-mx-flash-plug.html"
+price = 10.00
+url = "https://shop.arnoz.com/en/adressable-led/91-mx-flash.html"
+note = "The plain version: the green plug version doesn't fit the printed angled panel for the HD matrix and flashers. Solder the four wires straight to the pads."
 
 [[items]]
 vendor = "arnoz"
@@ -1603,10 +1604,10 @@ note = "All wire lengths are routed through these. 40 × 20 mm profile. Use the 
 [[items]]
 vendor = "amazon"
 group = "Real mechs"
-name = "Pluggable screw terminal block, 5.08 mm, cable-to-cable (plug + socket, both with screws) — 6-pin ×3, 4-pin ×2"
+name = "Pluggable screw terminal block, 5.08 mm, cable-to-cable (plug + socket, both with screws) — 6-pin ×2, 4-pin ×3"
 part = "e.g. 2EDGK + 2EDGRK 5.08 mm"
-used_on = "05, 09 (X_FLIP_L, X_FLIP_R, X_BB_TOYS 6-pin; X_BUMP_F, X_BUMP_R 4-pin)"
-need = "3 × 6-pin + 2 × 4-pin"
+used_on = "05, 09 (X_FLIP_L, X_FLIP_R 6-pin; X_BUMP_F, X_BUMP_R, X_BB_TOYS 4-pin)"
+need = "2 × 6-pin + 3 × 4-pin"
 buy = 1
 priority = 3
 price_dkk = 90.00
@@ -1619,7 +1620,7 @@ vendor = "amazon"
 group = "Real mechs"
 name = "5×20 mm slow-blow fuse assortment (1-10 A)"
 part = "e.g. AUKENIEN T-fuse kit"
-used_on = "05, 09 (BUNNY outputs: 1 A lamps, 2 A beacons/bell, 4 A knocker, 5 A motors)"
+used_on = "05, 09 (BUNNY outputs: 1 A lamps, 2 A bell, 4 A knocker, 5 A motors)"
 need = "1"
 buy = 1
 priority = 3
@@ -1666,20 +1667,6 @@ priority = 3
 price_dkk = 150.00
 estimate = true
 url = "https://www.amazon.de/s?k=12V+alarm+bell+4+inch"
-
-[[items]]
-vendor = "amazon"
-group = "Real mechs"
-name = "12 V LED beacon, magnetic (left + right on the backbox)"
-part = "e.g. COLORLAM 40 W 12/24 V beacon"
-used_on = "05 (BEACON_L, BEACON_R)"
-need = "2"
-buy = 2
-priority = 3
-price_dkk = 150.00
-estimate = true
-url = "https://www.amazon.de/s?k=12V+LED+beacon+magnetic"
-note = "James opens each beacon, threads its cable through a hole in the backbox top and re-crimps it, instead of cutting the plug off."
 
 [[items]]
 vendor = "amazon"

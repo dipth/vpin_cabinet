@@ -52,7 +52,7 @@ Tooling notes:
 | `02-inputs.yml` | Super Dude's Cab inputs: 4 Button Boards, all buttons (incl. front Return / Exit), lockbar Fire, under-cab cluster, coin door leaf switches, tilt bob, The BRAIN, POTAR plunger, PC power button, USB. |
 | `03-playfield-leds.yml` | One 5 V supply → 12-way fuse block → 6× HD 16x16 backboard panels and the left/right zones (MX Flash + side strip). MX OUT 1-5. LED ground reference. |
 | `04-cabinet-backbox-leds.yml` | Same 5 V block: MX Button chain (flippers, magnas, Fire), under-cab U-run, backbox speaker rings and behind-backbox inverted U. MX OUT 6-8. |
-| `05-toy-power-bunny.yml` | 12 V and 24 V Mean Wells and fuse blocks, the two BUNNY boards, and the 12 V toys: button lamps, gear motor, shaker motor, alarm bell, beacons, Perspex lights on the coin door interlock. |
+| `05-toy-power-bunny.yml` | 12 V and 24 V Mean Wells and fuse blocks, the two BUNNY boards, and the 12 V toys: button lamps, gear motor, shaker motor, alarm bell, Perspex lights on the coin door interlock. |
 | `06-audio-video-usb.yml` | GPU → OLED / backglass / DMD, USB 7.1 sound card → CSD SSF amp → 4 exciters, shaker, backbox speakers, subwoofer. |
 | `07-cooling.yml` | 3× PWM fans on a SATA-powered hub, speed set by the motherboard from a thermistor inside the cabinet. |
 | `08-pe-bonding.yml` | The protective-earth loop: coin door, 4 legs, side rails, lockbar clamps, plunger, backbox hinges and speaker/DMD panel. Verify-or-omit per part. |
@@ -88,7 +88,7 @@ start.
 | --- | --- | --- |
 | **1 · Must have** | A playable, safe cabinet on the OLED: flipper and magna buttons, Start, Launch Ball, Exit, the under-cab cluster with the PC power button, cooling, the mains inlet and strip, the full earth loop and all cable trays | 01 (inlet, coupler, strip, earth bar), 02 (most inputs), 07 (fans), 08 |
 | **2 · Should have** | The full experience: backglass and DMD, SSF sound, playfield glass, the plunger, tilt, Fire, Return, and the coin switches with The BRAIN | 02 (the rest), 06, 07 (thermistor) |
-| **3 · Later** | The light show and the real mechs: the three Mean Well supplies and fuse blocks, both BUNNY boards, HD backboard, MX Flash, side, under-cab and backbox strips, speaker rings, MX Buttons, button lamps, flippers, slings, pop bumpers, chimes, bells, knocker, motors, beacons and trim | 01 (PSU cords), 03, 04, 05, 09 |
+| **3 · Later** | The light show and the real mechs: the three Mean Well supplies and fuse blocks, both BUNNY boards, HD backboard, MX Flash, side, under-cab and backbox strips, speaker rings, MX Buttons, button lamps, flippers, slings, pop bumpers, chimes, bells, knocker, motors and trim | 01 (PSU cords), 03, 04, 05, 09 |
 
 Things to know when building in phases:
 - **Sound before phase 2:** set Windows' audio output to the OLED, so tables play
@@ -121,7 +121,7 @@ flowchart LR
   STRIP -- switched --> DMD
   STRIP -- switched --> AMPPSU[24V amp PSU] --> AMP[CSD SSF amp]
   STRIP -- switched --> PSU5[5V 60A PSU] --> FB5[5V fuse block] --> ALED[HD panels, strips,<br/>MX Flash, MX Buttons, rings]
-  STRIP -- switched --> PSU12[12V 26.7A PSU] --> FB12[12V fuse block] --> TOYS12[Lamps, gear motor, shaker,<br/>alarm bell, beacons]
+  STRIP -- switched --> PSU12[12V 26.7A PSU] --> FB12[12V fuse block] --> TOYS12[Lamps, gear motor, shaker,<br/>alarm bell]
   STRIP -- switched --> PSU24[24V 21A PSU] --> FB24[24V fuse block] --> COILS[Flippers, slings, bumpers,<br/>chimes, bells, knocker]
   PC -- USB --> SDC[Super Dude's Cab]
   PC -- USB --> SC[7.1 sound card] --> AMP
@@ -224,7 +224,7 @@ LED brightness caps and the coil settings before fitting a larger fuse.
 | | | F3 2 A | Start, Launch Ball, Return, Exit lamps | 0.2 A |
 | | | F4 7.5 A | Gear motor | starts ~5 A |
 | | | F5 10 A | Shaker motor, via a ~7 V step-down converter | starts ~6 A |
-| | | F6 7.5 A | Backbox: alarm bell + 2 beacons | ~4 A |
+| | | F6 7.5 A | Backbox: alarm bell | ~2 A |
 | | | F7 2 A | Perspex lights (coin door interlock) | < 1 A |
 | | | F8-F12 | spare | |
 | 24 V | RSP-500-24 (21 A) | F1 10 A | Both flippers | ~6 A pulse each, then ~0.6 A PWM hold |
@@ -237,7 +237,7 @@ LED brightness caps and the coil settings before fitting a larger fuse.
 
 Every toy and coil is also fused on its own BUNNY output (5×20 mm slow-blow:
 2.5 A for coils, 4 A for the knocker, 5 A for the motors, 1-2 A for lamps and
-beacons). The blade fuse at the block protects the wire; the BUNNY fuse protects
+the bell). The blade fuse at the block protects the wire; the BUNNY fuse protects
 the toy and the MOSFET. Each BUNNY carries up to 40 A in total.
 
 One RSP-320-5 now feeds **every** addressable LED, as in James' build. That only
@@ -294,7 +294,7 @@ braces, each with a clear acrylic shield on top:
 | Rear bumper row, near the backbox | 550 × 82 mm | Three pop bumpers |
 
 All coils run on 24 V and are switched by BUNNY 1; the 12 V toys (gear motor,
-shaker motor, alarm bell, beacons, button lamps) are on BUNNY 2. The chime unit
+shaker motor, alarm bell, button lamps) are on BUNNY 2. The chime unit
 sits on the right wall, the two shell bells on the rear wall between the fans,
 and the knocker on its side in the backbox (it is too shallow for an upright
 knocker; the Data East one has a return spring for this).
@@ -489,7 +489,7 @@ the backbox; nothing field-wired is cut or unscrewed.
 | DMD USB-C power and HDMI | Unplug both at the DMD's 180° adapters; its USB-C charger stays in the cabinet | 01, 06 |
 | Both backbox speakers | One speakON NL4 (left 1+/1-, right 2+/2-) | 06 |
 | Speaker rings (F11) and behind-backbox strip (F12) | Two XT60s, socket on the cabinet side; label them | 04 |
-| Knocker (24 V), alarm bell and both beacons (12 V) | One 6-pin pluggable terminal block, socket on the cabinet side | 05, 09 |
+| Knocker (24 V) and alarm bell (12 V) | One 4-pin pluggable terminal block, socket on the cabinet side | 05, 09 |
 | MX OUT 8 LED data | JST-SM 3-pin, data on the middle pin, two spare pins | 04 |
 | Earth loop | Two WAGO 221-413 splices; the loop becomes two spurs, so the cabinet stays bonded | 08 |
 
@@ -497,7 +497,7 @@ the backbox; nothing field-wired is cut or unscrewed.
   (speakON, IEC C13, DisplayPort/HDMI), or leave those cables lying on the
   cabinet while the backbox is off.
 - A future topper fits the same pattern: the spare XT60 for its power and a
-  spare pin on the data plug. The beacons already go through the toy plug.
+  spare pin on the data plug. There are no beacons, so the backbox top stays clean.
 - Re-test the earth loop after refitting the backbox (sheet 08).
 
 ## Safety checklist before first power-up
