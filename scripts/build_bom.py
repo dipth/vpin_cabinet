@@ -49,7 +49,7 @@ NOT_INCLUDED = [
     "The PC",
     "Parts you already own: HDMI and DisplayPort cables, USB-A → USB-C cable",
     "Other tools: wire stripper, soldering iron (for the XT60s), multimeter with a low-ohm range, step drill (arcade button holes)",
-    "Filament for the 3D prints (listed without a price)",
+    "Filament for the 3D prints (they have their own list, without prices)",
 ]
 
 PHASES = OrderedDict(
@@ -125,7 +125,7 @@ def main() -> None:
         return sum(i["total_eur"] for i in items if i["total_eur"] is not None)
 
     def unpriced(items):
-        return sum(1 for i in items if i["total_eur"] is None and not i.get("print3d"))
+        return sum(1 for i in items if i["total_eur"] is None)
 
     subtotals = {vid: subtotal(items) for vid, items in by_vendor.items()}
     grand_total = sum(subtotals.values())
@@ -188,8 +188,7 @@ def main() -> None:
             name = esc(item["name"])
             link = f'<a href="{esc(item["url"])}" target="_blank" rel="noopener">{name}</a>' if item["url"] else f"<span class=\"nolink\">{name}</span>"
             if item["unit_eur"] is None:
-                label = "3D print" if item.get("print3d") else "not priced"
-                price_cells = f'<td class="num muted">{label}</td><td class="num muted">—</td><td class="num muted">—</td>'
+                price_cells = f'<td class="num muted">not priced</td><td class="num muted">—</td><td class="num muted">—</td>'
                 total_attr = "0"
             else:
                 est = ' <span class="est">est.</span>' if item.get("estimate") else ""
@@ -201,7 +200,7 @@ def main() -> None:
                 total_attr = f'{item["total_eur"]:.2f}'
             rows.append(
                 f"""
-          <tr data-key="{esc(key)}" data-vendor="{esc(vid)}" data-total="{total_attr}" data-phase="{phase}" data-unpriced="{int(item["total_eur"] is None and not item.get("print3d"))}" data-purchased="{int(purchased)}">
+          <tr data-key="{esc(key)}" data-vendor="{esc(vid)}" data-total="{total_attr}" data-phase="{phase}" data-unpriced="{int(item["total_eur"] is None)}" data-purchased="{int(purchased)}">
             <td class="check"><input type="checkbox" aria-label="Bought: {name}"{" checked disabled" if purchased else ""}></td>
             <td class="prio"><span class="pill p{phase}">{phase} · {esc(PHASES[phase][0])}</span>{purchased_pill}</td>
             <td class="part">
@@ -263,6 +262,67 @@ def main() -> None:
       </div>
     </section>"""
         )
+
+    prints = data.get("prints", [])
+    print_rows = []
+    for item in prints:
+        phase = item["priority"]
+        name = esc(item["name"])
+        link = f'<a href="{esc(item["url"])}" target="_blank" rel="noopener">{name}</a>' if item.get("url") else f'<span class="nolink">{name}</span>'
+        flags = f'<p class="flag">{esc(item["note"])}</p>' if item.get("note") else ""
+        print_rows.append(
+            f"""
+          <tr data-print="{esc(item["name"])}" data-phase="{phase}">
+            <td class="check"><input type="checkbox" aria-label="Printed: {name}"></td>
+            <td class="prio"><span class="pill p{phase}">{phase} · {esc(PHASES[phase][0])}</span></td>
+            <td class="part">
+              {link}
+              <span class="pn">{esc(item["source"])}</span>
+              {flags}
+            </td>
+            <td class="used">{esc(item["used_on"])}</td>
+            <td class="num buy">{esc(item["need"])}</td>
+          </tr>"""
+        )
+    prints_section = (
+        f"""
+    <section class="vendor prints" id="prints">
+      <header class="vendor-head">
+        <div>
+          <h2>3D prints</h2>
+          <p class="vendor-country">Printed yourself · not in the totals</p>
+        </div>
+      </header>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th class="check"><span class="sr">Printed</span></th>
+              <th>Priority</th>
+              <th>Part</th>
+              <th>Used for (sheet)</th>
+              <th class="num">Qty</th>
+            </tr>
+          </thead>
+          <tbody>{"".join(print_rows)}
+          </tbody>
+        </table>
+      </div>
+    </section>"""
+        if prints
+        else ""
+    )
+    prints_card = (
+        f"""
+      <a class="card" href="#prints">
+        <span class="card-country">Print yourself</span>
+        <strong>3D prints</strong>
+        <span class="card-total">{len(prints)} parts</span>
+        <span class="card-meta">no shop, not in the totals</span>
+      </a>"""
+        if prints
+        else ""
+    )
 
     changes = "".join(f"<li><strong>{title}</strong> {body}</li>" for title, body in CHANGES)
     not_included = "".join(f"<li>{esc(entry)}</li>" for entry in NOT_INCLUDED)
@@ -352,6 +412,7 @@ def main() -> None:
     .flag.phase-note {{ font-style: italic; }}
     [hidden] {{ display: none !important; }}
     table {{ width: 100%; border-collapse: collapse; min-width: 960px; }}
+    .prints table {{ min-width: 640px; }}
     th, td {{ padding: 8px 10px; border-bottom: 1px solid var(--line); vertical-align: top; text-align: left; }}
     thead th {{ font-size: .75rem; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); font-weight: 600; }}
     tr.group th {{ background: var(--group); font-size: .82rem; color: var(--ink); padding: 6px 10px; }}
@@ -409,7 +470,7 @@ def main() -> None:
       </div>
     </section>
 
-    <nav class="cards" aria-label="Shops">{"".join(cards)}
+    <nav class="cards" aria-label="Shops">{"".join(cards)}{prints_card}
     </nav>
 
     <aside class="callout warn">
@@ -418,6 +479,7 @@ def main() -> None:
       <ul>{changes}</ul>
     </aside>
     {"".join(sections)}
+    {prints_section}
 
     <div class="notes">
       <section>
@@ -440,6 +502,7 @@ def main() -> None:
   <script>
     (function () {{
       var STORE = "wiring-bom-bought";
+      var PRINT_STORE = "wiring-bom-printed";
       var PHASE_STORE = "wiring-bom-phase";
       var RATE = {rate};
       var LABELS = {json.dumps({str(n): label for n, (label, _) in PHASES.items()})};
@@ -456,6 +519,9 @@ def main() -> None:
       try {{ phase = localStorage.getItem(PHASE_STORE) || "all"; }} catch (e) {{}}
       if (phase !== "all" && !LABELS[phase]) phase = "all";
       var rows = all("tr[data-key]");
+      var printRows = all("tr[data-print]");
+      var printed = {{}};
+      try {{ printed = JSON.parse(localStorage.getItem(PRINT_STORE) || "{{}}"); }} catch (e) {{ printed = {{}}; }}
 
       function update() {{
         var total = 0, remaining = 0, lines = 0, perVendor = {{}}, phaseLeft = {{}};
@@ -474,6 +540,14 @@ def main() -> None:
           if (!box.checked) {{ remaining += amount; v.left += 1; }}
         }});
 
+        var printsShown = 0;
+        printRows.forEach(function (row) {{
+          row.hidden = !(phase === "all" || phase === row.dataset.phase);
+          row.classList.toggle("done", row.querySelector("input").checked);
+          if (!row.hidden) printsShown += 1;
+        }});
+        all("section.prints").forEach(function (section) {{ section.hidden = printsShown === 0; }});
+
         all("tr.group").forEach(function (header) {{
           var next = header.nextElementSibling, any = false;
           while (next && !next.classList.contains("group")) {{
@@ -482,7 +556,7 @@ def main() -> None:
           }}
           header.hidden = !any;
         }});
-        all("section.vendor").forEach(function (section) {{
+        all("section.vendor:not(.prints)").forEach(function (section) {{
           var v = perVendor[section.id] || {{ total: 0, lines: 0 }};
           section.hidden = v.lines === 0;
           section.querySelector("[data-sub-kr]").textContent = kr(v.total);
@@ -521,6 +595,15 @@ def main() -> None:
         box.addEventListener("change", function () {{
           saved[row.dataset.key] = box.checked;
           try {{ localStorage.setItem(STORE, JSON.stringify(saved)); }} catch (e) {{}}
+          update();
+        }});
+      }});
+      printRows.forEach(function (row) {{
+        var box = row.querySelector("input");
+        box.checked = !!printed[row.dataset.print];
+        box.addEventListener("change", function () {{
+          printed[row.dataset.print] = box.checked;
+          try {{ localStorage.setItem(PRINT_STORE, JSON.stringify(printed)); }} catch (e) {{}}
           update();
         }});
       }});

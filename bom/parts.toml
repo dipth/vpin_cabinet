@@ -7,8 +7,10 @@
 #   price       shop price incl. the vendor's `vat`; converted to Danish 25 % moms
 #   price_asis  EUR used exactly as written (e.g. a quote)
 #   price_dkk   DKK used exactly as written
-#   (none)      not priced yet — a 3D print, or a part still to choose
-# Flags: estimate = true (rough figure), print3d = true (you print it yourself).
+#   (none)      not priced yet — a part still to choose
+# Flags: estimate = true (rough figure).
+# 3D prints are not items: they go in [[prints]] at the end of this file, with
+#   no shop or price.
 # purchased = true: already bought; give the price you paid as price_asis
 #   (EUR) or price_dkk. The BOM page shows the row ticked as purchased.
 # Priority (every item): 1 = must have to play and power up safely,
@@ -195,17 +197,6 @@ price_asis = 90.00
 purchased = true
 url = "https://www.tukkari.eu/"
 note = "Ships with the cabinet, so no extra shipping. It replaces Tukkari's two standard shelves. Panels: board shelf 585 x 150 mm, flipper shelf 585 x 100, front bumper row 585 x 100, rear bumper row 550 x 82 (James' widebody measurements). Ask whether shelf graphics are included."
-[[items]]
-vendor = "tukkari"
-group = "Cabinet"
-name = "DMD monitor bracket, VESA 75×75 (STL)"
-part = "Tukkari DMD bracket"
-used_on = "06 (DMD)"
-need = "1"
-buy = 1
-priority = 2
-print3d = true
-url = "https://tukkaricz.s2.cdn-upgates.com/p/p68d2739422f46-ver-4-tukkari-dmd-bracket-vesa75x75mm-2.stl"
 
 # ---------------------------------------------------------------------------
 # Arnoz — as planned
@@ -339,19 +330,6 @@ note = "Check it also holds the leaf switch, as the lockbar version does; or pri
 [[items]]
 vendor = "arnoz"
 group = "Buttons and plunger"
-name = "Lockbar Button Support (leaf switch + MX Button under the lockbar)"
-part = "Support_BT_Lockbar"
-used_on = "02, 04 (Fire)"
-need = "1"
-buy = 1
-priority = 2
-print3d = true
-url = "https://shop.arnoz.com/en/3d/137-lockbar-button-support.html"
-note = "Arnoz also sells it printed in PETG for €8."
-
-[[items]]
-vendor = "arnoz"
-group = "Buttons and plunger"
 name = "POTAR — 10 k slide potentiometer plunger sensor"
 part = "POTAR"
 used_on = "02 (plunger)"
@@ -360,18 +338,6 @@ buy = 1
 priority = 2
 price = 16.00
 url = "https://shop.arnoz.com/en/plunger/44-potar.html"
-
-[[items]]
-vendor = "arnoz"
-group = "Buttons and plunger"
-name = "Plunger 3D print (black)"
-part = "Plunger 3D print"
-used_on = "Shooter"
-need = "1"
-buy = 1
-priority = 2
-print3d = true
-url = "https://shop.arnoz.com/en/3d/65-128-plunger-3d-print.html#/26-color-black"
 
 [[items]]
 vendor = "arnoz"
@@ -1895,3 +1861,71 @@ priority = 3
 price_asis = 42.50
 estimate = true
 url = "https://www.pinballatelier.com/en/over"
+
+# ---------------------------------------------------------------------------
+# 3D prints — printed yourself, so no shop and no price
+# ---------------------------------------------------------------------------
+
+[[prints]]
+name = "DMD monitor bracket, VESA 75×75"
+source = "Tukkari (STL)"
+used_on = "06 (DMD)"
+need = "1"
+priority = 2
+url = "https://tukkaricz.s2.cdn-upgates.com/p/p68d2739422f46-ver-4-tukkari-dmd-bracket-vesa75x75mm-2.stl"
+
+[[prints]]
+name = "Lockbar Button Support (leaf switch + MX Button under the lockbar)"
+source = "Arnoz (Support_BT_Lockbar)"
+used_on = "02, 04 (Fire)"
+need = "1"
+priority = 2
+url = "https://shop.arnoz.com/en/3d/137-lockbar-button-support.html"
+note = "Arnoz also sells it printed in PETG for €8."
+
+[[prints]]
+name = "Plunger, black"
+source = "Arnoz"
+used_on = "Shooter"
+need = "1"
+priority = 2
+url = "https://shop.arnoz.com/en/3d/65-128-plunger-3d-print.html#/26-color-black"
+
+[[prints]]
+name = "Angled panel for the HD backboard matrix and the two MX Flash boards"
+source = "Your own design"
+used_on = "03 (P1-P6, FLASH_L, FLASH_R)"
+need = "1"
+priority = 3
+note = "Sized for the plain MX FLASH boards, without the green plug."
+
+[[prints]]
+name = "Terminal cover for the Mean Well RSP-500-24"
+source = "Find or design one"
+used_on = "01, 05 (PSU_24V)"
+need = "1"
+priority = 3
+note = "230 × 127 × 40.5 mm supply; the TBC-09 cover only fits the RSP-320s."
+
+[[prints]]
+name = "Gear motor mount, VW 191955113A"
+source = "Find or design one"
+used_on = "05 (GEAR_MOTOR, upper right)"
+need = "1"
+priority = 3
+
+[[prints]]
+name = "Perspex light mounts (left + right)"
+source = "Tukkari real-mech add-on (free STLs)"
+used_on = "05 (PERSPEX_LIGHTS)"
+need = "2"
+priority = 3
+note = "Hold the 12 V COB strip inside the Perspex cover over the boards."
+
+[[prints]]
+name = "Coin door interlock switch bracket"
+source = "Find or design one"
+used_on = "05 (INTERLOCK)"
+need = "1"
+priority = 3
+note = "Mounts the E79-30A on the coin door frame."
