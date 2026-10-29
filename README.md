@@ -86,8 +86,8 @@ start.
 
 | Phase | What it gets you | Sheets |
 | --- | --- | --- |
-| **1 · Must have** | A playable, safe cabinet on the OLED: flipper and magna buttons, Start, Launch Ball, Exit, the under-cab cluster with the PC power button, cooling, the mains inlet and strip, the full earth loop and all cable trays | 01 (inlet, coupler, strip, earth bar), 02 (most inputs), 07 (fans), 08 |
-| **2 · Should have** | The full experience: backglass and DMD, SSF sound, playfield glass, the plunger, tilt, Fire, Return, and the coin switches with The BRAIN | 02 (the rest), 06, 07 (thermistor) |
+| **1 · Must have** | A playable, safe cabinet on the OLED: flipper and magna buttons, Start, Launch Ball, Exit, the under-cab cluster with the PC power button, cooling, the mains inlet and strip, the full earth loop, all cable trays, and the coin door and playfield glass (they keep the cats out of the cabinet and off the OLED) | 01 (inlet, coupler, strip, earth bar), 02 (most inputs), 07 (fans), 08 |
+| **2 · Should have** | The full experience: backglass and DMD, SSF sound, the plunger, tilt, Fire, Return, and the coin switches with The BRAIN | 02 (the rest), 06, 07 (thermistor) |
 | **3 · Later** | The light show and the real mechs: the three Mean Well supplies and fuse blocks, both BUNNY boards, HD backboard, MX Flash, side, under-cab and backbox strips, speaker rings, MX Buttons, button lamps, flippers, slings, pop bumpers, chimes, bells, knocker, motors and trim | 01 (PSU cords), 03, 04, 05, 09 |
 
 Things to know when building in phases:
@@ -106,8 +106,6 @@ Things to know when building in phases:
   Tukkari shelf that holds the Dude's Cab. Its mechs can wait for phase 3.
 - **Shared parts:** wire, terminals and splices used in several phases are tagged
   with the earliest one, so buying phase by phase never leaves you short.
-- **Playfield glass** is phase 2, but it protects the OLED, so fit it before the
-  cabinet sees real use.
 
 ## System overview
 

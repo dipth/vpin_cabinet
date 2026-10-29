@@ -510,7 +510,7 @@ used_on = "02 (BRAIN, coin switches); 08 (bonding)"
 need = "1"
 buy = 1
 priority = 1
-priority_note = "Closes the front service opening. Its coin switches and The BRAIN can wait for phase 2."
+priority_note = "Closes the front service opening, so the cats can't climb into the cabinet. Its coin switches and The BRAIN can wait for phase 2."
 price = 139.94
 url = "https://pu-parts.com/data-east-coin-door"
 
@@ -595,8 +595,8 @@ part = "AR glass widebody"
 used_on = "Cabinet"
 need = "1"
 buy = 1
-priority = 2
-priority_note = "Not needed to play, but it protects the OLED. Fit it before the cabinet sees real use."
+priority = 1
+priority_note = "Must have: with two cats in the house, the glass keeps them off the OLED."
 price = 198.00
 url = "https://pu-parts.com/anti-reflective-pinball-glass-widebody"
 
@@ -608,7 +608,8 @@ part = "03-7135-1 (equivalent of Stern 545-5017-00)"
 used_on = "Cabinet"
 need = "2"
 buy = 2
-priority = 2
+priority = 1
+priority_note = "Must have: the glass needs both side channels."
 price = 12.95
 url = "https://www.pinballshop.nl/cabinet-parts/siderails-and-trims/side-playfield-glass-trim-molding-rail-black/?sl=en"
 note = "The Williams number for the same channel Tukkari lists (Marco Specialties cross-references them). Fit both before measuring for the glass. Pick GLS or DPD: UPS charges 12.50 extra for the length."
@@ -620,7 +621,8 @@ part = "Rear glass trim"
 used_on = "Cabinet"
 need = "1"
 buy = 1
-priority = 2
+priority = 1
+priority_note = "Must have: closes the glass at the back."
 price = 9.34
 url = "https://pu-parts.com/williams-bally-rear-black-plastic-playfield-glass-widebody-trim-03-8091-2"
 

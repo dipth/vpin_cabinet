@@ -60,14 +60,14 @@ PHASES = OrderedDict(
                 "Must have",
                 "Playable and safe: cabinet and legs, the playfield OLED, the Dude's Cab with the "
                 "flipper, Start, Launch Ball and Exit buttons, the inlet, strip and earth loop, "
-                "cooling and the cable trays.",
+                "cooling, the cable trays, and the coin door and playfield glass that keep the cats out.",
             ),
         ),
         (
             2,
             (
                 "Should have",
-                "The full experience: backglass and DMD screens, SSF sound, playfield glass, "
+                "The full experience: backglass and DMD screens, SSF sound, "
                 "plunger, tilt, coin switches with The BRAIN, and the Return button.",
             ),
         ),
