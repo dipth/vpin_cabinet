@@ -178,8 +178,8 @@ def main() -> None:
                 rows.append(f'<tr class="group"><th colspan="9">{esc(current_group)}</th></tr>')
             key = f"{vid}-{index}-{item['part']}"
             phase = item["priority"]
-            ordered = item.get("ordered")
-            ordered_pill = f'<span class="pill ordered">Ordered {esc(ordered)}</span>' if ordered else ""
+            purchased = bool(item.get("purchased"))
+            purchased_pill = '<span class="pill purchased">Purchased</span>' if purchased else ""
             flags = ""
             if item.get("note"):
                 flags += f'<p class="flag">{esc(item["note"])}</p>'
@@ -201,9 +201,9 @@ def main() -> None:
                 total_attr = f'{item["total_eur"]:.2f}'
             rows.append(
                 f"""
-          <tr data-key="{esc(key)}" data-vendor="{esc(vid)}" data-total="{total_attr}" data-phase="{phase}" data-unpriced="{int(item["total_eur"] is None and not item.get("print3d"))}" data-ordered="{int(bool(ordered))}">
-            <td class="check"><input type="checkbox" aria-label="Bought: {name}"{" checked disabled" if ordered else ""}></td>
-            <td class="prio"><span class="pill p{phase}">{phase} · {esc(PHASES[phase][0])}</span>{ordered_pill}</td>
+          <tr data-key="{esc(key)}" data-vendor="{esc(vid)}" data-total="{total_attr}" data-phase="{phase}" data-unpriced="{int(item["total_eur"] is None and not item.get("print3d"))}" data-purchased="{int(purchased)}">
+            <td class="check"><input type="checkbox" aria-label="Bought: {name}"{" checked disabled" if purchased else ""}></td>
+            <td class="prio"><span class="pill p{phase}">{phase} · {esc(PHASES[phase][0])}</span>{purchased_pill}</td>
             <td class="part">
               {link}
               <span class="pn">{esc(item["part"])}</span>
@@ -347,7 +347,7 @@ def main() -> None:
     .pill.p1 {{ color: var(--p1); background: var(--p1-soft); }}
     .pill.p2 {{ color: var(--p2); background: var(--p2-soft); }}
     .pill.p3 {{ color: var(--p3); background: var(--p3-soft); }}
-    .pill.ordered {{ display: block; margin-top: 4px; width: max-content; color: var(--info); background: var(--info-soft); }}
+    .pill.purchased {{ display: block; margin-top: 4px; width: max-content; color: var(--info); background: var(--info-soft); }}
     .prio {{ width: 1%; }}
     .flag.phase-note {{ font-style: italic; }}
     [hidden] {{ display: none !important; }}
@@ -424,8 +424,8 @@ def main() -> None:
         <h2>How quantities work</h2>
         <p><strong>Need</strong> is what the wiring sheets use; wire lengths are routed estimates through the cable trays.
         <strong>Buy</strong> is the number of shop units (pack, reel or single part) to order, rounded up with sensible spares.</p>
-        <p>Your own ticks are saved in this browser only. Rows marked <strong>Ordered</strong> come from
-        <code>parts.toml</code> (an <code>ordered</code> date, with the price you paid), so they stay ticked everywhere.</p>
+        <p>Your own ticks are saved in this browser only. Rows marked <strong>Purchased</strong> come from
+        <code>parts.toml</code> (<code>purchased = true</code>, with the price you paid), so they stay ticked everywhere.</p>
         <p><strong>Priority</strong> is the earliest phase a line is needed in. Wire, terminals and splices shared
         between phases are tagged with the earliest one, so buying phase by phase never leaves you short.</p>
       </section>
@@ -516,7 +516,7 @@ def main() -> None:
 
       rows.forEach(function (row) {{
         var box = row.querySelector("input");
-        if (row.dataset.ordered === "1") {{ box.checked = true; return; }}
+        if (row.dataset.purchased === "1") {{ box.checked = true; return; }}
         box.checked = !!saved[row.dataset.key];
         box.addEventListener("change", function () {{
           saved[row.dataset.key] = box.checked;

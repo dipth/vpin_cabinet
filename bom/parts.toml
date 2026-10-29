@@ -9,8 +9,8 @@
 #   price_dkk   DKK used exactly as written
 #   (none)      not priced yet — a 3D print, or a part still to choose
 # Flags: estimate = true (rough figure), print3d = true (you print it yourself).
-# ordered = "YYYY-MM-DD": already ordered; give the price you paid as price_asis
-#   (EUR) or price_dkk. The BOM page shows the row ticked as bought.
+# purchased = true: already bought; give the price you paid as price_asis
+#   (EUR) or price_dkk. The BOM page shows the row ticked as purchased.
 # Priority (every item): 1 = must have to play and power up safely,
 #   2 = should have for the full experience, 3 = later (lighting, lamps, toys).
 #   A part that serves several phases takes the earliest one; priority_note
@@ -31,8 +31,8 @@ id = "tukkari"
 name = "Tukkari"
 country = "Czech Republic"
 site = "https://www.tukkari.eu/"
-shipping = "Crated; as quoted."
-why = "The cabinet, fully assembled, with siderails and the lockdown bar with action button. Price as quoted."
+shipping = "Crated; included in the price paid."
+why = "The cabinet, fully assembled, with siderails and the lockdown bar with action button, plus the real-mech add-on. Purchased."
 
 [[vendors]]
 id = "arnoz"
@@ -152,7 +152,7 @@ id = "csd"
 name = "Cleveland Software Design"
 country = "USA"
 site = "https://www.clevelandsoftwaredesign.com/"
-shipping = "$85 from the US. Above €150 the parcel pays EU duty as well as 25 % Danish VAT, plus the carrier's clearance fee; the price here is a landed estimate."
+shipping = "$85 from the US. Purchased: the price shown is what was paid, including shipping, EU duty, 25 % Danish VAT and the clearance fee."
 why = "The High Power SSF kit, 4.1 with the optional subwoofer (amp, PSU, 7.1 sound card, 4 exciters, bass shaker, 6.5 in sub). No EU reseller exists."
 
 [[vendors]]
@@ -176,9 +176,10 @@ used_on = "Cabinet; lockbar Fire button"
 need = "1"
 buy = 1
 priority = 1
-price_asis = 1707.00
+price_asis = 1719.00
+purchased = true
 url = "https://www.tukkari.eu/p/widebody-virtual-pinball-cabinet-vpin-fully-assembled"
-note = "Price as quoted."
+note = "Price paid, including shipping."
 
 [[items]]
 vendor = "tukkari"
@@ -190,8 +191,10 @@ need = "1"
 buy = 1
 priority = 1
 priority_note = "Phase 1 because its board shelf replaces Tukkari's front shelf, which holds the Dude's Cab. The mechs on it can come later."
+price_asis = 90.00
+purchased = true
 url = "https://www.tukkari.eu/"
-note = "Not in Tukkari's shop yet: arrange it through Jan / the Virtual Pinball and VPin Cab Builders group. It replaces Tukkari's two standard shelves. Panels: board shelf 585 x 150 mm, flipper shelf 585 x 100, front bumper row 585 x 100, rear bumper row 550 x 82 (James' widebody measurements). Ask whether shelf graphics are included."
+note = "Ships with the cabinet, so no extra shipping. It replaces Tukkari's two standard shelves. Panels: board shelf 585 x 150 mm, flipper shelf 585 x 100, front bumper row 585 x 100, rear bumper row 550 x 82 (James' widebody measurements). Ask whether shelf graphics are included."
 [[items]]
 vendor = "tukkari"
 group = "Cabinet"
@@ -693,7 +696,8 @@ used_on = "02, 05 (Exit)"
 need = "1"
 buy = 1
 priority = 1
-price = 2.48
+price_asis = 2.48
+purchased = true
 url = "https://www.arcadexpress.com/en/arcade-pushbuttons/294-1036-start-select-pause-exit-coin-illuminated-led-arcade-button.html"
 note = "Pick the Exit design, in translucent or chrome trim. Needs a 28-30 mm hole: Tukkari's pre-drilled 1 in start-button holes are a couple of millimetres smaller, so open them up with a step drill (Tukkari's parts list says the same). Comes with a Cherry-style microswitch; the built-in LED takes 5 or 12 V, so it goes straight on the MiniMOS 4 output - mind the polarity, it is an LED, not a bulb."
 
@@ -706,7 +710,8 @@ used_on = "02, 05 (Start)"
 need = "1"
 buy = 1
 priority = 1
-price = 2.48
+price_asis = 2.48
+purchased = true
 url = "https://www.arcadexpress.com/en/arcade-pushbuttons/294-1036-start-select-pause-exit-coin-illuminated-led-arcade-button.html"
 note = "Matches the Pause and Exit buttons; order all three in the same trim. Its built-in 12 V LED replaces the W5W bulb a pinball start button would need."
 
@@ -719,7 +724,8 @@ used_on = "02, 05 (Return)"
 need = "1"
 buy = 1
 priority = 2
-price = 2.48
+price_asis = 2.48
+purchased = true
 url = "https://www.arcadexpress.com/en/arcade-pushbuttons/294-1036-start-select-pause-exit-coin-illuminated-led-arcade-button.html"
 note = "Same button and trim as the Exit one. No lit RETURN legend is made, so this reads PAUSE while sending the Return key - handy, since it is the button that pauses a table and drops you back to the menu."
 
@@ -732,7 +738,8 @@ used_on = "02, 05 (Start, Return and Exit switch and LED tabs)"
 need = "12"
 buy = 15
 priority = 1
-price = 0.12
+price_asis = 0.12
+purchased = true
 url = "https://www.arcadexpress.com/en/electronics-power-supplies/743-insulated-female-quick-connect-48mm-size-terminal-a1180.html"
 note = "Arcade buttons use 4.8 mm tabs, not the 6.3 mm of the pinball buttons. Order them with the buttons: Reichelt only stocks 4.8 mm sleeves for 1.5-2.5 mm2 wire."
 
@@ -1429,7 +1436,7 @@ need = "1"
 buy = 1
 priority = 2
 price_asis = 75.99
-ordered = "2026-10-06"
+purchased = true
 url = "https://www.amazon.de/dp/B0BXSNK5KD"
 note = "Mini-HDMI video and USB-C power on the side, with a 20 W USB-C charger, two USB-C cables and a mini-HDMI to HDMI cable in the box. The charger goes on SWITCHED 3 (sheet 01)."
 
@@ -1469,7 +1476,7 @@ need = "2 (1 pair)"
 buy = 1
 priority = 2
 price_asis = 31.15
-ordered = "2026-10-06"
+purchased = true
 url = "https://www.amazon.de/dp/B0F5WSD14K"
 note = "When they arrive: check the fit behind the speaker panel together with the LED rings, and which tab sizes they use (one wide, one narrow) for the backbox-side speaker leads."
 
@@ -1483,7 +1490,7 @@ need = "1"
 buy = 1
 priority = 1
 price_asis = 21.99
-ordered = "2026-10-06"
+purchased = true
 url = "https://www.amazon.de/dp/B00C24Y4LS"
 note = "1 master + 5 switched + 2 always-on, two-pole switch, surge protection. Set the 8-80 W threshold with the PC idling and shut down (around 20-30 W). About 57 cm long: check it fits the rear-right floor. Coil the spare cable loosely."
 
@@ -1497,7 +1504,7 @@ need = "1"
 buy = 1
 priority = 1
 price_asis = 18.89
-ordered = "2026-10-06"
+purchased = true
 url = "https://www.amazon.de/dp/B0DTK87HB5"
 
 [[items]]
@@ -1510,7 +1517,7 @@ need = "1"
 buy = 1
 priority = 1
 price_asis = 33.99
-ordered = "2026-10-06"
+purchased = true
 url = "https://www.amazon.de/dp/B08FZMBG8H"
 note = "Keep using the fully insulated receptacles from Reichelt on the 230 V inlet tabs: kit receptacles are usually only partly insulated."
 
@@ -1524,7 +1531,7 @@ need = "1"
 buy = 1
 priority = 1
 price_asis = 24.19
-ordered = "2026-10-06"
+purchased = true
 url = "https://www.amazon.de/dp/B07R6T4H7W"
 note = "Its ferrules replace the Reichelt 0.5-2.5 mm² assortment. The 0.25 mm² data wires still need the small Reichelt assortment."
 
@@ -1689,10 +1696,10 @@ used_on = "06 (incl. SUB)"
 need = "1"
 buy = 1
 priority = 2
-price_dkk = 4500.00
-estimate = true
+price_dkk = 4337.00
+purchased = true
 url = "https://www.clevelandsoftwaredesign.com/pinball-parts/p/high-power-ssf-kit"
-note = "Landed estimate at ~6.7 kr/$: $416 kit + $85 shipping ≈ 3,360 kr, + ~2-3 % duty ≈ 85 kr, + 25 % VAT on all of it ≈ 860 kr, + carrier clearance fee ≈ 150-300 kr. The included sub is the same Dayton DCS165-4 Tukkari recommends. Check the PSU is 100-240 V and ask CSD for an EU mains cord (or buy one)."
+note = "Price paid, including shipping, duty and VAT. The included sub is the same Dayton DCS165-4 Tukkari recommends. Check the PSU is 100-240 V and ask CSD for an EU mains cord (or buy one)."
 
 [[items]]
 vendor = "pricerunner"
@@ -1704,7 +1711,7 @@ need = "1"
 buy = 1
 priority = 1
 price_dkk = 4725.00
-ordered = "2026-09-27"
+purchased = true
 url = "https://www.pricerunner.dk/search?q=OLED42C54LA"
 
 [[items]]
@@ -1733,7 +1740,7 @@ priority = 1
 priority_note = "Must have because it goes on first: apply the decals to the bare cabinet, before the legs, side rails, coin door and buttons are mounted."
 price_dkk = 3100.00
 estimate = true
-ordered = "2026-10-17"
+purchased = true
 url = "https://www.flylanddesigns.com/product-tag/virtual-pinball/"
 note = "Landed estimate at ~6.7 kr/$: $249.95 wrap + $85 shipping ≈ 2,245 kr, + 0-6.5 % duty (depends on whether customs treats it as printed decals or self-adhesive film) ≈ 0-145 kr, + 25 % VAT ≈ 560-600 kr, + clearance fee ≈ 150-300 kr. Replace with the real figure when the customs invoice arrives."
 
