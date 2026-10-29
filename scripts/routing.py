@@ -43,7 +43,7 @@ P = {
     "X_BUMP_F": (610, 60, 360),
     "X_BUMP_R": (940, 60, 420),
     # floor toys and audio
-    "GEAR": (450, 100, 60),
+    "GEAR": (850, 560, 150),     # upper right: right wall, in front of the 5 V supply
     "SHAKER_MOTOR": (450, 480, 60),
     "BST1": (420, 330, 20),
     "SUB": (330, 290, 20),
@@ -76,6 +76,7 @@ P = {
     "P2": (1190, 175, 600), "P4": (1190, 335, 600), "P6": (1190, 495, 600),
     "FLASH_L": (1180, 40, 620), "FLASH_R": (1180, 545, 620),
     "SIDE_L_BACK": (1150, 15, 540), "SIDE_R_BACK": (1150, 570, 540),
+    "SIDE_FRONT_L": (100, 15, 540), "SIDE_FRONT_R": (100, 570, 540),
     "EXC_TOP_L": (1080, 30, 520), "EXC_TOP_R": (1080, 555, 520),
     "EXC_BOT_L": (330, 30, 450), "EXC_BOT_R": (330, 555, 450),
     "THERM": (1150, 290, 520),
@@ -138,6 +139,8 @@ PATHS = {
     "03/PW_P6": ["FB5", R(1190, 235), R(1190, 600), "P6"],
     "03/PW_ZONE_L": ["FB5", R(940, 235), R(940, 420), L(940, 420), L(1150, 420), "SIDE_L_BACK"],
     "03/PW_ZONE_R": ["FB5", R(1150, 235), "SIDE_R_BACK"],
+    "03/PW_SIDE_L_FRONT": ["SIDE_L_BACK", "SIDE_FRONT_L"],
+    "03/PW_SIDE_R_FRONT": ["SIDE_R_BACK", "SIDE_FRONT_R"],
     # sheet 04 - MX Buttons, under-cab, backbox
     "04/PW_MXB": ["FB5", R(1060), R(30), "MXB_MAGNA_R"],
     "04/PW_UC": ["FB5", R(1060), "UC_SPLICE"],
@@ -153,9 +156,10 @@ PATHS = {
     "05/G_BUNNY_1": ["FB24", L(870), DROP_L, "BUNNY1"],
     "05/G_BUNNY_2": ["FB12", L(850), DROP_L, (195, 470, 10), "BUNNY2"],
     "05/PW_LAMPS": ["FB12", L(850), DROP_L, "LAMP_SPLICE"],
-    "05/PW_GEAR": ["FB12", L(850), L(450), "GEAR"],
-    "05/T_GEAR": ["BUNNY2", (195, 470, 10), (195, 100, 10), "GEAR"],
+    "05/PW_GEAR": ["FB12", L(850), L(610), L(610, 360), (610, 560, 360), "GEAR"],
+    "05/T_GEAR": ["BUNNY2", (195, 470, 10), DROP_L, L(610), L(610, 360), (610, 560, 360), "GEAR"],
     "05/PW_SHAKER": ["FB12", L(850), L(450), (450, 480, 10), "SHAKER_MOTOR"],
+    "05/G_SHAKER_BUCK": ["FB12", L(850), L(450), (450, 480, 10), "SHAKER_MOTOR"],
     "05/T_SHAKER": ["BUNNY2", (195, 470, 10), (450, 470, 10), "SHAKER_MOTOR"],
     "05/PW_BB_TOYS": ["FB12", (1225, 10, 85), (1225, 10, 600), "NECK_L"],
     "05/T_BB_TOYS": ["BUNNY2", (195, 470, 10), DROP_L, L(1225), (1225, 10, 600), "NECK_L"],

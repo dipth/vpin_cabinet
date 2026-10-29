@@ -30,11 +30,10 @@ metadata:
     UNDER-CAB U-RUN: ~3.0 m of IP65 60 LED/m strip (~180 LEDs) under the cabinet
     floor, starting at the rear-right corner. Both ends sit at the rear, so the run
     is fed at both ends from a splice near the rear and passes through the floor
-    at the two rear corners. Full white is ~10.8 A, so F10 is 10 A: cap brightness
-    at ~90 % or below.<br/>
+    at the two rear corners. Full white is ~10.8 A on a 15 A fuse.<br/>
     BEHIND-BACKBOX RUN: ~2.0 m of 60 LED/m strip (~120 LEDs) on the back of the
     backbox: up the right side, across the top, down the left side. It has its own
-    7.5 A fuse (F12), separate from the speaker rings on F11, and is fed at both
+    10 A fuse (F12, full white ~7.2 A), separate from the speaker rings on F11, and is fed at both
     bottom ends through a small hole in the backbox rear panel.<br/>
     CORNERS: the strip can't bend within its own plane, so cut it at each corner
     and bridge the gap with a short 3-wire jumper (+5V, DATA, GND). Seal the joints
@@ -48,14 +47,16 @@ metadata:
 connectors:
   FB_5V:
     <<: *fuse_block_12
-    subtype: "5 V ALED. F9: 2 A MX Buttons, F10: 10 A under-cab, F11: 7.5 A speaker rings, F12: 7.5 A behind-backbox (F1-F8 in harness 03)"
+    subtype: "5 V ALED. F9: 2 A MX Buttons, F10: 15 A under-cab, F11: 7.5 A speaker rings, F12: 10 A behind-backbox (F1-F8 in harness 03)"
     additional_components:
       - type: ATO blade fuse 2 A
         qty: 1
-      - type: ATO blade fuse 10 A
+      - type: ATO blade fuse 15 A (under-cab)
         qty: 1
-      - type: ATO blade fuse 7.5 A (+ 2 spare)
-        qty: 4
+      - type: ATO blade fuse 7.5 A (rings)
+        qty: 1
+      - type: ATO blade fuse 10 A (behind-backbox)
+        qty: 1
 
   SDC:
     <<: *super_dudes_cab

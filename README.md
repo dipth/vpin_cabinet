@@ -214,20 +214,20 @@ LED brightness caps and the coil settings before fitting a larger fuse.
 | Rail | PSU | Fuse | Load | Worst case |
 | --- | --- | --- | --- | --- |
 | 5 V | RSP-320-5 (60 A) | F1-F6 10 A | HD panels 1-6 (one fuse each) | 55.5 A at full white. Cap brightness ~40% |
-| | | F7 10 A | Left zone: MX Flash L + side strip L (~1.3 m) | 11.4 A. Cap brightness ~70-80% |
-| | | F8 10 A | Right zone: MX Flash R + side strip R (~1.3 m) | 11.4 A. Cap brightness ~70-80% |
+| | | F7 15 A | Left zone: MX Flash L + side strip L (~1.3 m, fed at both ends) | 11.4 A |
+| | | F8 15 A | Right zone: MX Flash R + side strip R (~1.3 m, fed at both ends) | 11.4 A |
 | | | F9 2 A | MX Button chain (5 boards) | 1.2 A |
-| | | F10 10 A | Under-cab U-run (~3.0 m, ~180 LEDs) | 10.8 A. Cap brightness ~90% |
+| | | F10 15 A | Under-cab U-run (~3.0 m, ~180 LEDs) | 10.8 A |
 | | | F11 7.5 A | Backbox speaker rings | 4.8 A |
-| | | F12 7.5 A | Behind-backbox inverted U (~2.0 m, ~120 LEDs) | 7.2 A |
+| | | F12 10 A | Behind-backbox inverted U (~2.0 m, ~120 LEDs) | 7.2 A |
 | 12 V | RSP-320-12 (26.7 A) | F1 / F2 2 A | BUNNY 1 / BUNNY 2 logic | < 0.5 A each |
 | | | F3 2 A | Start, Launch Ball, Return, Exit lamps | 0.2 A |
 | | | F4 7.5 A | Gear motor | starts ~5 A |
-| | | F5 10 A | Shaker motor | starts ~6 A |
+| | | F5 10 A | Shaker motor, via a ~7 V step-down converter | starts ~6 A |
 | | | F6 7.5 A | Backbox: alarm bell + 2 beacons | ~4 A |
 | | | F7 2 A | Perspex lights (coin door interlock) | < 1 A |
 | | | F8-F12 | spare | |
-| 24 V | RSP-500-24 (21 A) | F1 15 A | Both flippers | ~6 A pulse each, then PWM hold |
+| 24 V | RSP-500-24 (21 A) | F1 10 A | Both flippers | ~6 A pulse each, then ~0.6 A PWM hold |
 | | | F2 10 A | Both slingshots | ~6 A pulses |
 | | | F3 / F4 10 A | Front / rear pop-bumper row | ~6 A pulses |
 | | | F5 10 A | Chimes + shell bells | ~5 A pulses |
@@ -243,9 +243,11 @@ the toy and the MOSFET. Each BUNNY carries up to 40 A in total.
 One RSP-320-5 now feeds **every** addressable LED, as in James' build. That only
 works with brightness caps: set them in the Dude's Cab configurator so everything
 lit at once stays under ~50 A. If all the LEDs blink off together (the PSU
-hiccuping) or a fuse blows, the caps are too high. Fuses below a group's
-theoretical full-white draw (10 A on the 10.8 A under-cab run and the 11.4 A
-side zones) are deliberate for the same reason.
+hiccuping), the caps are too high.
+
+**Fuses protect the wire; caps manage the load.** Every fuse is sized to its
+wire and sits above its group's full-white draw, so a configurator reset or a
+firmware update that loses the caps never blows a fuse (James' review point).
 
 The 60 / 26.7 / 21 A ratings are DC output currents and appear only between the
 PSU terminals and the blade fuse blocks, where each pole is carried by three
@@ -302,16 +304,33 @@ knocker; the Data East one has a return spring for this).
   unscrewing a wire. James' biggest regret was routing a cable where a shelf
   could no longer be lifted past it, so keep every wire below or behind the
   braces.
-- **Coil protection, three layers** (James' approach): the Dude's Cab coil
-  settings (Max ON time, Security Delay ~60 s, and for flippers FallOff Delay
-  ~35 ms / FallOff Value ~10 % so the hold is PWM'd), a resettable PTC in each
-  flipper's + leg, and the slow-blow fuse on each BUNNY output. Set the first
-  layer before any coil gets power.
+- **Coil protection, three layers** (James' approach, tested on his bench):
+  1. the Dude's Cab coil settings: pulse coils FallOff Delay 35 ms / FallOff
+     Value 0 %; flippers FallOff Delay 35 ms / FallOff Value 10 % (a PWM hold of
+     about 0.6 A) and Security Delay ~60 s. Set these before any coil gets power.
+  2. a **Littelfuse RUEF160** resettable PTC (1.6 A hold, 3.2 A trip) in the +
+     leg of **every** coil. A stuck coil draws ~6.5 A and burns out in about a
+     minute; the RUEF160 trips in under 10 s with no false trips in play. A
+     2.5/5 A PTC didn't trip within 15 s. Bumpers and slings fire from DOF, so
+     after a crash or an abrupt VPX → frontend exit they can stick unnoticed.
+  3. the 2.5 A slow-blow fuse on each BUNNY output (4 A for the knocker), for
+     short circuits - on its own it didn't blow within 30 s on a stuck coil.
+- **Flipper coil lugs (FL-11629):** power winding MIDDLE-RIGHT (~4 Ω), hold
+  winding LEFT-MIDDLE (~122 Ω). +24 V (through the PTC) to the right lug, the
+  BUNNY output to the middle lug, left lug unused; 1N4007 across middle-right
+  with its band on the right lug. Measure with the diodes lifted, and check
+  any factory diode faces the same way: a reversed diode shorts the supply the
+  first time the coil fires.
 - **Diodes:** every coil needs a 1N4007 across it, band to the + lug. Flipper
   and pop-bumper assemblies usually come with one; chimes, bells and the
   knocker often don't.
 - **Motors and bells:** an Arnoz La Nettoyeuse at the gear motor, shaker motor
   and alarm bell (12 V only).
+- **Shaker:** runs from a step-down converter at ~7 V, so an output stuck at
+  100 % can't drive it at a full 12 V; DOF still varies its intensity. Give its
+  output a Security Delay as well.
+- **Gear motor:** the standard VW gear motor (191955113A family), upper right:
+  about 80 % of tables that use the gear toy put it there.
 - **Flippers from the buttons:** link Flipper L/R to BUNNY 1 outputs 1/2 in the
   configurator, so the coils fire straight from the buttons with no PC latency.
 - **Nudge:** the Dude's Cab now sits on the add-on's board shelf. James' nudges
@@ -320,6 +339,32 @@ knocker; the Data East one has a return spring for this).
 - **Wire colours:** buy red for every + feed and black for every return and
   ground, and label both ends (5V / 12V / 24V, BUNNY output number). The
   diagrams colour 24 V orange and 12 V yellow only to tell them apart.
+
+## Software setup notes
+
+Lessons from James' build that are about configuration rather than wiring:
+- **Save it:** after any change in the Dude's Cab configurator, **Send Config**
+  then **Save to Memory**, or it is lost at the next reboot.
+- **LED counts:** a cut strip sometimes needs a slightly higher LED count than
+  you physically counted before every LED lights. Too short a count makes the
+  last LEDs show the next segment's effect.
+- **Strip direction:** the side strips get their data at the back end, and the
+  under-cab U-run runs rear → front on the right and front → rear on the left.
+  Use **Arrangement** in the Addressable LEDs tab to reverse segments so the
+  effects chase the same way. The configurator's Laser test always shows the
+  physical wiring direction, so check with real DOF effects.
+- **Sustained white test:** the configurator's tests only pulse. For current or
+  colour checks, add a permanent `ON White` line to `directoutputconfig30.ini`.
+- **Real flipper and bumper sound:** set VPX's Flippers and Contactors to "DOF
+  only" so the real coils make the noise. Night Mode then silences them with no
+  VPX fallback, so switch those settings back to sound (e.g. a script editing
+  `VPinballX.ini`) when Night Mode is on.
+- **8- and 10-bumper tables:** in the DOF Config Tool's Combine Toys, give each
+  of the six bumpers every DOF toy a table might use for that position (e.g. the
+  middle-left coil gets "8 Bumper Left" and "10 Bumper Middle Left").
+- **No `cabinet.xml`** when the LEDs run from the Dude's Cab's MX outputs.
+- **VPX key mapping** only lists buttons 1–24, so keep the buttons you need in
+  VPX within that range.
 
 ## Temperature-controlled fans
 
@@ -402,16 +447,17 @@ lengths change):
 - **Rear floor:** PC in the middle, amp brick and DMD charger beside it; inlet,
   coupler and earth bar at the right.
 - **Rear wall:** the strip low, two exhaust fans high with the shell bells either side.
-- **Middle floor:** gear motor (left), shaker motor (right), BST-1 bass shaker
-  and the 6.5" sub in the centre. Keep the shaker off the floor beneath the
-  Dude's Cab.
+- **Middle floor:** shaker motor (right), BST-1 bass shaker and the 6.5" sub in
+  the centre. Keep the shaker off the floor beneath the Dude's Cab.
+- **Right wall, upper right:** gear motor, in front of the 5 V supply.
 - **Right wall, middle:** chime unit.
 - **Front:** button boards, The BRAIN, tilt bob, shooter, front intake fan.
 - **Top of the playfield, rear end:** backboard and flashers.
 
 LED runs:
-- **Side strips:** fed from the back end only. Add a feed to the spare front
-  pads if the front end ever looks dim or warm on bright white.
+- **Side strips:** fed at both ends, with a 1.5 mm² pair inside the profile to
+  the front pads. Fed from one end, James' 144 LED/m strips dimmed or cut out
+  at the far end on full white.
 - **Under-cabinet:** one U-run (~3.0 m) down one side, across the front and back
   along the other side. It starts at the rear-right corner, is fed at both rear
   ends from its own 10 A fuse, and has jumpers at the two front corners.
@@ -466,9 +512,10 @@ the backbox; nothing field-wired is cut or unscrewed.
 - [ ] With power off, check polarity at every LED load and continuity on every JST ribbon.
 - [ ] 330 Ω series resistor in each MX data line at the first LED.
 - [ ] No wire between toy ground and LED ground. The 12 V and 24 V negatives **are** bonded to each other.
-- [ ] Brightness caps set in the Dude's Cab configurator **before** fitting the 5 V fuses (one 60 A supply feeds every LED).
+- [ ] Brightness caps set in the Dude's Cab configurator (one 60 A supply feeds every LED). The fuses don't depend on them, but the PSU does.
 - [ ] Fit fuses one circuit at a time with the configurator's LED test running.
-- [ ] Flyback diode on every coil; La Nettoyeuse on the gear motor, shaker motor and alarm bell.
+- [ ] Flyback diode on every coil (band on the + lug); RUEF160 in the + leg of every coil; La Nettoyeuse on the gear motor, shaker motor and alarm bell.
+- [ ] Shaker step-down converter set to ~7 V with the motor disconnected.
 - [ ] Coil protection set in the configurator (Max ON / Security Delay; flipper FallOff) **before** fitting the 24 V fuses. Fire each coil once from the configurator's test page.
 - [ ] Each BUNNY output has its 5×20 mm fuse fitted with the rating on its label.
 - [ ] Every shelf lifts out with only its quick-connect unplugged.
@@ -524,3 +571,8 @@ documented and are assumptions. Check these before crimping:
   24 V block (the 6-way is full: swap it for a 12-way 5026).
 - The 5 V block is full. A topper with more addressable LEDs either shares a
   backbox circuit or gets a second 5 V supply.
+- **Rail monitoring (James' idea):** a clamp-on DC Hall current sensor around
+  each PSU's + feed into an ESP32 (ESPHome → Home Assistant) measures the real
+  current per rail - brightness caps, coil inrush (he sees 15-30 A spikes on the
+  24 V rail) and flipper hold - instead of estimating it. The clamps are
+  isolated, so they don't bridge the ground domains.

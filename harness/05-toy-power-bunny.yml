@@ -34,9 +34,17 @@ metadata:
     MOTORS AND BELLS: fit an Arnoz La Nettoyeuse (1000 uF + flywheel diode)
     right at the gear motor, the shaker motor and the alarm bell, toy on the
     diode side. It is rated 25 V, so 12 V toys only.<br/>
-    SHAKER STRENGTH: run the shaker motor at full 12 V and lower its strength
-    with the output's Max Value in the Dude's Cab configurator, rather than a
-    buck converter.<br/>
+    SHAKER STRENGTH: the shaker motor runs from a step-down converter set to
+    about 7 V (James' setting), so even an output stuck at 100 % (software or
+    USB fault) can't drive it at full 12 V. DOF still varies the intensity
+    through the BUNNY's PWM, under the output's Max Value. Also give the
+    shaker output a Security Delay in the configurator. The converter's IN-
+    and OUT- are joined on the board, so OUT- stays unused: the motor's -
+    goes to the BUNNY output, as for every toy. Set the voltage with the
+    motor disconnected; cheap modules can have stiff trim pots.<br/>
+    GEAR MOTOR: upper right, where ~80 % of tables that use the gear toy
+    put it (James' survey of ~272 tables). Use the standard VW gear motor
+    (191955113A family) that the Pinscape guide recommends.<br/>
     CONFIGURATOR: add BUNNY 1 (DIP address 1) and BUNNY 2 (address 2) as
     extensions. Lamp outputs use the "Leds" preset (PWM, so DOF can blink and
     fade them).<br/>
@@ -62,7 +70,7 @@ connectors:
 
   FB_12V:
     <<: *fuse_block_12
-    subtype: "12 V TOY rail, above the 12 V PSU. F1/F2: 2 A BUNNY logic, F3: 2 A lamps, F4: 7.5 A gear motor, F5: 10 A shaker, F6: 7.5 A backbox toys, F7: 2 A Perspex lights, F8-F12 spare"
+    subtype: "12 V TOY rail, above the 12 V PSU. F1/F2: 2 A BUNNY logic, F3: 2 A lamps, F4: 7.5 A gear motor, F5: 10 A shaker (via 7 V step-down), F6: 7.5 A backbox toys, F7: 2 A Perspex lights, F8-F12 spare"
     additional_components:
       - type: ATO blade fuse 2 A (+ 2 spare)
         qty: 6
@@ -113,8 +121,8 @@ connectors:
     type: Exit button lamp, 12 V LED built into the arcade button
 
   GEAR_MOTOR: &toy12
-    type: 12 V gear motor (car window-lifter motor) on a 3D-printed mount
-    subtype: cabinet floor, middle-left
+    type: 12 V VW gear motor (191955113A family) on a 3D-printed mount
+    subtype: upper right - right wall, in front of the 5 V supply
     bgcolor: "#eeeeee"
     pinlabels: [+, "-"]
   SHAKER_MOTOR:
@@ -133,6 +141,12 @@ connectors:
     <<: *toy12
     type: 12 V LED beacon - right
     subtype: on top of the backbox
+
+  BUCK_SHAKER:
+    type: DC-DC step-down converter, 8 A (XL4016 / XH-M404 class), set to ~7 V
+    subtype: next to the shaker motor
+    bgcolor: "#fff1c2"
+    pinlabels: [IN +, IN -, OUT +, OUT - (unused)]
 
   NETT_GEAR: &nett
     type: Arnoz La Nettoyeuse (1000 uF + flywheel diode, 25 V max)
@@ -246,13 +260,13 @@ cables:
     type: Toy return (switched -), BUNNY output → toy
     gauge: 1 mm2
     colors: [WH]
-    length: 1.4
+    length: 3
   PW_GEAR: &toy_feed
     <<: *gnd_link
     type: +12 V toy feed
     gauge: 1 mm2
     colors: [YE]
-    length: 1
+    length: 2
   T_SHAKER:
     <<: *toy_return
     gauge: 1.5 mm2
@@ -261,6 +275,16 @@ cables:
     <<: *toy_feed
     gauge: 1.5 mm2
     length: 1.3
+  G_SHAKER_BUCK:
+    <<: *gnd_link
+    type: Step-down converter ground, to the 12 V negative bus
+    gauge: 1.5 mm2
+    length: 1.3
+  PW_SHAKER_7V:
+    <<: *toy_feed
+    type: +7 V converter → shaker motor
+    gauge: 1.5 mm2
+    length: 0.2
   PW_BB_TOYS:
     <<: *toy_feed
     type: +12 V backbox toy feed (alarm bell + beacons)
@@ -383,6 +407,12 @@ connections:
     - GEAR_MOTOR: [+, "-"]
   - - FB_12V: [F5]
     - PW_SHAKER: [1]
+    - BUCK_SHAKER: [IN +]
+  - - FB_12V: [NEG5]
+    - G_SHAKER_BUCK: [1]
+    - BUCK_SHAKER: [IN -]
+  - - BUCK_SHAKER: [OUT +]
+    - PW_SHAKER_7V: [1]
     - NETT_SHAKER: [IN +]
   - - BUNNY_2: [OUT 6 - Shaker motor (5 A SB)]
     - T_SHAKER: [1]

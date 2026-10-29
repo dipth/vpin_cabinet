@@ -13,19 +13,34 @@ metadata:
     left-wall floor tray and cross to the right side along the underside of the
     bumper-row braces. Twist each feed with its returns where they run
     together.<br/>
-    COIL PROTECTION, THREE LAYERS: (1) the Dude's Cab configurator - every coil
-    output gets a Max ON time / security delay; flippers use FallOff Delay
-    ~35 ms and FallOff Value ~10 % so the hold is PWM'd, and Security Delay
-    ~60 s. (2) A resettable PTC (Littelfuse RXEF250: 2.5 A hold, 5 A trip) in
-    each flipper's + leg, on the shelf. (3) The 2.5 A slow-blow fuse on each
-    BUNNY output (4 A for the knocker). A stuck 24 V coil can pull 6-7 A and
-    melt within a minute, so set (1) before the first power-up.<br/>
+    COIL PROTECTION, THREE LAYERS: (1) the Dude's Cab configurator - pulse coils
+    (bumpers, slings, chimes, bells, knocker) use FallOff Delay 35 ms and
+    FallOff Value 0 %; flippers use FallOff Delay 35 ms, FallOff Value 10 %
+    (PWM hold, about 0.6 A) and Security Delay ~60 s. (2) A Littelfuse RUEF160
+    resettable PTC (1.6 A hold, 3.2 A trip) in the + leg of EVERY coil, at the
+    coil. (3) The 2.5 A slow-blow fuse on each BUNNY output (4 A for the
+    knocker), which handles short circuits.<br/>
+    WHY RUEF160 (James' bench tests): a stuck coil draws about 6-6.5 A and burns
+    out in about a minute. A 2.5 A slow-blow did not blow within 30 s and a
+    2.5/5 A PTC (RUEF250 class) did not trip within 15 s; the RUEF160 (~2x its
+    trip current) tripped in under 10 s with no false trips in play. Bumpers and
+    slings fire from DOF, so after a crash or an abrupt VPX → frontend exit they
+    can stick unnoticed - the PTC is what saves them. A tripped PTC resets once
+    power is removed and it cools.<br/>
     DIODES: every coil needs a flyback diode across it (1N4007, band to the +
     lug). Flipper and pop-bumper assemblies usually come with one fitted;
     check, and fit one where missing (chimes, bells, knocker).<br/>
     FLIPPERS: WPC flipper assemblies with FL-11629 (50 V) coils. At 24 V they
     are softer than in a real machine, which suits a cabinet with no ball.
-    Only the power winding is wired (two lugs); the EOS switch is not used.<br/>
+    The coil has three lugs: power winding MIDDLE-RIGHT (~4 ohm), hold winding
+    LEFT-MIDDLE (~122 ohm). Wire the power winding only: +24 V (via the PTC) to
+    the RIGHT lug, the BUNNY output to the MIDDLE lug, LEFT lug unused. The
+    1N4007 goes across MIDDLE-RIGHT with its band on the RIGHT (+24 V) lug -
+    check any factory diode matches, because a reversed diode is a dead short
+    the moment the BUNNY fires (it destroys the diode and blows the port fuse).
+    Measure the windings with the diodes lifted; fitted diodes give misleading
+    readings. The Fliptronics EOS switch is normally open and low-current, so it
+    is not used; the configurator's fall-off does the hold.<br/>
     SLINGSHOTS: pop-bumper coil assemblies (AE-23-800) mounted as kickers, as
     in Filippo's build.<br/>
     QUICK-CONNECT RATING: 5.08 mm pluggable blocks carry about 10 A per pin -
@@ -41,12 +56,10 @@ metadata:
 connectors:
   FB_24V:
     <<: *fuse_block_6
-    subtype: "24 V COIL rail. F1: 15 A flippers, F2: 10 A slings, F3: 10 A front bumpers, F4: 10 A rear bumpers, F5: 10 A chimes + bells, F6: 7.5 A knocker"
+    subtype: "24 V COIL rail. F1: 10 A flippers, F2: 10 A slings, F3: 10 A front bumpers, F4: 10 A rear bumpers, F5: 10 A chimes + bells, F6: 7.5 A knocker"
     additional_components:
-      - type: ATO blade fuse 15 A
-        qty: 1
       - type: ATO blade fuse 10 A
-        qty: 4
+        qty: 5
       - type: ATO blade fuse 7.5 A
         qty: 1
 
@@ -75,15 +88,18 @@ connectors:
 
   FLIPPER_L: &flipper
     type: WPC flipper assembly, left (FL-11629 coil)
-    subtype: real-mech flipper shelf
+    subtype: real-mech flipper shelf. Power winding only
     bgcolor: "#eeeeee"
-    pinlabels: [COIL +, COIL -]
+    pinlabels: [LEFT lug (hold - unused), MIDDLE lug, RIGHT lug (+24V)]
+    additional_components:
+      - type: 1N4007 across MIDDLE-RIGHT, band on the RIGHT lug
+        qty: 1
   FLIPPER_R:
     <<: *flipper
     type: WPC flipper assembly, right (FL-11629 coil)
   PTC_L: &ptc
-    type: Resettable PTC fuse, Littelfuse RXEF250 (2.5 A hold, 5 A trip)
-    subtype: in the flipper's + leg, on the shelf
+    type: Resettable PTC fuse, Littelfuse RUEF160 (1.6 A hold, 3.2 A trip)
+    subtype: in the flipper's + leg, at the coil
     bgcolor: "#fff1c2"
     pinlabels: [IN, OUT]
   PTC_R:
@@ -93,6 +109,11 @@ connectors:
     subtype: real-mech flipper shelf
     bgcolor: "#eeeeee"
     pinlabels: [COIL +, COIL -]
+    additional_components:
+      - type: Littelfuse RUEF160 PTC in the + leg, at the coil
+        qty: 1
+      - type: 1N4007 across the coil, band on the + lug (check if fitted)
+        qty: 1
   SLING_R:
     <<: *coil
     type: Pop-bumper coil assembly AE-23-800, mounted as a slingshot kicker - right
@@ -110,6 +131,11 @@ connectors:
     type: Pop bumper assembly AE-23-800 - front row, left
     bgcolor: "#eeeeee"
     pinlabels: [COIL +, COIL -]
+    additional_components:
+      - type: Littelfuse RUEF160 PTC in the + leg, at the coil
+        qty: 1
+      - type: 1N4007 across the coil, band on the + lug (check if fitted)
+        qty: 1
   BUMP_F_M:
     <<: *bumper
     type: Pop bumper assembly AE-23-800 - front row, middle
@@ -144,6 +170,11 @@ connectors:
     subtype: right wall, middle
     bgcolor: "#eeeeee"
     pinlabels: [COIL +, COIL -]
+    additional_components:
+      - type: Littelfuse RUEF160 PTC in the + leg, at the coil
+        qty: 1
+      - type: 1N4007 across the coil, band on the + lug (check if fitted)
+        qty: 1
   CHIME_M:
     <<: *chime
     type: Chime unit - medium
@@ -217,7 +248,7 @@ cables:
     <<: *shelf_returns
     length: 1
   C_FLIP_L: &shelf_coils
-    type: Shelf-side coil leads (flipper via PTC, sling)
+    type: Shelf-side coil leads (flipper via its PTC, sling)
     gauge: 1 mm2
     show_equiv: true
     wirecount: 4
@@ -229,13 +260,13 @@ cables:
     length: 0.4
   C_PTC_L:
     <<: *gnd_link
-    type: PTC → flipper coil +
+    type: PTC → flipper RIGHT lug
     gauge: 1 mm2
     colors: [OG]
     length: 0.1
   C_PTC_R:
     <<: *gnd_link
-    type: PTC → flipper coil +
+    type: PTC → flipper RIGHT lug
     gauge: 1 mm2
     colors: [OG]
     length: 0.1
@@ -405,10 +436,10 @@ connections:
     - PTC_L: [IN]
   - - X_FLIP_L: [FLIPPER -]
     - C_FLIP_L: [2]
-    - FLIPPER_L: [COIL -]
+    - FLIPPER_L: [MIDDLE lug]
   - - PTC_L: [OUT]
     - C_PTC_L: [1]
-    - FLIPPER_L: [COIL +]
+    - FLIPPER_L: [RIGHT lug (+24V)]
   - - X_FLIP_L: [+24V SLING, SLING -]
     - C_FLIP_L: [3-4]
     - SLING_L: [COIL +, COIL -]
@@ -417,10 +448,10 @@ connections:
     - PTC_R: [IN]
   - - X_FLIP_R: [FLIPPER -]
     - C_FLIP_R: [2]
-    - FLIPPER_R: [COIL -]
+    - FLIPPER_R: [MIDDLE lug]
   - - PTC_R: [OUT]
     - C_PTC_R: [1]
-    - FLIPPER_R: [COIL +]
+    - FLIPPER_R: [RIGHT lug (+24V)]
   - - X_FLIP_R: [+24V SLING, SLING -]
     - C_FLIP_R: [3-4]
     - SLING_R: [COIL +, COIL -]
